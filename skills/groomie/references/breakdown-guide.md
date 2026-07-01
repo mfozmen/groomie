@@ -101,34 +101,43 @@ the work is filed.
 ## Output shape
 
 ```markdown
-# Epic: <outcome-focused title>
+# Epic: <bounded capability name>
 
-<2–4 sentence problem + desired outcome>
+**Description:** <what the feature implements — one sentence>
+
+**Business Value:** <why it matters — one sentence>
 
 ---
 
-## Story A — <short title>
-> As a <role> I want <capability> so that <benefit>.
+## Story — As a <role>, I want <capability> so that <benefit>
 
-**Acceptance criteria**
-- [ ] ...
-- [ ] ...
+<one-line description of the capability; link PRD / background docs if any>
+
+**Acceptance Criteria**
+- ...
+- ...
+
+**Test Cases**
+- <input> → <expected result>
+- <failure case> → <expected result>
 
 **Blocking tasks**
-- [ ] Task A1 — <what> · `blocks: Story A`
-- [ ] Task A2 — <what> · `blocks: Story A`
+- [ ] [Backend] <what> · `blocks: this story`
+- [ ] [Frontend] <what> · `blocks: this story`
+- [ ] [Graphic Design] <what> (only if no design exists yet) · `blocks: this story`
 
-## Story B — <short title>
+## Story — As a <role>, I want <capability> so that <benefit>
 ...
 
 ---
 
 ## Bugs
-- **<title>** — repro / expected / actual · affects: Story A   _(omit section if none)_
+- **<title>** — repro / expected / actual · affects: <story>   _(omit section if none)_
 
 ## Open questions
 - ...
 ```
 
-Adjust the shape to match the samples in `examples.md` when they differ — the samples win.
-When `examples.md` has no real samples yet (placeholder only), use the shape above.
+The samples in `examples.md` are the source of truth for the shape of each individual
+epic / story / task — when they differ from this skeleton, the samples win. This skeleton
+only shows how the pieces lay out together in one document.

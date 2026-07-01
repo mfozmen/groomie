@@ -66,15 +66,19 @@ Apply the rules in **[references/breakdown-guide.md](references/breakdown-guide.
 produce the structure. Calibrate style and granularity against the worked samples in
 **[references/examples.md](references/examples.md)** — those examples are how the user
 "trains" Groomie, so follow their shape closely. If `examples.md` still holds only
-placeholders (no real before/after samples yet), ignore it and follow the breakdown
-guide's output shape.
+placeholders (no real samples yet), ignore it and follow the breakdown guide's output
+shape.
 
 Core rules (full detail in the guide):
-- Exactly **one epic** = the feature.
-- **User stories** are vertical, user-visible slices ("As a … I want … so that …"),
-  each with acceptance criteria.
-- **Technical tasks** are implementation work. Each task **blocks** the story (or stories)
-  it enables — a story cannot be done until its blocking tasks are done.
+- Exactly **one epic** = the feature — bounded, closeable, scope clear from the title;
+  body is just **Description** + **Business Value**.
+- **User stories** are vertical, user-visible slices describing **behavior and needs
+  only** — never solutions (no API/UI/design prescriptions). Title is the full
+  "As a … I want … so that …" sentence; body carries required **Acceptance Criteria**
+  and **Test Cases**.
+- **Technical tasks** are implementation work, titled `[Discipline] …`. Each task
+  **blocks** the story (or stories) it enables — a story cannot be done until its
+  blocking tasks are done.
 - **Bugs** only when the source issue actually reports broken existing behavior.
 - Flag ambiguities as open questions instead of guessing.
 
