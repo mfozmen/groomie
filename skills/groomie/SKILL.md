@@ -60,7 +60,9 @@ conclusions. Note open questions rather than inventing answers.
 Apply the rules in **[references/breakdown-guide.md](references/breakdown-guide.md)** to
 produce the structure. Calibrate style and granularity against the worked samples in
 **[references/examples.md](references/examples.md)** — those examples are how the user
-"trains" Groomie, so follow their shape closely.
+"trains" Groomie, so follow their shape closely. If `examples.md` still holds only
+placeholders (no real before/after samples yet), ignore it and follow the breakdown
+guide's output shape.
 
 Core rules (full detail in the guide):
 - Exactly **one epic** = the feature.
