@@ -17,9 +17,21 @@ Epic  (the feature — exactly one per run)
 
 ## Epic
 
-- One epic per run — it IS the feature.
-- Title: short and outcome-focused, not a restatement of the messy issue title.
-- Body: 2–4 sentences on the problem and the desired outcome. Not a task list.
+- **Exactly one epic per run — it IS the feature.** Add a second (Infrastructure)
+  epic only when the feature needs substantial groundwork of its own (e.g. standing
+  up a whole new microservice) — never for small setup, which belongs in tasks.
+- **Bounded & closeable.** An epic's scope must be finite — a coherent chunk of work
+  that can realistically be completed in a defined timeframe (a few sprints, not
+  "forever"). If it can never be marked "done", it's a theme, not an epic — split it.
+- **The title must make that bounded scope self-evident.** Reading the title alone
+  should tell you what is in scope and when it is finished. Prefer a *qualified*
+  capability over an open-ended umbrella:
+  - ✅ "Traditional Authentication", "SSO Integration", "Book Discovery System"
+  - ❌ "Authentication", "Books", "User System", "Platform" (never close)
+- **Body — exactly two lines:** `**Description:**` (what it implements, one sentence)
+  and `**Business Value:**` (why it matters, one sentence). Nothing else.
+- **No acceptance criteria on the epic** — stories carry the AC.
+- No task list or stories inline — those are separate issues under the epic.
 
 ## User stories
 
