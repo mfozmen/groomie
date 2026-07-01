@@ -63,8 +63,9 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 
 Tasks carry the HOW. The title leads with a required discipline prefix; the body is a
 detailed, step-by-step `Implementation` plus `Done when`. Each task blocks the story it
-builds. A single story is usually built by several tasks across disciplines — e.g. the
-SAP-6 story above is blocked by `[Backend]`, `[Graphic Design]`, and `[Game Dev]` tasks.
+builds. A single story is usually built by several tasks across disciplines — the
+account-creation story above, for instance, is built by `[Backend]`, `[Graphic Design]`,
+and `[Game Dev]` tasks; the `[Backend]` schema task is shown below.
 
 ```markdown
 # Task: [Backend] Design and implement user schema and database tables
