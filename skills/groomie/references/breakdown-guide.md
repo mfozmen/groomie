@@ -63,13 +63,28 @@ Epic  (the feature — exactly one per run)
 
 ## Technical tasks
 
-- Implementation work: backend, frontend, schema, infra, migration, config, docs.
-- **Every task blocks the story (or stories) it enables.** State the link explicitly:
-  `blocks: Story A`. A story is not "doable" until its blocking tasks are done.
-- A task with no story it blocks is a smell — either it belongs to a story you missed,
-  or it's out of scope. Call it out rather than leaving it dangling.
-- Keep tasks independently completable and estimable. Split anything that hides two
-  distinct pieces of work.
+- Implementation work that builds a story — this is where the HOW lives (the opposite of
+  stories): tasks name the APIs, tables, screens, and components, with concrete steps.
+- **Title:** `[Discipline] <specific technical action>` — e.g. `[Backend] Design and
+  implement user schema and database tables`. The discipline prefix is **required** in the
+  title: it routes the work to the producing team (we don't rely on Jira fields — the
+  prefix carries the routing). Infer the disciplines per project; common ones are Backend,
+  Frontend, Graphic Design, Game Dev.
+- **Body — detailed, step by step:**
+  - **Implementation** — concrete technical steps, detailed enough that the engineer can
+    follow them without re-deriving the design.
+  - **Done when** — completion criteria (what must be true for the task to be done).
+- **Cover every discipline the story needs.** Backend and Frontend tasks are the core —
+  produce them wherever the story touches them. Add a **Graphic Design** task (mockups /
+  Figma) only when the design does not already exist; if research finds finished designs,
+  skip it (reference them instead) rather than re-opening design work. If you can't tell
+  whether the design exists, raise it as an open question.
+- **Every task blocks the story it enables** — state it explicitly: `blocks: <story>`. A
+  story is not "doable" until its blocking tasks are done. A task that blocks nothing is a
+  smell — a missing story, or out of scope; call it out rather than leaving it dangling.
+- Keep each task independently completable and estimable; split anything hiding two
+  distinct pieces of work. Tasks may block other tasks (sequencing); foundational/infra
+  tasks are global blockers.
 
 ## Bugs
 
