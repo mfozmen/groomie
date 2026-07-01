@@ -61,4 +61,27 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 
 ## Technical tasks
 
-<!-- Added next: real task examples, each blocking its story. -->
+Tasks carry the HOW. The title leads with a required discipline prefix; the body is a
+detailed, step-by-step `Implementation` plus `Done when`. Each task blocks the story it
+builds. A single story is usually built by several tasks across disciplines — e.g. the
+SAP-6 story above is blocked by `[Backend]`, `[Graphic Design]`, and `[Game Dev]` tasks.
+
+```markdown
+# Task: [Backend] Design and implement user schema and database tables
+
+Model and create the user data structures with secure credential storage and
+email-verification fields.
+
+**Implementation**
+- Create a users table: id (UUID), email (unique, case-insensitive), password_hash,
+  email_verified (bool), status, created_at/updated_at.
+- Store only hashed passwords (bcrypt/argon2) — never plaintext.
+- Add email-verification storage: token hash, expiry, and used flag.
+- Add a unique index on email and write migration scripts.
+
+**Done when**
+- Migrations create the tables and email uniqueness is enforced at the DB level.
+- Repository CRUD operations are covered by tests.
+
+blocks: Story — "As a user, I want to create an account using email and password …"
+```
