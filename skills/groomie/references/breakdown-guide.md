@@ -35,13 +35,31 @@ Epic  (the feature — exactly one per run)
 
 ## User stories
 
-- Vertical, user-visible slices. Each delivers something a user (or an operator/admin)
-  can perceive. If a "story" has no user-visible outcome, it's probably a task.
-- Format: **As a `<role>` I want `<capability>` so that `<benefit>`.**
-- Every story carries **acceptance criteria** — concrete, testable, checklist-style
-  (prefer Given/When/Then when it adds clarity).
-- Slice thin: prefer several small stories over one giant one. A story that needs a
-  dozen tasks is usually two or three stories.
+- Vertical, user-visible slices. Each delivers something a user (or operator/admin) can
+  perceive. If a "story" has no user-visible outcome, it's probably a task.
+- **The title IS the story sentence:** `As a <role>, I want <capability> so that <benefit>.`
+  The title alone must convey the work — but keep it within Jira's 255-char summary limit
+  and readable; tighten the wording rather than let it sprawl. If it won't fit or reads as
+  two things at once, the story is too big — split it.
+- **Behavior and needs ONLY — never prescribe the solution.** A story says what the user
+  needs and how the system should behave from their point of view. It must NOT direct
+  engineering or design *how* to build it — no API/tech choices, no UI component names, no
+  design directives.
+  - ❌ "Build a REST endpoint for registration", "Add a drawer", "Disable the submit
+    button", "Use a modal"
+  - ✅ "The user can register with email and password", "The user cannot submit until the
+    required fields are valid", "The user sees clear feedback when registration fails"
+  - The HOW (REST API, drawer, Unity screen, mockups) lives in **tasks**, owned by the
+    producing teams.
+- **Body carries, in order:**
+  - a one-line description of the capability (link PRD / business-analysis / background
+    docs when they exist);
+  - **Acceptance Criteria** — required. Concrete, outcome-level, checklist bullets.
+  - **Test Cases** — required. Concrete `input → expected result` scenarios, including the
+    key failure cases (invalid input, duplicates, edge conditions).
+- Slice thin: prefer several small stories over one giant one. A story needing a dozen
+  tasks is usually two or three stories.
+- Each story belongs to the epic and is **blocked by** the technical tasks that build it.
 
 ## Technical tasks
 

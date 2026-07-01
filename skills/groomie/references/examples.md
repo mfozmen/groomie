@@ -35,7 +35,29 @@ which never closes.
 
 ## User stories
 
-<!-- Added next: real story examples from the SAP reference project. -->
+The title carries the full user-story sentence (within Jira's summary length). Note this
+example describes **only behavior and needs** — nothing about REST APIs, screens, or
+widgets. Body: a short description, then Acceptance Criteria, then concrete Test Cases —
+both required.
+
+```markdown
+# Story: As a user, I want to create an account using email and password so that I can have my own personal access to the platform
+
+Lets new users create an account with email and password, including email verification
+and clear success/error feedback. (Link the PRD / business-analysis pages when they exist.)
+
+**Acceptance Criteria**
+- Valid email verification process
+- Password strength requirements enforced
+- Account verification flow
+- Success/error notifications
+
+**Test Cases**
+- Valid email + strong password → account created, verification email sent
+- Weak password → rejected with a strength hint
+- Duplicate email → clear "already registered" error
+- Clicking the verification link → account marked as verified
+```
 
 ## Technical tasks
 
