@@ -1,29 +1,42 @@
 # Examples
 
-Worked samples that teach Groomie the user's preferred grooming style. These are the
-strongest signal Groomie has — when they conflict with the breakdown guide, **the
-examples win.** Add real before/after cases here as they come up; that is how the user
-"trains" Groomie without touching a model.
+Gold-standard reference output that calibrates Groomie's style, granularity, and tone.
+When these examples conflict with the breakdown guide, **the examples win.** They are
+drawn from a well-groomed backlog (the "SAP" reference project) and grow as the user
+adds more. If a section below is still empty, fall back to the breakdown guide's shape
+for that level.
 
-Each example should show:
-1. **Before** — the raw, messy source issue (as it arrived in Jira).
-2. **After** — the groomed markdown breakdown Groomie should have produced.
+## Epic
 
----
-
-## Example 1 — <title>
-
-> _Placeholder. The user will supply real example projects to calibrate style,
-> granularity, and tone. Replace this with a real before/after pair._
-
-### Before (raw Jira issue)
-
-```
-<paste the messy issue summary + description here>
-```
-
-### After (expected groomed output)
+A good epic is bounded, closeable in a defined timeframe, and its scope is obvious from
+the title alone. Body is exactly two lines — `Description` + `Business Value`, no
+acceptance criteria (stories carry those).
 
 ```markdown
-<paste the ideal breakdown here>
+# Epic: Traditional Authentication
+
+**Description:** Implement email/password-based authentication system.
+
+**Business Value:** Provide secure basic authentication method for users who prefer
+traditional login.
 ```
+
+```markdown
+# Epic: SSO Integration
+
+**Description:** Implement Single Sign-On functionality supporting major identity providers.
+
+**Business Value:** Simplify the login process and increase user adoption.
+```
+
+Both titles pass the "is it bounded?" test — you can tell what's in scope and when it's
+done just by reading them. Contrast with an un-scoped umbrella like "Authentication",
+which never closes.
+
+## User stories
+
+<!-- Added next: real story examples from the SAP reference project. -->
+
+## Technical tasks
+
+<!-- Added next: real task examples, each blocking its story. -->
