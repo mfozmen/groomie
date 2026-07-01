@@ -86,3 +86,4 @@ the work is filed.
 ```
 
 Adjust the shape to match the samples in `examples.md` when they differ — the samples win.
+When `examples.md` has no real samples yet (placeholder only), use the shape above.
