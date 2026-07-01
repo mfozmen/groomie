@@ -1,0 +1,18 @@
+{
+  "name": "groomie",
+  "version": "0.1.0",
+  "description": "Groom a messy single-feature Jira issue into a clean epic / user-story / technical-task breakdown, with tasks blocking stories. Outputs markdown.",
+  "author": {
+    "name": "Mehmet Fahri Özmen"
+  },
+  "homepage": "https://github.com/mfozmen/groomie",
+  "repository": "https://github.com/mfozmen/groomie",
+  "license": "MIT",
+  "keywords": [
+    "jira",
+    "grooming",
+    "backlog",
+    "agile",
+    "claude-code"
+  ]
+}
