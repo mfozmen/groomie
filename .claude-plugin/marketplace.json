@@ -1,0 +1,13 @@
+{
+  "name": "groomie",
+  "owner": {
+    "name": "mfozmen"
+  },
+  "plugins": [
+    {
+      "name": "groomie",
+      "source": "./",
+      "description": "Groom a messy single-feature Jira issue into a clean epic / user-story / technical-task breakdown, with tasks blocking stories."
+    }
+  ]
+}

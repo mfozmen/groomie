@@ -1,0 +1,23 @@
+{
+  "git": {
+    "commitMessage": "chore: release v${version}",
+    "tagName": "v${version}",
+    "requireBranch": "main",
+    "requireCleanWorkingDir": true
+  },
+  "github": {
+    "release": true
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "after:bump": "node -e \"const fs=require('fs');const f='.claude-plugin/plugin.json';const p=JSON.parse(fs.readFileSync(f,'utf8'));p.version='${version}';fs.writeFileSync(f,JSON.stringify(p,null,2)+'\\n')\""
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "conventionalcommits",
+      "infile": "CHANGELOG.md"
+    }
+  }
+}
