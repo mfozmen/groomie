@@ -88,10 +88,15 @@ blocker). Bugs are QA-tested whether they are technical or not.
   - **Acceptance Criteria** — required. Concrete, outcome-level, checklist bullets.
   - **Test Cases** — required. Concrete `input → expected result` scenarios, including the
     key failure cases (invalid input, duplicates, edge conditions).
-- Slice thin: prefer several small stories over one giant one. A story needing a dozen
-  tasks is usually two or three stories.
-- Each story belongs to its epic and states **`Is blocked by:`** the tasks that build it,
-  by key — e.g. `Is blocked by: T1, T4` (Jira's "is blocked by" link).
+- **One responsibility per story — follow INVEST.** Each story is Independent, Negotiable,
+  Valuable, Estimable, Small, and Testable, and covers **exactly one user capability**. If a
+  story bundles two things — "edit **or** delete", "create **and** manage" — split it into
+  separate stories (one to edit, one to delete). **If it can be split, split it.** A story
+  needing a dozen tasks is really several stories.
+- Each story states **`Is blocked by:`** the tasks that build it — **each reference is the
+  key *plus the referenced item's title*** (not the bare key), e.g. `Is blocked by: T1 —
+  Implement the generate-plaintext endpoint, T4 — Build the generate UI` (Jira's "is blocked
+  by" link).
 
 ## Technical tasks
 
@@ -100,11 +105,18 @@ blocker). Bugs are QA-tested whether they are technical or not.
   steps. A task is **not a subtask of a story** — it's a distinct issue linked to the
   story by `blocks`. Tasks are **not QA-tested** (that's why they carry `Done when`, not
   Test Cases).
-- **Title:** `[Discipline] <specific technical action>` — e.g. `[Backend] Design and
-  implement user schema and database tables`. The discipline prefix is **required** in the
-  title: it routes the work to the producing team (we don't rely on Jira fields — the
-  prefix carries the routing). Infer the disciplines per project; common ones are Backend,
-  Frontend, Graphic Design, Game Dev.
+- **Title — imperative and one responsibility:** `[Discipline] <imperative action>` — a
+  clear, complete instruction starting with a verb, e.g. `[Backend] Implement the JWT
+  authentication service`, `[Backend] Create the login API endpoints`, `[Graphic Design]
+  Design the login screen mockups`, `[Game Dev] Implement the login UI and session
+  management` — **not a terse note.** The `[Discipline]` prefix is **required** (it routes
+  the work to the producing team — we don't rely on Jira fields). Infer disciplines per
+  project; common ones are Backend, Frontend, Graphic Design, Game Dev.
+- **One responsibility per task — split it as fine as the reference backlog does.** A
+  separate task per service / endpoint / screen / UI, per discipline — e.g. registration is
+  *schema*, *email-verification service*, *registration REST endpoints*, *screen mockups*,
+  and *the Unity UI* as five distinct tasks, not one. If a task hides two pieces of work,
+  split it; prefer more small tasks over few big ones.
 - **Body — detailed, step by step:**
   - **Implementation** — concrete technical steps, detailed enough that the engineer can
     follow them without re-deriving the design.
@@ -114,13 +126,14 @@ blocker). Bugs are QA-tested whether they are technical or not.
   Figma) only when the design does not already exist; if research finds finished designs,
   skip it (reference them instead) rather than re-opening design work. If you can't tell
   whether the design exists, raise it as an open question.
-- **Give each task a Jira-style key** `T1`, `T2`, … (a local placeholder for the Jira key
-  assigned on filing) and state its links **both ways**, by key, in Jira's terms:
-  - **`Blocks:`** — what it enables. When the epic has stories, the story keys it unblocks
-    (`Blocks: S1, S3`); a foundational task often blocks **many** stories — list them all.
-    In a **story-less epic** it blocks the tasks it must precede (`Blocks: T3`).
-  - **`Is blocked by:`** — the tasks that must be done first (`Is blocked by: T1`). Omit the
-    line when there are none.
+- **Give each task a Jira-style key** `T1`, `T2`, … and state its links **both ways**, in
+  Jira's terms, with **each reference as `<key> — <title>`** (not the bare key):
+  - **`Blocks:`** — what it enables. With stories, the stories it unblocks (`Blocks: S1 —
+    As a campaign editor, I want …`); a foundational task often blocks **many** — list them
+    all. In a **story-less epic** it blocks the tasks it must precede (`Blocks: T3 — Backfill
+    the campaigns`).
+  - **`Is blocked by:`** — the tasks that must be done first (`Is blocked by: T1 — Add the
+    plaintext columns`). Omit the line when there are none.
 - A story is not "doable" until its blocking tasks are done. **Only when the epic has
   stories:** a task that blocks nothing is a smell — a missing story, or out of scope; call
   it out. Foundational / infrastructure tasks are **global blockers** — they block a whole
@@ -184,7 +197,7 @@ the work is filed.
 - <input> → <expected result>
 - <failure case> → <expected result>
 
-**Is blocked by:** T1, T2
+**Is blocked by:** T1 — <task title>, T2 — <task title>
 
 ---
 
@@ -192,11 +205,11 @@ the work is filed.
 
 ...
 
-**Is blocked by:** T3
+**Is blocked by:** T3 — <task title>
 
 ## Tasks
 
-### T1 — [Backend] <what>
+### T1 — [Backend] <imperative action>
 
 **Implementation**
 - ...
@@ -204,19 +217,19 @@ the work is filed.
 **Done when**
 - ...
 
-**Blocks:** S1
+**Blocks:** S1 — <story title>
 
 ---
 
-### T2 — [Frontend] <what>
+### T2 — [Frontend] <imperative action>
 
 ...
 
-**Blocks:** S1
+**Blocks:** S1 — <story title>
 
 ---
 
-### T3 — [Backend] <foundational work>
+### T3 — [Backend] <foundational imperative action>
 
 **Implementation**
 - ...
@@ -224,7 +237,7 @@ the work is filed.
 **Done when**
 - ...
 
-**Blocks:** S1, S2   <!-- one task can block many stories -->
+**Blocks:** S1 — <story title>, S2 — <story title>   <!-- one task can block many stories -->
 
 ## Bugs   <!-- omit this section if there are none -->
 
