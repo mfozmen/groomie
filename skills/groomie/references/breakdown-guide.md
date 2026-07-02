@@ -178,7 +178,8 @@ task points) is a planned later addition. Do not surface this mode to end users 
 - A bug may be **technical or non-technical** — either way it is **QA-tested** (like a
   story), so it does not matter which; give steps to reproduce, expected vs actual (the
   repro + expected/actual is the bug's QA basis — its equivalent of a story's Test Cases).
-- Link it to the story it affects.
+- **Give each bug a key `B1`, `B2`, …** (like `S#`/`T#`) and link it to the story it affects
+  with `affects: S1`, so it's traceable in the diagram (`B# -.-> S#`).
 
 ## Open questions
 
@@ -261,7 +262,7 @@ the work is filed.
 
 ## Bugs   <!-- omit this section if there are none -->
 
-- **<title>** — repro / expected / actual · affects: S1
+- **B1 — <title>** — repro / expected / actual · affects: S1
 
 ## Open questions
 
@@ -299,11 +300,13 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
   blocking on both endpoints — dedupe here).
 - **Colour by kind** with a `classDef` block: story blue, task green, bug red. The epic is shown
   by the subgraph, not a class.
-- **Labels are short, sanitized summaries** — key + a 3–6 word gist (the "I want …" for stories,
-  the imperative minus discipline for tasks; keep `[Discipline]` for tasks). **Sanitize to ASCII
-  letters, digits, spaces, hyphens, and `[]` only; drop everything else** (`"`, `#`, `<`, `>`,
-  `,`, `|`, backticks), collapse whitespace, cap ~40 chars. Do the same for the epic name (no
-  brackets). This avoids all mermaid escaping — because labels are gists, lossy is fine.
+- **Labels are short, sanitized summaries.** Take a 3–6 word gist (the "I want …" for stories,
+  the imperative minus discipline for tasks; the name for epics). **Sanitize just the gist** to
+  ASCII letters, digits, spaces, and hyphens — drop everything else (`"`, `#`, `<`, `>`, `,`,
+  `|`, backticks), collapse whitespace, cap ~40 chars. **Then wrap it in the scaffolding** the
+  sanitizer doesn't touch: the `S1: ` / `Epic: ` prefix, a task's `[Discipline]` tag, and (in
+  `--estimate`) a trailing `(5)`. This avoids all mermaid escaping — because gists are short,
+  lossy is fine.
 - **Modes:** `--stories` → no task nodes and no `-->` edges (stories may still have dashed bug
   edges); `--estimate` → append the point to the task label, `T1["T1: [Backend] User schema (5)"]`.
 
