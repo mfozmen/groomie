@@ -107,7 +107,8 @@ blocker). Bugs are QA-tested whether they are technical or not.
 - Only when the source issue actually reports existing behavior that is broken.
 - A missing feature is a story/task, not a bug.
 - A bug may be **technical or non-technical** — either way it is **QA-tested** (like a
-  story), so it does not matter which; give steps to reproduce, expected vs actual.
+  story), so it does not matter which; give steps to reproduce, expected vs actual (the
+  repro + expected/actual is the bug's QA basis — its equivalent of a story's Test Cases).
 - Link it to the story it affects.
 
 ## Open questions
