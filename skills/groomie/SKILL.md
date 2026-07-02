@@ -25,6 +25,32 @@ it and structure it properly.
 
 If no key is given, ask for one. Only ever groom **one feature** per run.
 
+## Modes
+
+Invoke as `/groomie <ISSUE-KEY> [--full | --stories | --estimate]`. If no flag is given,
+use **`--full`**.
+
+- **`--full`** (default) — epic + user stories + technical tasks. Do the deep research
+  (step 3: comments, links, and the actual code) needed to write accurate tasks. Produces
+  a sprint-ready breakdown.
+- **`--stories`** — epic + user stories only, **no technical tasks**. Lighter and faster:
+  you still research enough to understand the feature and its user-facing behavior, but
+  you do not need to read the code to derive tasks. Use to see the behavior/scope quickly.
+- **`--estimate`** — *experimental, development-only; do not advertise to end users.*
+  Produces the full breakdown and adds a **Fibonacci** point estimate (1, 2, 3, 5, 8,
+  13, …) to **each task**. Estimates are a rough first pass and **must be calibrated over
+  time** against real effort — treat them as directional, not authoritative. Per-story /
+  per-epic roll-up is a later addition.
+
+## Consistency
+
+Given the same issue, produce the **same breakdown** — do not emit a different set of
+stories/tasks each run. Derive stories systematically: **one story per distinct
+user-facing behavior** the feature implies, in the order they appear, using the canonical
+`As a … I want … so that …` phrasing. Don't rename, reshuffle, or invent between runs; when
+a re-run could go two ways, prefer the more literal reading of the issue + research over a
+creative one.
+
 ## Flow
 
 Work through these steps in order. Announce each briefly so the user can follow.
@@ -107,8 +133,9 @@ Core rules (full detail in the guide):
 
 Emit a single markdown document (see the shape in the breakdown guide): the epic, then the
 stories (each with its acceptance criteria and test cases), then the tasks (each listing
-the stories it blocks), then bugs, then a short "Open questions" section. Keep it
-copy-paste ready. Do **not** write to Jira.
+the stories it blocks), then bugs, then a short "Open questions" section. In `--stories`
+mode, omit the tasks section; in `--estimate` mode, add a Fibonacci `Estimate:` to each
+task. Keep it copy-paste ready. Do **not** write to Jira.
 
 ## Boundaries
 
