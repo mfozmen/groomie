@@ -9,9 +9,9 @@ opinionated and update it as the user's preferences become clear.
 Epic  (the feature — one per run)
  ├─ User Story A   — non-technical · QA-tested   "As a <role>, I want … so that …"
  ├─ User Story B   — non-technical · QA-tested
- ├─ Task 1  — technical · NOT QA-tested   ──blocks──▶  Story A
- ├─ Task 2  — technical · NOT QA-tested   ──blocks──▶  Story A + Story B
- ├─ Task 3  — technical · NOT QA-tested   ──blocks──▶  Story B
+ ├─ Task 1  — technical · not QA-tested   ──blocks──▶  Story A
+ ├─ Task 2  — technical · not QA-tested   ──blocks──▶  Story A + Story B
+ ├─ Task 3  — technical · not QA-tested   ──blocks──▶  Story B
  └─ Bug     — technical or non-technical · QA-tested   (affects a story)
 ```
 

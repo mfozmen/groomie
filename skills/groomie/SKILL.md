@@ -6,7 +6,8 @@ description: Use when the user asks to groom, break down, or refine a Jira issue
 # Groomie
 
 Turn one messy, single-feature Jira issue into a clean, groomed breakdown:
-**1 epic → user stories → technical tasks (tasks block stories) → bugs where relevant**,
+**one epic, its user stories, the technical tasks that block those stories, and bugs
+where relevant**,
 delivered as a markdown document. You never write to Jira — you produce markdown the
 user reviews and files themselves.
 
