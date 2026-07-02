@@ -63,7 +63,10 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 - Duplicate email → clear "already registered" error
 - Clicking the verification link → account marked as verified
 
-**Is blocked by:** T1 — Design and implement user schema and database tables, T2 — Design registration flow UI mockups, T3 — Implement registration UI using Unity
+**Is blocked by:**
+- T1 — Design and implement user schema and database tables
+- T2 — Design registration flow UI mockups
+- T3 — Implement registration UI using Unity
 ```
 
 (Keyed `S1`; note the comma before *so that* and the period at the end, one responsibility
@@ -98,7 +101,10 @@ email-verification fields.
 - Migrations create the tables and email uniqueness is enforced at the DB level.
 - Repository CRUD operations are covered by tests.
 
-**Blocks:** S1 — As a user, I want to create an account using email and password …, S2 — As a user, I want to reset my password via email …, S3 — As a logged-in user, I want to change my password …
+**Blocks:**
+- S1 — As a user, I want to create an account using email and password …
+- S2 — As a user, I want to reset my password via email …
+- S3 — As a logged-in user, I want to change my password …
 ```
 
 This backend task is a good illustration of the model: it is **not a subtask** of any one

@@ -91,12 +91,18 @@ blocker). Bugs are QA-tested whether they are technical or not.
 - **One responsibility per story — follow INVEST.** Each story is Independent, Negotiable,
   Valuable, Estimable, Small, and Testable, and covers **exactly one user capability**. If a
   story bundles two things — "edit **or** delete", "create **and** manage" — split it into
-  separate stories (one to edit, one to delete). **If it can be split, split it.** A story
-  needing a dozen tasks is really several stories.
-- Each story states **`Is blocked by:`** the tasks that build it — **each reference is the
-  key *plus the referenced item's title*** (not the bare key), e.g. `Is blocked by: T1 —
-  Implement the generate-plaintext endpoint, T4 — Build the generate UI` (Jira's "is blocked
-  by" link).
+  separate stories (one to edit, one to delete). **Split whenever each resulting story stays
+  independently valuable and testable** — but don't shatter one capability into
+  non-independent slivers. A story needing a dozen tasks is really several stories.
+- Each story states **`Is blocked by:`** the tasks that build it — **one reference per line
+  as `- <key> — <title>`** (title-carrying, not the bare key; a per-line list stays
+  unambiguous even though the titles contain commas). This is Jira's "is blocked by" link:
+
+  ```
+  **Is blocked by:**
+  - T1 — Implement the generate-plaintext endpoint
+  - T4 — Build the generate UI
+  ```
 
 ## Technical tasks
 
@@ -127,13 +133,19 @@ blocker). Bugs are QA-tested whether they are technical or not.
   skip it (reference them instead) rather than re-opening design work. If you can't tell
   whether the design exists, raise it as an open question.
 - **Give each task a Jira-style key** `T1`, `T2`, … and state its links **both ways**, in
-  Jira's terms, with **each reference as `<key> — <title>`** (not the bare key):
-  - **`Blocks:`** — what it enables. With stories, the stories it unblocks (`Blocks: S1 —
-    As a campaign editor, I want …`); a foundational task often blocks **many** — list them
-    all. In a **story-less epic** it blocks the tasks it must precede (`Blocks: T3 — Backfill
-    the campaigns`).
-  - **`Is blocked by:`** — the tasks that must be done first (`Is blocked by: T1 — Add the
-    plaintext columns`). Omit the line when there are none.
+  Jira's terms, **one reference per line as `- <key> — <title>`** (title-carrying, never a
+  bare key):
+  - **`Blocks:`** — what it enables: the stories it unblocks (or, in a **story-less epic**,
+    the tasks it must precede). A foundational task lists them all.
+  - **`Is blocked by:`** — the tasks that must be done first. Omit the field when there are
+    none.
+
+  ```
+  **Blocks:**
+  - S1 — As a campaign editor, I want to generate a plaintext version, so that …
+  **Is blocked by:**
+  - T2 — Implement the HTML→plaintext converter
+  ```
 - A story is not "doable" until its blocking tasks are done. **Only when the epic has
   stories:** a task that blocks nothing is a smell — a missing story, or out of scope; call
   it out. Foundational / infrastructure tasks are **global blockers** — they block a whole
@@ -147,9 +159,10 @@ Only in `--estimate` mode. Add a Fibonacci point estimate to **each task** (neve
 stories or the epic) as an `**Estimate:**` field:
 
 ```markdown
-### T1 — [Backend] <what>
+### T1 — [Backend] <imperative action>
 ...
-**Blocks:** S1
+**Blocks:**
+- S1 — <story title>
 **Estimate:** 5   <!-- Fibonacci: 1, 2, 3, 5, 8, 13, 21 -->
 ```
 
@@ -197,7 +210,9 @@ the work is filed.
 - <input> → <expected result>
 - <failure case> → <expected result>
 
-**Is blocked by:** T1 — <task title>, T2 — <task title>
+**Is blocked by:**
+- T1 — <task title>
+- T2 — <task title>
 
 ---
 
@@ -205,7 +220,8 @@ the work is filed.
 
 ...
 
-**Is blocked by:** T3 — <task title>
+**Is blocked by:**
+- T3 — <task title>
 
 ## Tasks
 
@@ -217,7 +233,8 @@ the work is filed.
 **Done when**
 - ...
 
-**Blocks:** S1 — <story title>
+**Blocks:**
+- S1 — <story title>
 
 ---
 
@@ -225,7 +242,8 @@ the work is filed.
 
 ...
 
-**Blocks:** S1 — <story title>
+**Blocks:**
+- S1 — <story title>
 
 ---
 
@@ -237,7 +255,9 @@ the work is filed.
 **Done when**
 - ...
 
-**Blocks:** S1 — <story title>, S2 — <story title>   <!-- one task can block many stories -->
+**Blocks:**
+- S1 — <story title>
+- S2 — <story title>   <!-- one task can block many stories -->
 
 ## Bugs   <!-- omit this section if there are none -->
 

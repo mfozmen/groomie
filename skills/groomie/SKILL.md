@@ -126,9 +126,9 @@ Core rules (full detail in the guide):
   sentence — **comma before *so that*, period at the end** — and the `<role>` must be a
   **real user of our product** (never the end recipient / consumer of an outbound artifact;
   reframe that from our user's view). **One responsibility per story (INVEST) — split a
-  compound story (e.g. "edit or delete") into separate stories; if it can be split, split
-  it.** Body carries required **Acceptance Criteria** and **Test Cases**, plus **`Is blocked
-  by:`** the tasks that build it (each `<key> — <title>`). QA tests stories. **Only write
+  compound story (e.g. "edit or delete") into separate stories whenever each part stays
+  independently valuable and testable.** Body carries required **Acceptance Criteria** and **Test Cases**, plus **`Is blocked
+  by:`** the tasks that build it (one per line as `- <key> — <title>`). QA tests stories. **Only write
   stories when the feature changes user-facing behavior** — a pure technical
   migration/refactor/infra epic has **no stories**. Not every epic has stories; never force one.
 - **Technical tasks** are the implementation work, keyed `T1`, `T2`, …, titled in the
@@ -136,7 +136,7 @@ Core rules (full detail in the guide):
   endpoints`), one clear responsibility each; split fine (a task per service / endpoint /
   screen / UI, per discipline), never a terse note. A task is a **sibling of stories, not a
   subtask** — it is **not QA-tested** (carries `Done when`, not Test Cases) and states its
-  links both ways in Jira's terms, each `<key> — <title>`: **`Blocks:`** the stories it
+  links both ways in Jira's terms, one reference per line as `- <key> — <title>`: **`Blocks:`** the stories it
   enables — or, in a story-less epic, the tasks it precedes — and **`Is blocked by:`** the
   tasks that must come first. One foundational task may block many stories.
 - **Bugs** only when the source issue reports broken existing behavior; technical or not,
