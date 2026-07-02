@@ -27,6 +27,11 @@ also ends with a **mermaid diagram** of the blocker graph (renders on GitHub, VS
 other markdown viewers), and a machine-readable **`<ISSUE-KEY>-groomed.json`** graph is
 written next to it (the input for the visualizer).
 
+For an **interactive** view of the blocker graph — epics as containers, stories/tasks/bugs
+nested, blockers as arrows — load that `.json` into the companion [`visualizer/`](visualizer/),
+or turn it into a standalone offline HTML with
+`npm --prefix visualizer run emit -- <ISSUE-KEY>-groomed.json`.
+
 ## Requirements
 
 - **Claude Code.**
