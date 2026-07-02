@@ -6,6 +6,10 @@ drawn from a well-groomed backlog (the "SAP" reference project) and grow as the 
 adds more. If a section below is still empty, fall back to the breakdown guide's shape
 for that level.
 
+> Note: the SAP reference project is an **animated-books Unity game**, so its client tier
+> is `[Game Dev]` (Unity) rather than `[Frontend]`. Infer the disciplines from the actual
+> project you are grooming — don't copy `[Game Dev]` onto a non-game feature.
+
 ## Epic
 
 A good epic is bounded, closeable in a defined timeframe, and its scope is obvious from
