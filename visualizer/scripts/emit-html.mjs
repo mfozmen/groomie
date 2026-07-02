@@ -23,8 +23,8 @@ export function injectGraph(templateHtml, graph) {
         '(or run `npm run build:single`)',
     )
   }
-  const payload = JSON.stringify(graph).replace(/</g, '\\u003c')
-  const tag = `<script>window.${GRAPH_GLOBAL}=${payload}</script>`
+  const payload = JSON.stringify(graph).replaceAll('<', '\\u003c')
+  const tag = `<script>globalThis.${GRAPH_GLOBAL}=${payload}</script>`
   // Function replacement: a plain replacement string would treat `$&`, `$\``, `$'`, `$$` in the
   // payload (e.g. a title containing `$'`) as special patterns and corrupt the injected JSON.
   return templateHtml.replace('<head>', () => `<head>${tag}`)
