@@ -1,0 +1,87 @@
+{
+  "issueKey": "DEMO-1",
+  "mode": "estimate",
+  "nodes": [
+    {
+      "id": "E1",
+      "kind": "epic",
+      "title": "Dark Mode",
+      "description": "Let users switch the app between light and dark themes.",
+      "businessValue": "Reduces eye strain and matches OS preference, a top-requested setting.",
+      "design": null
+    },
+    {
+      "id": "S1",
+      "kind": "story",
+      "epicId": "E1",
+      "title": "As a user, I want to switch between light and dark themes, so that the app matches my preference.",
+      "description": "A settings toggle whose choice persists across sessions.",
+      "links": [],
+      "acceptanceCriteria": [
+        "A theme toggle is available in settings.",
+        "The chosen theme persists across sessions."
+      ],
+      "testCases": [
+        "Toggle to dark → every screen renders in dark theme.",
+        "Reload the app → the last chosen theme is still applied."
+      ]
+    },
+    {
+      "id": "S2",
+      "kind": "story",
+      "epicId": "E1",
+      "title": "As a user, I want the app to follow my OS theme by default, so that it looks right without any setup.",
+      "description": "Respect prefers-color-scheme when there is no saved preference.",
+      "links": [],
+      "acceptanceCriteria": ["On first load the app matches the OS theme."],
+      "testCases": ["OS in dark mode, first load → the app is dark."]
+    },
+    {
+      "id": "T1",
+      "kind": "task",
+      "epicId": "E1",
+      "title": "Persist the user's theme preference",
+      "discipline": "Backend",
+      "implementation": ["Add a theme column to user settings.", "Expose GET/PUT settings endpoints."],
+      "doneWhen": ["The preference round-trips across sessions."],
+      "estimate": 3
+    },
+    {
+      "id": "T2",
+      "kind": "task",
+      "epicId": "E1",
+      "title": "Build the theme toggle and dark palette",
+      "discipline": "Frontend",
+      "implementation": ["Add a toggle in settings.", "Define dark-theme CSS variables."],
+      "doneWhen": ["Every screen renders correctly in both themes."],
+      "estimate": 5
+    },
+    {
+      "id": "T3",
+      "kind": "task",
+      "epicId": "E1",
+      "title": "Detect the OS theme on first load",
+      "discipline": "Frontend",
+      "implementation": ["Read prefers-color-scheme when there is no saved preference."],
+      "doneWhen": ["The first load matches the OS theme."],
+      "estimate": 2
+    },
+    {
+      "id": "B1",
+      "kind": "bug",
+      "epicId": "E1",
+      "title": "Charts stay light in dark mode",
+      "repro": "Switch to dark on the dashboard.",
+      "expected": "Charts recolor to the dark palette.",
+      "actual": "Charts stay light."
+    }
+  ],
+  "edges": [
+    { "source": "T1", "target": "S1", "kind": "blocks" },
+    { "source": "T2", "target": "S1", "kind": "blocks" },
+    { "source": "T2", "target": "S2", "kind": "blocks" },
+    { "source": "T3", "target": "S2", "kind": "blocks" },
+    { "source": "T1", "target": "T2", "kind": "blocks" },
+    { "source": "B1", "target": "S1", "kind": "affects" }
+  ]
+}
