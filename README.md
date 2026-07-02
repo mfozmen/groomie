@@ -22,7 +22,9 @@ can review and file.
   detailed plan, wired to what they **block** / are **blocked by** (Jira link terms).
 - **Bugs** and **open questions** — surfaced, never silently invented.
 
-The whole breakdown is saved to `<ISSUE-KEY>-groomed.md` and printed for you.
+The whole breakdown is saved to `<ISSUE-KEY>-groomed.md` and printed for you. The markdown
+also ends with a **mermaid diagram** of the blocker graph (renders on GitHub / Jira / VS
+Code), and a machine-readable **`<ISSUE-KEY>-groomed.json`** graph is written next to it.
 
 ## Requirements
 
