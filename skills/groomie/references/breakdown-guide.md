@@ -266,6 +266,10 @@ the work is filed.
 ## Open questions
 
 - ...
+
+## Diagram
+
+(a mermaid flowchart TD block — see the "Diagram (mermaid)" section below; omit if no nodes)
 ```
 
 The samples in `examples.md` are the source of truth for the shape of each individual
@@ -280,3 +284,46 @@ technical migration, for example, is often just the epic + `## Tasks` + `## Open
 **Mode deltas** (see the skill's Modes section): in `--stories` mode omit the `## Tasks`
 section entirely; in `--estimate` mode each task carries an `**Estimate:**` line
 (Fibonacci — see Estimation above).
+
+## Diagram (mermaid)
+
+End the document with a `## Diagram` section containing **one fenced `mermaid` `flowchart TD`**
+that renders the breakdown as a graph. Emit it only when there is at least one node.
+
+- **One `subgraph epicN["Epic: <name>"]` per epic** (the container); the epic's story / task /
+  bug nodes nest inside it. Ids `epic1`, `epic2`, … by order.
+- **Nodes** use the existing keys: `S1["S1: <summary>"]`, `T1["T1: [Discipline] <summary>"]`.
+  Bugs get diagram ids `B1`, `B2`, … by order.
+- **Edges:** blocking is a solid directed edge, `T1 --> S1` (or `T1 --> T2` in a story-less
+  epic); a bug's `affects` is dashed, `B1 -.-> S1`. Emit each edge **once** (the markdown stores
+  blocking on both endpoints — dedupe here).
+- **Colour by kind** with a `classDef` block: story blue, task green, bug red. The epic is shown
+  by the subgraph, not a class.
+- **Labels are short, sanitized summaries** — key + a 3–6 word gist (the "I want …" for stories,
+  the imperative minus discipline for tasks; keep `[Discipline]` for tasks). **Sanitize to ASCII
+  letters, digits, spaces, hyphens, and `[]` only; drop everything else** (`"`, `#`, `<`, `>`,
+  `,`, `|`, backticks), collapse whitespace, cap ~40 chars. Do the same for the epic name (no
+  brackets). This avoids all mermaid escaping — because labels are gists, lossy is fine.
+- **Modes:** `--stories` → no task nodes and no `-->` edges (stories may still have dashed bug
+  edges); `--estimate` → append the point to the task label, `T1["T1: [Backend] User schema (5)"]`.
+
+```mermaid
+flowchart TD
+  subgraph epic1["Epic: Traditional Authentication"]
+    S1["S1: Create account with email"]
+    S2["S2: Reset password via email"]
+    T1["T1: [Backend] User schema"]
+    T2["T2: [Game Dev] Registration UI"]
+    B1["B1: Verification email not sent"]
+  end
+  T1 --> S1
+  T1 --> S2
+  T2 --> S1
+  B1 -.-> S1
+  classDef story fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
+  classDef task  fill:#dcfce7,stroke:#22c55e,color:#14532d;
+  classDef bug   fill:#fee2e2,stroke:#ef4444,color:#7f1d1d;
+  class S1,S2 story;
+  class T1,T2 task;
+  class B1 bug;
+```

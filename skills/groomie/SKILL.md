@@ -153,6 +153,12 @@ empty section entirely** — no `## Stories` when there's no behavior change, no
 when there are none, no empty `## Open questions`; never print a "(none)" placeholder. In `--stories` mode, omit the tasks section; in `--estimate` mode,
 add a Fibonacci `Estimate:` to each task.
 
+End with a **`## Diagram`** section — one fenced ```mermaid `flowchart TD` that renders the
+breakdown as a graph: one `subgraph` per epic (container) holding its story/task/bug nodes,
+solid arrows for blocking (`T# --> S#`), dashed for a bug's `affects` (`B# -.-> S#`), colored
+by kind. See the guide's *Diagram (mermaid)* section for the exact shape and label-sanitization
+rules. Omit the `## Diagram` when there are no nodes.
+
 **Save it to a file AND print it.** Write the document to `<ISSUE-KEY>-groomed.md` in the
 current working directory (e.g. `PROJ-123-groomed.md`), tell the user the path, then also
 print it inline so they can read it without opening the file. Do **not** write to Jira.

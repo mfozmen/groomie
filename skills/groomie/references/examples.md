@@ -111,3 +111,30 @@ This backend task is a good illustration of the model: it is **not a subtask** o
 story — it's a foundational piece that `Blocks:` every account-related story it underpins.
 It carries `Done when` (not Test Cases) because tasks are not QA-tested; the stories it
 blocks are the ones QA verifies.
+
+## Diagram
+
+The document ends with a `## Diagram` mermaid block: one `subgraph` per epic (container),
+`S#`/`T#`/`B#` nodes, solid arrows for blocking and dashed for a bug's `affects`, coloured by
+kind. Labels are short sanitized gists (see the breakdown guide). For the account example:
+
+```mermaid
+flowchart TD
+  subgraph epic1["Epic: Traditional Authentication"]
+    S1["S1: Create account with email"]
+    S2["S2: Reset password via email"]
+    S3["S3: Change my password"]
+    T1["T1: [Backend] User schema and tables"]
+    T2["T2: [Graphic Design] Registration mockups"]
+    T3["T3: [Game Dev] Registration UI in Unity"]
+  end
+  T1 --> S1
+  T1 --> S2
+  T1 --> S3
+  T2 --> S1
+  T3 --> S1
+  classDef story fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
+  classDef task  fill:#dcfce7,stroke:#22c55e,color:#14532d;
+  class S1,S2,S3 story;
+  class T1,T2,T3 task;
+```
