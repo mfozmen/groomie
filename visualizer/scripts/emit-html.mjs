@@ -30,26 +30,50 @@ export function injectGraph(templateHtml, graph) {
   return templateHtml.replace('<head>', () => `<head>${tag}`)
 }
 
+// Pure + testable. `npm --prefix visualizer run emit` runs with cwd=visualizer/, but INIT_CWD is
+// where the user invoked npm, so paths are resolved against `base` (INIT_CWD) — that's what makes
+// the documented command work from anywhere. Refuses to overwrite the input (a non-.json input
+// makes the `.json`→`.html` derivation a no-op, which would otherwise clobber the source).
+export function resolvePaths(jsonArg, outArg, base) {
+  const abs = (p) => (isAbsolute(p) ? p : resolve(base, p))
+  const jsonPath = abs(jsonArg)
+  const outPath = abs(outArg ?? jsonArg.replace(/\.json$/, '.html'))
+  if (outPath === jsonPath) {
+    throw new Error(`refusing to overwrite the input (${jsonArg}); pass an explicit output path`)
+  }
+  return { jsonPath, outPath }
+}
+
+function readGraph(jsonPath) {
+  let text
+  try {
+    text = readFileSync(jsonPath, 'utf8')
+  } catch {
+    throw new Error(`cannot read ${jsonPath} — is the path correct?`)
+  }
+  try {
+    return JSON.parse(text)
+  } catch (e) {
+    throw new Error(`${jsonPath} is not valid JSON: ${e.message}`)
+  }
+}
+
 function main() {
   const [jsonArg, outArg] = argv.slice(2)
   if (!jsonArg) {
     console.error('usage: emit-html.mjs <graph.json> [out.html]')
     process.exit(1)
   }
-  // `npm --prefix visualizer run emit` runs with cwd=visualizer/, but INIT_CWD is where the user
-  // invoked npm — resolve their paths against that so the documented command works from anywhere.
-  const base = env.INIT_CWD ?? cwd()
-  const abs = (p) => (isAbsolute(p) ? p : resolve(base, p))
-  const jsonPath = abs(jsonArg)
-  const outPath = abs(outArg ?? jsonArg.replace(/\.json$/, '.html'))
-  if (outPath === jsonPath) {
-    console.error(`refusing to overwrite the input (${jsonArg}); pass an explicit output path`)
+  try {
+    const { jsonPath, outPath } = resolvePaths(jsonArg, outArg, env.INIT_CWD ?? cwd())
+    const graph = readGraph(jsonPath)
+    const tpl = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8')
+    writeFileSync(outPath, injectGraph(tpl, graph))
+    console.error(`wrote ${outPath}`)
+  } catch (e) {
+    console.error(`error: ${e.message}`)
     process.exit(1)
   }
-  const graph = JSON.parse(readFileSync(jsonPath, 'utf8'))
-  const tpl = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8')
-  writeFileSync(outPath, injectGraph(tpl, graph))
-  console.error(`wrote ${outPath}`)
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main()
