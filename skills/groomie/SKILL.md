@@ -27,8 +27,9 @@ If no key is given, ask for one. Only ever groom **one feature** per run.
 
 ## Modes
 
-Invoke as `/groomie <ISSUE-KEY> [--full | --stories | --estimate]`. If no flag is given,
-use **`--full`**.
+Invoke by subcommand — `/groomie:full <ISSUE-KEY>` or `/groomie:stories <ISSUE-KEY>` — or as
+bare `/groomie <ISSUE-KEY>`, which defaults to **full**. The `--full` / `--stories` / `--estimate`
+flags on `$ARGUMENTS` still select the mode (back-compat). If nothing selects a mode, use **full**.
 
 - **`--full`** (default) — epic + user stories + technical tasks. Do the deep research
   (step 3: comments, links, and the actual code) needed to write accurate tasks. Produces

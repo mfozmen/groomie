@@ -52,11 +52,13 @@ or turn it into a standalone offline HTML with
 
 ```
 /groomie PROJ-123            # full breakdown (default): epic + stories + tasks
-/groomie PROJ-123 --stories  # quick: epic + user stories only (behavior/scope, no tasks)
+/groomie:full PROJ-123       # same, explicit
+/groomie:stories PROJ-123    # quick: epic + user stories only (behavior/scope, no tasks)
 ```
 
-`--full` (the default) reads the code to write accurate technical tasks; `--stories` skips
-tasks for a faster, behavior-only pass.
+Pick the mode by **subcommand** (`/groomie:full`, `/groomie:stories`) or just run `/groomie`
+for the default full breakdown. Full reads the code to write accurate technical tasks; stories
+skips tasks for a faster, behavior-only pass. (The old `--full` / `--stories` flags still work.)
 
 ## What the output looks like
 
