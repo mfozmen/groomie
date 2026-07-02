@@ -84,5 +84,13 @@ email-verification fields.
 - Migrations create the tables and email uniqueness is enforced at the DB level.
 - Repository CRUD operations are covered by tests.
 
-blocks: Story — "As a user, I want to create an account using email and password …"
+blocks (a foundational task blocks many stories):
+  - "As a user, I want to create an account using email and password …"
+  - "As a user, I want to reset my password via email …"
+  - "As a logged-in user, I want to change my password …"
 ```
+
+This backend task is a good illustration of the model: it is **not a subtask** of any one
+story — it's a foundational piece linked by `blocks` to every account-related story it
+underpins. It carries `Done when` (not Test Cases) because tasks are not QA-tested; the
+stories it blocks are the ones QA verifies.
