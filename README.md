@@ -40,11 +40,13 @@ gets filed.
 ## Usage
 
 ```
-/groomie PROJ-123
+/groomie PROJ-123            # full breakdown (default): epic + stories + tasks
+/groomie PROJ-123 --stories  # quick: epic + user stories only (behavior/scope, no tasks)
 ```
 
 Groomie fetches the issue, tells you how deep it can research, produces the breakdown,
-and prints the markdown.
+and prints the markdown. `--full` (the default) reads the code to write accurate technical
+tasks; `--stories` skips tasks for a faster, behavior-only pass.
 
 ## Development
 

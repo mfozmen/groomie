@@ -25,7 +25,8 @@ else may be a hard dependency:
   linked by `blocks`.** A task may block several stories.
 - **Stories and bugs are QA-tested; tasks are not.**
 - Epics are bounded/closeable with scope clear from the title; body is `Description` +
-  `Business Value`, no AC.
+  `Business Value` (+ an optional `Design` line for Figma/mockups when research surfaces
+  them), no AC.
 
 ## 3. Consistency across the skill files
 
@@ -37,4 +38,6 @@ each item; the guide's skeleton only shows document layout.
 
 - v1 is **read-only against Jira** — no write-back (creating issues / links) without an
   explicit decision.
+- Modes: `--full` (default) and `--stories` are user-facing; **`--estimate` is
+  experimental / development-only** — keep it out of the public README until calibrated.
 - Conventional Commits; every change goes through a PR + the advisory Claude AI review.

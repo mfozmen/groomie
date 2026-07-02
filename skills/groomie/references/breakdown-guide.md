@@ -104,6 +104,23 @@ blocker). Bugs are QA-tested whether they are technical or not.
   infrastructure tasks are **global blockers** — they block a whole set of stories (and
   often the other tasks too), so mark them clearly.
 
+## Estimation (experimental, development-only)
+
+Only in `--estimate` mode. Add a Fibonacci point estimate to **each task** (never to
+stories or the epic) as an `**Estimate:**` field:
+
+```markdown
+### [Backend] <what>
+...
+`blocks:` Story 1
+**Estimate:** 5   <!-- Fibonacci: 1, 2, 3, 5, 8, 13, 21 -->
+```
+
+Base the number on task complexity + how much code it touches. These are a **rough first
+pass** — Groomie cannot judge real effort accurately yet, so they must be **calibrated over
+time** against actuals. Treat them as directional. Per-story / per-epic roll-up (summing
+task points) is a planned later addition. Do not surface this mode to end users yet.
+
 ## Bugs
 
 - Only when the source issue actually reports existing behavior that is broken.
