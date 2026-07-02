@@ -10,7 +10,8 @@
     "build:single": "tsc --noEmit && vite build --mode single",
     "emit": "vite build --mode single && node scripts/emit-html.mjs",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@xyflow/react": "^12.3.5",
@@ -22,6 +23,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.9",
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
     "vite-plugin-singlefile": "^2.1.0",

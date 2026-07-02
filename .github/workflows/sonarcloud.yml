@@ -1,0 +1,51 @@
+name: SonarCloud
+
+# Static analysis + coverage for the visualizer companion app (the only code in the repo;
+# the plugin itself is prompt-only markdown). Config lives in visualizer/sonar-project.properties.
+#
+# Setup (one-time, by the repo owner): create the project on https://sonarcloud.io (org `mfozmen`,
+# key `mfozmen_groomie`), turn OFF "Automatic Analysis" (it conflicts with this CI-based scan),
+# and add a `SONAR_TOKEN` repository secret. Until the secret exists this job fails — it is not a
+# required check, so it does not block merges.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: sonarcloud-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    # Fork safety: never expose SONAR_TOKEN to a forked PR.
+    if: >
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Sonar needs full history for accurate blame / new-code detection.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test with coverage
+        working-directory: visualizer
+        # package-lock.json is gitignored, so `npm install` (not `npm ci`).
+        run: |
+          npm install --no-audit --no-fund
+          npm run test:coverage
+
+      - name: SonarQube Cloud scan
+        uses: SonarSource/sonarqube-scan-action@v7
+        with:
+          projectBaseDir: visualizer
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
