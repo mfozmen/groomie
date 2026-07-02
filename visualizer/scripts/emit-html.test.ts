@@ -7,16 +7,16 @@ const TPL = '<!doctype html><html><head><title>t</title></head><body></body></ht
 // Pull the injected payload back out (our escaping turns `<` into the 6 chars <, so the
 // only real </script> in the doc is our own closing tag).
 function extractGraph(html: string) {
-  const m = html.match(/window\.__GROOMIE_GRAPH__=(.*?)<\/script>/)
+  const m = html.match(/globalThis\.__GROOMIE_GRAPH__=(.*?)<\/script>/)
   if (!m) throw new Error('no payload')
-  return JSON.parse(m[1].replace(/\\u003c/g, '<'))
+  return JSON.parse(m[1].replaceAll('\\u003c', '<'))
 }
 
 describe('injectGraph', () => {
   it('sets the global to the graph, unchanged, before the app bundle', () => {
     const graph = { issueKey: 'X-1', nodes: [{ id: 'E1', kind: 'epic', title: 'e' }], edges: [] }
     const html = injectGraph(TPL, graph)
-    expect(html.indexOf('window.__GROOMIE_GRAPH__')).toBeLessThan(html.indexOf('<title>'))
+    expect(html.indexOf('globalThis.__GROOMIE_GRAPH__')).toBeLessThan(html.indexOf('<title>'))
     expect(extractGraph(html)).toEqual(graph)
   })
 

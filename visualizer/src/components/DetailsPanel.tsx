@@ -4,27 +4,27 @@ export function DetailsPanel({
   node,
   issueKey,
   onLoadNew,
-}: {
+}: Readonly<{
   node: GroomNode | null
   issueKey?: string
   onLoadNew: () => void
-}) {
+}>) {
   return (
     <aside className="panel">
       <div className="panel-head">
         <strong>{issueKey ?? 'Groomie'}</strong>
         <button onClick={onLoadNew}>Load another</button>
       </div>
-      {!node ? (
-        <p className="muted">Click a node to see its details.</p>
-      ) : (
+      {node ? (
         <NodeDetails node={node} />
+      ) : (
+        <p className="muted">Click a node to see its details.</p>
       )}
     </aside>
   )
 }
 
-function NodeDetails({ node }: { node: GroomNode }) {
+function NodeDetails({ node }: Readonly<{ node: GroomNode }>) {
   switch (node.kind) {
     case 'epic':
       return (
@@ -93,14 +93,14 @@ function NodeDetails({ node }: { node: GroomNode }) {
   }
 }
 
-function List({ title, items }: { title: string; items?: string[] }) {
+function List({ title, items }: Readonly<{ title: string; items?: string[] }>) {
   if (!items?.length) return null
   return (
     <div>
       <h4>{title}</h4>
       <ul>
-        {items.map((it, i) => (
-          <li key={i}>{it}</li>
+        {items.map((it) => (
+          <li key={it}>{it}</li>
         ))}
       </ul>
     </div>

@@ -4,10 +4,10 @@ import type { GroomedGraph } from '../types'
 export function Loader({
   onLoad,
   error: externalError,
-}: {
+}: Readonly<{
   onLoad: (g: GroomedGraph) => void
   error?: string | null
-}) {
+}>) {
   const [parseError, setParseError] = useState<string | null>(null)
   const [over, setOver] = useState(false)
   const error = parseError ?? externalError
@@ -19,7 +19,7 @@ export function Loader({
         .then((text) => {
           const g = JSON.parse(text) as GroomedGraph
           if (!Array.isArray(g.nodes) || !Array.isArray(g.edges)) {
-            throw new Error('not a Groomie graph (missing nodes/edges arrays)')
+            throw new TypeError('not a Groomie graph (missing nodes/edges arrays)')
           }
           setParseError(null)
           onLoad(g)

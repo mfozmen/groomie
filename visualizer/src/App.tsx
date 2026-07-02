@@ -26,9 +26,8 @@ const nodeColor = (n: Node) => KIND_COLOR[n.type ?? ''] ?? EPIC_COLOR
 
 // A single-file HTML export injects the graph here before the bundle runs.
 declare global {
-  interface Window {
-    __GROOMIE_GRAPH__?: GroomedGraph
-  }
+  // eslint-disable-next-line no-var
+  var __GROOMIE_GRAPH__: GroomedGraph | undefined
 }
 
 export function App() {
@@ -53,7 +52,7 @@ export function App() {
   }, [])
 
   useEffect(() => {
-    if (window.__GROOMIE_GRAPH__) void loadGraph(window.__GROOMIE_GRAPH__)
+    if (globalThis.__GROOMIE_GRAPH__) void loadGraph(globalThis.__GROOMIE_GRAPH__)
   }, [loadGraph])
 
   const selected = useMemo(
