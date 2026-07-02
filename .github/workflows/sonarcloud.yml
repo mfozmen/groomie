@@ -22,6 +22,10 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    # Least privilege: the scan only reads the checkout (SonarCloud PR decoration is done by the
+    # SonarCloud GitHub App, not this token). Mirrors claude-review.yml.
+    permissions:
+      contents: read
     # Fork safety: never expose SONAR_TOKEN to a forked PR.
     if: >
       github.event_name == 'push' ||
