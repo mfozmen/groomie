@@ -6,13 +6,13 @@ opinionated and update it as the user's preferences become clear.
 ## The hierarchy
 
 ```
-Epic  (the feature — one per run)
- ├─ User Story A   — non-technical · QA-tested   "As a <role>, I want … so that …"
- ├─ User Story B   — non-technical · QA-tested
- ├─ Task 1  — technical · not QA-tested   ──blocks──▶  Story A
- ├─ Task 2  — technical · not QA-tested   ──blocks──▶  Story A + Story B
- ├─ Task 3  — technical · not QA-tested   ──blocks──▶  Story B
- └─ Bug     — technical or non-technical · QA-tested   (affects a story)
+Epic  (the feature — usually one)
+ ├─ Story S1   — non-technical · QA-tested   "As a <role>, I want …, so that …."
+ ├─ Story S2   — non-technical · QA-tested
+ ├─ Task T1    — technical · not QA-tested   ──blocks──▶  S1
+ ├─ Task T2    — technical · not QA-tested   ──blocks──▶  S1 + S2
+ ├─ Task T3    — technical · not QA-tested   ──blocks──▶  S2
+ └─ Bug        — technical or non-technical · QA-tested   (affects a story)
 ```
 
 **Stories and tasks are siblings under the epic — a task is never a *subtask* of a
@@ -30,6 +30,8 @@ blocker). Bugs are QA-tested whether they are technical or not.
   independently bounded feature** (each one closeable on its own). Also add a second
   *Infrastructure* epic only when the feature needs substantial groundwork of its own
   (e.g. standing up a whole new microservice) — never for small setup, which is a task.
+  Story/task keys (`S1`/`T1`) are unique across the **whole document** — numbering does not
+  restart per epic — so every `Blocks:` / `Is blocked by:` reference is unambiguous.
 - **Bounded & closeable.** An epic's scope must be finite — a coherent chunk of work
   that can realistically be completed in a defined timeframe (a few sprints, not
   "forever"). If it can never be marked "done", it's a theme, not an epic — split it.
@@ -132,9 +134,9 @@ Only in `--estimate` mode. Add a Fibonacci point estimate to **each task** (neve
 stories or the epic) as an `**Estimate:**` field:
 
 ```markdown
-### [Backend] <what>
+### T1 — [Backend] <what>
 ...
-`blocks:` Story 1
+**Blocks:** S1
 **Estimate:** 5   <!-- Fibonacci: 1, 2, 3, 5, 8, 13, 21 -->
 ```
 

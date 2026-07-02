@@ -63,7 +63,7 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 - Duplicate email → clear "already registered" error
 - Clicking the verification link → account marked as verified
 
-**Is blocked by:** T1
+**Is blocked by:** T1, T2, T3
 ```
 
 (Keyed `S1`; note the comma before *so that* and the period at the end. "user" here is a
