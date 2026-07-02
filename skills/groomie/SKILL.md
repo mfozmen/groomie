@@ -116,18 +116,25 @@ placeholders (no real samples yet), ignore it and follow the breakdown guide's o
 shape.
 
 Core rules (full detail in the guide):
-- Exactly **one epic** = the feature — bounded, closeable, scope clear from the title;
-  body is **Description** + **Business Value** (+ an optional **Design** line for Figma /
-  mockups when research surfaces them).
+- **Usually one epic** = the feature — bounded, closeable, scope clear from the title; body
+  is **Description** + **Business Value** (+ an optional **Design** line for Figma / mockups
+  when research surfaces them). Produce **multiple epics** only when the issue genuinely
+  spans more than one distinct, independently bounded feature.
 - **User stories** are **non-technical**, user-visible slices describing **behavior and
-  needs only** — never solutions (no API/UI/design prescriptions). Title is the full
-  "As a … I want … so that …" sentence; body carries required **Acceptance Criteria**
-  and **Test Cases**. QA tests stories. **Only write stories when the feature changes
-  user-facing behavior** — a pure technical migration/refactor/infra epic has **no
-  stories** (epic + tasks only). Not every epic has stories; never force one.
-- **Technical tasks** are the implementation work, titled `[Discipline] …`. A task is a
-  **sibling of stories, not a subtask** — it **blocks** the story (or stories) it enables
-  via a link, and is **not QA-tested** (it carries `Done when`, not Test Cases). One
+  needs only** — never solutions (no API/UI/design prescriptions). Keyed `S1`, `S2`, …
+  (Jira-style). Title is the full `As a <role>, I want <capability>, so that <benefit>.`
+  sentence — **comma before *so that*, period at the end** — and the `<role>` must be a
+  **real user of our product** (never the end recipient / consumer of an outbound artifact;
+  reframe that from our user's view). Body carries required **Acceptance Criteria** and
+  **Test Cases**, plus **`Is blocked by:`** the task keys that build it. QA tests stories.
+  **Only write stories when the feature changes user-facing behavior** — a pure technical
+  migration/refactor/infra epic has **no stories** (epic + tasks only). Not every epic has
+  stories; never force one.
+- **Technical tasks** are the implementation work, keyed `T1`, `T2`, … and titled
+  `[Discipline] …`. A task is a **sibling of stories, not a subtask** — it is **not
+  QA-tested** (carries `Done when`, not Test Cases) and states its links both ways in Jira's
+  terms: **`Blocks:`** the stories it enables (`S1, S3`) — or, in a story-less epic, the
+  tasks it precedes — and **`Is blocked by:`** the tasks that must come first. One
   foundational task may block many stories.
 - **Bugs** only when the source issue reports broken existing behavior; technical or not,
   they are QA-tested like stories.
@@ -135,12 +142,12 @@ Core rules (full detail in the guide):
 
 ### 5. Output markdown
 
-Produce a single markdown document (see the shape in the breakdown guide): the epic, then —
-only if the feature changes user-facing behavior — the stories (each with acceptance
-criteria and test cases), then the tasks (each stating what it blocks — the stories it
-enables, or, in a story-less epic, the tasks it must precede), then bugs, then open questions. **Omit any empty section entirely** — no `## Stories` when there's no
-behavior change, no `## Bugs` when there are none, no empty `## Open questions`; never print
-a "(none)" placeholder. In `--stories` mode, omit the tasks section; in `--estimate` mode,
+Produce a single markdown document (see the shape in the breakdown guide): the epic(s), then —
+only if the feature changes user-facing behavior — the stories (keyed `S1…`, each with
+acceptance criteria, test cases, and `Is blocked by:` its task keys), then the tasks (keyed
+`T1…`, each with `Blocks:` / `Is blocked by:`), then bugs, then open questions. **Omit any
+empty section entirely** — no `## Stories` when there's no behavior change, no `## Bugs`
+when there are none, no empty `## Open questions`; never print a "(none)" placeholder. In `--stories` mode, omit the tasks section; in `--estimate` mode,
 add a Fibonacci `Estimate:` to each task.
 
 **Save it to a file AND print it.** Write the document to `<ISSUE-KEY>-groomed.md` in the
