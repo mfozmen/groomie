@@ -36,8 +36,10 @@ blocker). Bugs are QA-tested whether they are technical or not.
   capability over an open-ended umbrella:
   - ✅ "Traditional Authentication", "SSO Integration", "Book Discovery System"
   - ❌ "Authentication", "Books", "User System", "Platform" (never close)
-- **Body — exactly two lines:** `**Description:**` (what it implements, one sentence)
-  and `**Business Value:**` (why it matters, one sentence). Nothing else.
+- **Body:** two required lines — `**Description:**` (what it implements, one sentence)
+  and `**Business Value:**` (why it matters, one sentence) — plus an optional
+  `**Design:**` line linking the Figma / mockups **when research surfaces them** (omit the
+  line entirely if there are none). Nothing else.
 - **No acceptance criteria on the epic** — stories carry the AC.
 - No task list or stories inline — those are separate issues under the epic.
 
@@ -126,13 +128,13 @@ the work is filed.
 
 **Business Value:** <why it matters — one sentence>
 
----
+**Design:** <Figma / mockup links>   <!-- optional; omit the line if research found none -->
 
-## Stories   (non-technical · QA-tested)
+## Stories
 
 ### As a <role>, I want <capability> so that <benefit>
 
-<one-line description of the capability; link PRD / background docs if any>
+<one-line description; link PRD / design / background docs if any>
 
 **Acceptance Criteria**
 - ...
@@ -141,24 +143,48 @@ the work is filed.
 - <input> → <expected result>
 - <failure case> → <expected result>
 
+---
+
 ### As a <role>, I want <capability> so that <benefit>
+
+...
+
+## Tasks
+
+### [Backend] <what>
+
+**Implementation**
+- ...
+
+**Done when**
+- ...
+
+`blocks:` Story 1
+
+---
+
+### [Frontend] <what>
+
 ...
 
 ---
 
-## Tasks   (technical · not QA-tested; siblings of stories, linked by `blocks`)
+### [Backend] <foundational work>
 
-- [ ] **[Backend]** <what> · `blocks:` Story 1
-- [ ] **[Frontend]** <what> · `blocks:` Story 1
-- [ ] **[Graphic Design]** <what> (only if no design exists yet) · `blocks:` Story 2
-- [ ] **[Backend]** <foundational work> · `blocks:` Story 1, Story 2   ← one task, many stories
+**Implementation**
+- ...
 
----
+**Done when**
+- ...
 
-## Bugs   (technical or non-technical · QA-tested)
-- **<title>** — repro / expected / actual · affects: <story>   _(omit section if none)_
+`blocks:` Story 1, Story 2   <!-- one task can block many stories -->
+
+## Bugs   <!-- omit this section if there are none -->
+
+- **<title>** — repro / expected / actual · affects: <story>
 
 ## Open questions
+
 - ...
 ```
 
