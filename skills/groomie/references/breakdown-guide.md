@@ -25,9 +25,11 @@ blocker). Bugs are QA-tested whether they are technical or not.
 
 ## Epic
 
-- **Exactly one epic per run — it IS the feature.** Add a second (Infrastructure)
-  epic only when the feature needs substantial groundwork of its own (e.g. standing
-  up a whole new microservice) — never for small setup, which belongs in tasks.
+- **Usually one epic — it IS the feature.** Most issues are one feature → one epic.
+  Produce **multiple epics only when the issue genuinely spans more than one distinct,
+  independently bounded feature** (each one closeable on its own). Also add a second
+  *Infrastructure* epic only when the feature needs substantial groundwork of its own
+  (e.g. standing up a whole new microservice) — never for small setup, which is a task.
 - **Bounded & closeable.** An epic's scope must be finite — a coherent chunk of work
   that can realistically be completed in a defined timeframe (a few sprints, not
   "forever"). If it can never be marked "done", it's a theme, not an epic — split it.
@@ -54,10 +56,20 @@ blocker). Bugs are QA-tested whether they are technical or not.
   Each delivers something a user (or operator/admin) can perceive. If a "story" has no
   user-visible outcome, it's probably a task. **QA tests stories** — the Test Cases below
   are the basis QA runs.
-- **The title IS the story sentence:** `As a <role>, I want <capability> so that <benefit>.`
-  The title alone must convey the work — but keep it within Jira's 255-char summary limit
-  and readable; tighten the wording rather than let it sprawl. If it won't fit or reads as
-  two things at once, the story is too big — split it.
+- **Use a real product persona — someone who actually uses what we are building.** The
+  `<role>` must be an actual user of *our* product (e.g. the marketer / campaign editor /
+  admin / operator on the sending side). The **end recipient / consumer of an outbound
+  artifact is not our user** — never write a story from their point of view. Reframe that
+  value from our user's perspective:
+  - ❌ "As an email recipient, I want the email delivered as multipart …"
+  - ✅ "As a campaign editor, I want my email delivered as multipart, so that recipients on
+    any client see a readable version."
+- **The title IS the story sentence:** `As a <role>, I want <capability>, so that <benefit>.`
+  — **comma before *so that*, and a period at the end.** Give each story a Jira-style key
+  `S1`, `S2`, … (a local placeholder for the Jira key assigned on filing) and put it in the
+  heading. The title alone must convey the work — keep it within Jira's 255-char summary
+  limit and readable; tighten the wording rather than let it sprawl. If it won't fit or reads
+  as two things at once, the story is too big — split it.
 - **Behavior and needs ONLY — never prescribe the solution.** A story says what the user
   needs and how the system should behave from their point of view. It must NOT direct
   engineering or design *how* to build it — no API/tech choices, no UI component names, no
@@ -76,7 +88,8 @@ blocker). Bugs are QA-tested whether they are technical or not.
     key failure cases (invalid input, duplicates, edge conditions).
 - Slice thin: prefer several small stories over one giant one. A story needing a dozen
   tasks is usually two or three stories.
-- Each story belongs to the epic and is **blocked by** the technical tasks that build it.
+- Each story belongs to its epic and states **`Is blocked by:`** the tasks that build it,
+  by key — e.g. `Is blocked by: T1, T4` (Jira's "is blocked by" link).
 
 ## Technical tasks
 
@@ -99,19 +112,19 @@ blocker). Bugs are QA-tested whether they are technical or not.
   Figma) only when the design does not already exist; if research finds finished designs,
   skip it (reference them instead) rather than re-opening design work. If you can't tell
   whether the design exists, raise it as an open question.
-- **State what each task blocks** with `blocks: …`. When the epic has stories, a task
-  blocks the story (or stories) it enables — a story is not "doable" until its blocking
-  tasks are done, and a single foundational task often blocks **many** stories (e.g. a
-  user-schema task underpinning every account-related story) — list them all. **In a
-  story-less epic** (a pure migration/refactor/infra epic), tasks instead block the tasks
-  they must precede (sequencing, e.g. schema → backfill → verify); a leaf task that
-  precedes nothing simply omits `blocks:`.
-- **Only when the epic has stories:** a task that blocks nothing is a smell — a missing
-  story, or out of scope; call it out rather than leaving it dangling.
-- Keep each task independently completable and estimable; split anything hiding two
-  distinct pieces of work. Tasks may block other tasks (sequencing); foundational /
-  infrastructure tasks are **global blockers** — they block a whole set of stories (and
-  often the other tasks too), so mark them clearly.
+- **Give each task a Jira-style key** `T1`, `T2`, … (a local placeholder for the Jira key
+  assigned on filing) and state its links **both ways**, by key, in Jira's terms:
+  - **`Blocks:`** — what it enables. When the epic has stories, the story keys it unblocks
+    (`Blocks: S1, S3`); a foundational task often blocks **many** stories — list them all.
+    In a **story-less epic** it blocks the tasks it must precede (`Blocks: T3`).
+  - **`Is blocked by:`** — the tasks that must be done first (`Is blocked by: T1`). Omit the
+    line when there are none.
+- A story is not "doable" until its blocking tasks are done. **Only when the epic has
+  stories:** a task that blocks nothing is a smell — a missing story, or out of scope; call
+  it out. Foundational / infrastructure tasks are **global blockers** — they block a whole
+  set of stories (and often other tasks); mark them clearly.
+- Keep each task independently completable and estimable; split anything hiding two distinct
+  pieces of work.
 
 ## Estimation (experimental, development-only)
 
@@ -158,7 +171,7 @@ the work is filed.
 
 ## Stories   <!-- omit this whole section when there's no user-facing behavior change -->
 
-### As a <role>, I want <capability> so that <benefit>
+### S1 — As a <role>, I want <capability>, so that <benefit>.
 
 <one-line description; link PRD / background docs if any>
 
@@ -169,15 +182,19 @@ the work is filed.
 - <input> → <expected result>
 - <failure case> → <expected result>
 
+**Is blocked by:** T1, T2
+
 ---
 
-### As a <role>, I want <capability> so that <benefit>
+### S2 — As a <role>, I want <capability>, so that <benefit>.
 
 ...
+
+**Is blocked by:** T3
 
 ## Tasks
 
-### [Backend] <what>
+### T1 — [Backend] <what>
 
 **Implementation**
 - ...
@@ -185,17 +202,19 @@ the work is filed.
 **Done when**
 - ...
 
-`blocks:` Story 1
+**Blocks:** S1
 
 ---
 
-### [Frontend] <what>
+### T2 — [Frontend] <what>
 
 ...
 
+**Blocks:** S1
+
 ---
 
-### [Backend] <foundational work>
+### T3 — [Backend] <foundational work>
 
 **Implementation**
 - ...
@@ -203,11 +222,11 @@ the work is filed.
 **Done when**
 - ...
 
-`blocks:` Story 1, Story 2   <!-- one task can block many stories -->
+**Blocks:** S1, S2   <!-- one task can block many stories -->
 
 ## Bugs   <!-- omit this section if there are none -->
 
-- **<title>** — repro / expected / actual · affects: <story>
+- **<title>** — repro / expected / actual · affects: S1
 
 ## Open questions
 

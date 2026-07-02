@@ -46,7 +46,7 @@ widgets. Body: a short description, then Acceptance Criteria, then concrete Test
 both required.
 
 ```markdown
-# Story: As a user, I want to create an account using email and password so that I can have my own personal access to the platform
+### S1 — As a user, I want to create an account using email and password, so that I can have my own personal access to the platform.
 
 Lets new users create an account with email and password, including email verification
 and clear success/error feedback. (Link the PRD / business-analysis pages when they exist.)
@@ -62,19 +62,25 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 - Weak password → rejected with a strength hint
 - Duplicate email → clear "already registered" error
 - Clicking the verification link → account marked as verified
+
+**Is blocked by:** T1
 ```
+
+(Keyed `S1`; note the comma before *so that* and the period at the end. "user" here is a
+real product persona — the game's player. Never write a story as the recipient of an
+outbound artifact; that's not our user.)
 
 ## Technical tasks
 
-Tasks carry the HOW. The title leads with a required discipline prefix; the body is a
-detailed, step-by-step `Implementation` plus `Done when`. Each task blocks the story it
-builds — and a foundational task blocks several stories. A single story is usually built
-by several tasks across disciplines (the account-creation story above, for instance, is
-built by `[Backend]`, `[Graphic Design]`, and `[Game Dev]` tasks); conversely one
-foundational task underpins several stories, as the `[Backend]` schema task below shows.
+Tasks carry the HOW. Each is keyed (`T1`, `T2`, …), the title leads with a required
+discipline prefix, and the body is a detailed, step-by-step `Implementation` plus
+`Done when`, then `Blocks:` / `Is blocked by:` by key (Jira's link terms). A single story is
+usually built by several tasks across disciplines (the account-creation story above, for
+instance, is built by `[Backend]`, `[Graphic Design]`, and `[Game Dev]` tasks); conversely
+one foundational task underpins several stories, as the `[Backend]` schema task below shows.
 
 ```markdown
-# Task: [Backend] Design and implement user schema and database tables
+### T1 — [Backend] Design and implement user schema and database tables
 
 Model and create the user data structures with secure credential storage and
 email-verification fields.
@@ -90,13 +96,10 @@ email-verification fields.
 - Migrations create the tables and email uniqueness is enforced at the DB level.
 - Repository CRUD operations are covered by tests.
 
-blocks (a foundational task blocks many stories):
-  - "As a user, I want to create an account using email and password …"
-  - "As a user, I want to reset my password via email …"
-  - "As a logged-in user, I want to change my password …"
+**Blocks:** S1, S2, S3   <!-- a foundational task blocks many stories (account creation, password reset, password change) -->
 ```
 
 This backend task is a good illustration of the model: it is **not a subtask** of any one
-story — it's a foundational piece linked by `blocks` to every account-related story it
-underpins. It carries `Done when` (not Test Cases) because tasks are not QA-tested; the
-stories it blocks are the ones QA verifies.
+story — it's a foundational piece that `Blocks:` every account-related story it underpins.
+It carries `Done when` (not Test Cases) because tasks are not QA-tested; the stories it
+blocks are the ones QA verifies.
