@@ -33,7 +33,8 @@ Work through these steps in order. Announce each briefly so the user can follow.
 
 Read the issue from Jira via the **Atlassian MCP** server. Tool names vary by install;
 look for the "get Jira issue" tool (commonly `getJiraIssue`, `jira_get_issue`, or similar).
-Pull: summary, description, issue type, comments, labels, and linked issues.
+Pull: summary, description, issue type, comments, change history (the changelog — you may
+need to request it explicitly, e.g. `expand=changelog`), labels, and linked issues.
 
 If no Atlassian MCP is available, stop and tell the user: Groomie needs the Atlassian
 MCP connected to read the issue. Point them to install it (Claude Code: add the
@@ -66,9 +67,12 @@ down honestly. When these inputs exist, using them is **not optional**:
   sibling issue; together they define the feature's true scope and boundaries.
 - **Read the actual code** — whenever a codebase is reachable (a knowledge-base MCP, the
   repo the session is in, `Grep`/`Glob`), inspect it before writing technical tasks: the
-  real endpoints, tables, services, and how components call each other. **Never infer
-  technical tasks from the ticket's prose alone** — the ticket is frequently wrong or
-  stale (it may name the wrong store, a field that doesn't exist, or a renamed endpoint).
+  real endpoints, tables, services, and how components call each other. **When a codebase
+  is reachable, never write technical tasks from the ticket's prose alone** — verify them
+  against the code, since the ticket is frequently wrong or stale (it may name the wrong
+  store, a field that doesn't exist, or a renamed endpoint). In the text-only mode (step 2,
+  no reachable codebase), derive tasks from the ticket but flag their assumptions as open
+  questions.
 - Prefer delegating heavy searching to subagents; keep only the conclusions.
 
 Surface every contradiction you find — ticket-vs-code, or ticket-vs-other-tickets — as an
