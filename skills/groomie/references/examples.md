@@ -9,7 +9,8 @@ for that level.
 ## Epic
 
 A good epic is bounded, closeable in a defined timeframe, and its scope is obvious from
-the title alone. Body is exactly two lines — `Description` + `Business Value`, no
+the title alone. Body is two required lines — `Description` + `Business Value` — plus an
+optional `Design:` line linking the Figma / mockups when research surfaces them. No
 acceptance criteria (stories carry those).
 
 ```markdown

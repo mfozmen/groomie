@@ -134,7 +134,7 @@ the work is filed.
 
 ### As a <role>, I want <capability> so that <benefit>
 
-<one-line description; link PRD / design / background docs if any>
+<one-line description; link PRD / background docs if any>
 
 **Acceptance Criteria**
 - ...

@@ -89,7 +89,8 @@ shape.
 
 Core rules (full detail in the guide):
 - Exactly **one epic** = the feature — bounded, closeable, scope clear from the title;
-  body is just **Description** + **Business Value**.
+  body is **Description** + **Business Value** (+ an optional **Design** line for Figma /
+  mockups when research surfaces them).
 - **User stories** are **non-technical**, user-visible slices describing **behavior and
   needs only** — never solutions (no API/UI/design prescriptions). Title is the full
   "As a … I want … so that …" sentence; body carries required **Acceptance Criteria**
