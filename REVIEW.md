@@ -38,6 +38,8 @@ each item; the guide's skeleton only shows document layout.
 
 - v1 is **read-only against Jira** — no write-back (creating issues / links) without an
   explicit decision.
-- Modes: `--full` (default) and `--stories` are user-facing; **`--estimate` is
-  experimental / development-only** — keep it out of the public README until calibrated.
-- Conventional Commits; every change goes through a PR + the advisory Claude AI review.
+- Modes are invoked by subcommand — `/groomie:full`, `/groomie:stories` (bare `/groomie`
+  defaults to full) — with the `--full` / `--stories` flags kept as back-compat;
+  **`--estimate` is experimental / development-only** — keep it out of the public README
+  until calibrated.
+- Conventional Commits; every change goes through a PR + the required Claude AI review.

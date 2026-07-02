@@ -11,9 +11,10 @@ skills/groomie/
   references/
     breakdown-guide.md   # epic / story / task rules + the output shape
     examples.md          # gold-standard worked examples (the calibration set)
-commands/groomie.md      # the /groomie slash command
+commands/                # slash commands: /groomie (+ /groomie:full, /groomie:stories)
 .claude-plugin/          # plugin + marketplace manifests
-.github/workflows/       # the advisory Claude AI review
+.github/workflows/       # required Claude AI review + SonarCloud
+visualizer/              # companion graph viewer (isolated app, not part of the plugin)
 ```
 
 The grooming quality lives in `SKILL.md` + `references/`. You "teach" Groomie by refining
