@@ -45,8 +45,9 @@ gets filed.
 ```
 
 Groomie fetches the issue, tells you how deep it can research, produces the breakdown,
-and prints the markdown. `--full` (the default) reads the code to write accurate technical
-tasks; `--stories` skips tasks for a faster, behavior-only pass.
+**saves it to `<ISSUE-KEY>-groomed.md`**, and also prints it. `--full` (the default) reads
+the code to write accurate technical tasks; `--stories` skips tasks for a faster,
+behavior-only pass.
 
 ## Development
 
