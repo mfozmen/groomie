@@ -28,6 +28,12 @@ describe('injectGraph', () => {
     expect(extractGraph(html).nodes[0].title).toBe('a </script> b')
   })
 
+  it('does not let $ sequences in text corrupt the payload (replacement-string trap)', () => {
+    const graph = { nodes: [{ id: 'S1', kind: 'story', epicId: 'E1', title: "a $' $& $` $$ b" }], edges: [] }
+    const html = injectGraph(TPL, graph)
+    expect(extractGraph(html).nodes[0].title).toBe("a $' $& $` $$ b")
+  })
+
   it('throws when the template has no <head> (build not run)', () => {
     expect(() => injectGraph('<html></html>', { nodes: [], edges: [] })).toThrow(/build:single/)
   })
