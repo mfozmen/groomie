@@ -1,9 +1,16 @@
 import { useCallback, useState } from 'react'
 import type { GroomedGraph } from '../types'
 
-export function Loader({ onLoad }: { onLoad: (g: GroomedGraph) => void }) {
-  const [error, setError] = useState<string | null>(null)
+export function Loader({
+  onLoad,
+  error: externalError,
+}: {
+  onLoad: (g: GroomedGraph) => void
+  error?: string | null
+}) {
+  const [parseError, setParseError] = useState<string | null>(null)
   const [over, setOver] = useState(false)
+  const error = parseError ?? externalError
 
   const handleFile = useCallback(
     (file: File) => {
@@ -14,10 +21,10 @@ export function Loader({ onLoad }: { onLoad: (g: GroomedGraph) => void }) {
           if (!Array.isArray(g.nodes) || !Array.isArray(g.edges)) {
             throw new Error('not a Groomie graph (missing nodes/edges arrays)')
           }
-          setError(null)
+          setParseError(null)
           onLoad(g)
         })
-        .catch((e: unknown) => setError(`Could not load: ${(e as Error).message}`))
+        .catch((e: unknown) => setParseError(`Could not load: ${(e as Error).message}`))
     },
     [onLoad],
   )

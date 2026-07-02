@@ -6,6 +6,7 @@ const graph: GroomedGraph = {
   nodes: [
     { id: 'S1', kind: 'story', epicId: 'E1', title: 'a story', links: [], acceptanceCriteria: [], testCases: [] },
     { id: 'E1', kind: 'epic', title: 'an epic', description: '', businessValue: '', design: null },
+    { id: 'T1', kind: 'task', epicId: 'E1', title: 'a task' },
     { id: 'B1', kind: 'bug', epicId: 'E1', title: 'a bug', repro: '', expected: '', actual: '' },
   ],
   edges: [
@@ -38,5 +39,25 @@ describe('toFlow', () => {
     expect(affects.style?.strokeDasharray).toBe('6 4')
     expect(blocks.animated).toBe(false)
     expect(blocks.style?.strokeDasharray).toBeUndefined()
+  })
+})
+
+describe('toFlow referential integrity (ELK rejects unknown shape ids)', () => {
+  const { nodes, edges } = toFlow({
+    nodes: [
+      { id: 'E1', kind: 'epic', title: 'e' },
+      { id: 'S9', kind: 'story', epicId: 'GONE', title: 'orphan' },
+    ],
+    edges: [{ source: 'S9', target: 'MISSING', kind: 'blocks' }],
+  })
+
+  it('leaves a node with an unresolved epicId parentless (still laid out, not dropped)', () => {
+    const orphan = nodes.find((n) => n.id === 'S9')!
+    expect(orphan.parentId).toBeUndefined()
+    expect(orphan.extent).toBeUndefined()
+  })
+
+  it('drops edges whose endpoints are not real nodes', () => {
+    expect(edges).toHaveLength(0)
   })
 })
