@@ -45,6 +45,11 @@ blocker). Bugs are QA-tested whether they are technical or not.
 
 ## User stories
 
+- **Only when there's a user-facing behavior change.** Stories exist to capture behavior.
+  If the feature changes no user-facing behavior — a pure technical migration, refactor, or
+  infra work — it has **no stories**: emit the epic + tasks only. **Not every epic has
+  stories.** Never fabricate operator / "system" / consumer stories to fill the layer, and
+  **omit the `## Stories` section entirely** when there are none. Don't force it.
 - Vertical, user-visible slices — **non-technical**, describing what the user experiences.
   Each delivers something a user (or operator/admin) can perceive. If a "story" has no
   user-visible outcome, it's probably a task. **QA tests stories** — the Test Cases below
@@ -147,7 +152,7 @@ the work is filed.
 
 **Design:** <Figma / mockup links>   <!-- optional; omit the line if research found none -->
 
-## Stories
+## Stories   <!-- omit this whole section when there's no user-facing behavior change -->
 
 ### As a <role>, I want <capability> so that <benefit>
 
@@ -208,6 +213,11 @@ the work is filed.
 The samples in `examples.md` are the source of truth for the shape of each individual
 epic / story / task — when they differ from this skeleton, the samples win. This skeleton
 only shows how the pieces lay out together in one document.
+
+**Omit every empty section.** Only include a section that has content: no user-facing
+behavior change → no `## Stories`; no bugs → no `## Bugs`; no open questions → no
+`## Open questions`. Never print an empty heading or a "(none)" placeholder. A pure
+technical migration, for example, is often just the epic + `## Tasks` + `## Open questions`.
 
 **Mode deltas** (see the skill's Modes section): in `--stories` mode omit the `## Tasks`
 section entirely; in `--estimate` mode each task carries an `**Estimate:**` line

@@ -120,7 +120,9 @@ Core rules (full detail in the guide):
 - **User stories** are **non-technical**, user-visible slices describing **behavior and
   needs only** — never solutions (no API/UI/design prescriptions). Title is the full
   "As a … I want … so that …" sentence; body carries required **Acceptance Criteria**
-  and **Test Cases**. QA tests stories.
+  and **Test Cases**. QA tests stories. **Only write stories when the feature changes
+  user-facing behavior** — a pure technical migration/refactor/infra epic has **no
+  stories** (epic + tasks only). Not every epic has stories; never force one.
 - **Technical tasks** are the implementation work, titled `[Discipline] …`. A task is a
   **sibling of stories, not a subtask** — it **blocks** the story (or stories) it enables
   via a link, and is **not QA-tested** (it carries `Done when`, not Test Cases). One
@@ -131,10 +133,13 @@ Core rules (full detail in the guide):
 
 ### 5. Output markdown
 
-Produce a single markdown document (see the shape in the breakdown guide): the epic, then
-the stories (each with its acceptance criteria and test cases), then the tasks (each listing
-the stories it blocks), then bugs, then a short "Open questions" section. In `--stories`
-mode, omit the tasks section; in `--estimate` mode, add a Fibonacci `Estimate:` to each task.
+Produce a single markdown document (see the shape in the breakdown guide): the epic, then —
+only if the feature changes user-facing behavior — the stories (each with acceptance
+criteria and test cases), then the tasks (each listing the stories it blocks), then bugs,
+then open questions. **Omit any empty section entirely** — no `## Stories` when there's no
+behavior change, no `## Bugs` when there are none, no empty `## Open questions`; never print
+a "(none)" placeholder. In `--stories` mode, omit the tasks section; in `--estimate` mode,
+add a Fibonacci `Estimate:` to each task.
 
 **Save it to a file AND print it.** Write the document to `<ISSUE-KEY>-groomed.md` in the
 current working directory (e.g. `PROJ-123-groomed.md`), tell the user the path, then also
