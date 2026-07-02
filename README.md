@@ -23,8 +23,9 @@ can review and file.
 - **Bugs** and **open questions** — surfaced, never silently invented.
 
 The whole breakdown is saved to `<ISSUE-KEY>-groomed.md` and printed for you. The markdown
-also ends with a **mermaid diagram** of the blocker graph (renders on GitHub / Jira / VS
-Code), and a machine-readable **`<ISSUE-KEY>-groomed.json`** graph is written next to it.
+also ends with a **mermaid diagram** of the blocker graph (renders on GitHub, VS Code, and
+other markdown viewers), and a machine-readable **`<ISSUE-KEY>-groomed.json`** graph is
+written next to it (the input for the visualizer).
 
 ## Requirements
 
@@ -72,17 +73,21 @@ tasks for a faster, behavior-only pass.
 - Toggle to dark → every screen renders in dark theme.
 - Reload the app → the last chosen theme is still applied.
 
-**Is blocked by:** T1, T2
+**Is blocked by:**
+- T1 — Persist the user's theme preference
+- T2 — Theme toggle + dark palette
 
 ## Tasks
 
 ### T1 — [Backend] Persist the user's theme preference
 ...
-**Blocks:** S1
+**Blocks:**
+- S1 — As a user, I want to switch between light and dark themes …
 
 ### T2 — [Frontend] Theme toggle + dark palette
 ...
-**Blocks:** S1
+**Blocks:**
+- S1 — As a user, I want to switch between light and dark themes …
 ```
 
 ## How it works
@@ -91,7 +96,7 @@ tasks for a faster, behavior-only pass.
 2. **Research** the feature — following links and, when a codebase is reachable, reading the
    actual code so tasks are grounded in reality.
 3. **Groom** it into the epic / stories / tasks breakdown.
-4. **Save & print** the markdown.
+4. **Save & print** the markdown (with a mermaid diagram) and write the JSON graph next to it.
 
 ---
 

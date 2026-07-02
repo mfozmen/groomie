@@ -295,9 +295,10 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
   bug nodes nest inside it. Ids `epic1`, `epic2`, … by order.
 - **Nodes** use the existing keys: `S1["S1: <summary>"]`, `T1["T1: [Discipline] <summary>"]`.
   Bugs get diagram ids `B1`, `B2`, … by order.
-- **Edges:** blocking is a solid directed edge, `T1 --> S1` (or `T1 --> T2` in a story-less
-  epic); a bug's `affects` is dashed, `B1 -.-> S1`. Emit each edge **once** (the markdown stores
-  blocking on both endpoints — dedupe here).
+- **Edges:** blocking is a solid directed edge from blocker to blocked — `T1 --> S1`
+  (task→story) and `T2 --> T4` wherever one task must precede another (task→task sequencing,
+  in any epic); a bug's `affects` is dashed, `B1 -.-> S1`. Emit each edge **once** (the markdown
+  stores blocking on both endpoints — dedupe here).
 - **Colour by kind** with a `classDef` block: story blue, task green, bug red. The epic is shown
   by the subgraph, not a class.
 - **Labels are short, sanitized summaries.** Take a 3–6 word gist (the "I want …" for stories,
@@ -341,7 +342,7 @@ heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
 ```json
 {
   "issueKey": "PROJ-123",
-  "mode": "full",
+  "mode": "estimate",
   "nodes": [
     { "id": "E1", "kind": "epic", "title": "Traditional Authentication",
       "description": "...", "businessValue": "...", "design": null },
@@ -368,8 +369,9 @@ Rules:
 - **Task:** `discipline` (from the `[Discipline]` prefix), `implementation[]`, `doneWhen[]`,
   and `estimate` **only in `--estimate`**.
 - **Bug:** `repro`, `expected`, `actual`.
-- **Edges** are directed with `kind ∈ blocks | affects`, **deduped** (the markdown stores
-  blocking on both endpoints — emit one edge). `blocks` runs task→story (or task→task in a
-  story-less epic); `affects` runs bug→story.
+- **Edges** are directed, `kind ∈ blocks | affects`, **deduped**. Derive `blocks` edges from
+  **both** a task's `Blocks:` and any `Is blocked by:` (the two directions of the same link):
+  task→story wherever a task builds a story, **and task→task wherever one task must precede
+  another** (sequencing — in any epic, not only story-less ones). `affects` runs bug→story.
 - **Modes:** `--stories` → no `task` nodes and no `blocks` edges (bug `affects` stays);
   `--estimate` → each task node has `estimate`. The `nodes`/`edges` arrays always exist.
