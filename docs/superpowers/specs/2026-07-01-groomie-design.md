@@ -29,8 +29,9 @@ A separate process couldn't reach them.
 
 ## Output
 
-One epic → user stories (with acceptance criteria) → technical tasks (each *blocks* the
-story it enables) → bugs (only for genuinely broken existing behavior) → open questions.
+One epic → user stories (with acceptance criteria + test cases) → technical tasks (each
+*blocks* the story or stories it enables) → bugs (only for genuinely broken existing
+behavior) → open questions.
 Rules live in `skills/groomie/references/breakdown-guide.md`; style is calibrated by
 worked samples in `references/examples.md` (how the user "trains" Groomie — prompt +
 examples, no model training).

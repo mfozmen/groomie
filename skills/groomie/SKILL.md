@@ -56,10 +56,23 @@ issue is available, say so and groom from the issue text alone — that is a val
 
 ### 3. Research the feature
 
-Using whatever step 2 surfaced, dig until you understand the feature well enough to
-break it down honestly: what it actually changes, who it serves, what it touches, what
-is ambiguous. Prefer delegating heavy searching to subagents and keeping only the
-conclusions. Note open questions rather than inventing answers.
+Using what step 2 surfaced, dig until you understand the feature well enough to break it
+down honestly. When these inputs exist, using them is **not optional**:
+
+- **Read the issue's own comments and change history** — the real decisions, corrections,
+  and intent often live in the comments, not the description, and the description may have
+  been edited into an inconsistent state. Trust the comments over stale prose.
+- **Follow the links** — the parent epic, the tech-design / PRD, and every linked or
+  sibling issue; together they define the feature's true scope and boundaries.
+- **Read the actual code** — whenever a codebase is reachable (a knowledge-base MCP, the
+  repo the session is in, `Grep`/`Glob`), inspect it before writing technical tasks: the
+  real endpoints, tables, services, and how components call each other. **Never infer
+  technical tasks from the ticket's prose alone** — the ticket is frequently wrong or
+  stale (it may name the wrong store, a field that doesn't exist, or a renamed endpoint).
+- Prefer delegating heavy searching to subagents; keep only the conclusions.
+
+Surface every contradiction you find — ticket-vs-code, or ticket-vs-other-tickets — as an
+open question. Never silently paper over it, and never invent the answer.
 
 ### 4. Groom
 
