@@ -208,3 +208,7 @@ the work is filed.
 The samples in `examples.md` are the source of truth for the shape of each individual
 epic / story / task — when they differ from this skeleton, the samples win. This skeleton
 only shows how the pieces lay out together in one document.
+
+**Mode deltas** (see the skill's Modes section): in `--stories` mode omit the `## Tasks`
+section entirely; in `--estimate` mode each task carries an `**Estimate:**` line
+(Fibonacci — see Estimation above).
