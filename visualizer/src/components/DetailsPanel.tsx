@@ -99,8 +99,10 @@ function List({ title, items }: Readonly<{ title: string; items?: string[] }>) {
     <div>
       <h4>{title}</h4>
       <ul>
-        {items.map((it) => (
-          <li key={it}>{it}</li>
+        {items.map((it, i) => (
+          // Content+index: list items are user-authored and may repeat, so content alone
+          // isn't a unique key; the index keeps it unique without being a pure-index key.
+          <li key={`${it}-${i}`}>{it}</li>
         ))}
       </ul>
     </div>
