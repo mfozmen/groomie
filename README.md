@@ -1,34 +1,37 @@
 # Groomie
 
-A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin that grooms a
-messy, single-feature Jira issue into a clean backlog breakdown — **one epic, its user
-stories, and the technical tasks that block them** — and hands it back to you as
-markdown.
+Turn a messy Jira issue into a clean, sprint-ready backlog breakdown — as markdown.
 
-Bad Jira issues are the norm: vague, over-stuffed, mixing five concerns, no acceptance
-criteria. Groomie reads one, researches the feature as deeply as your environment
-allows, and gives you a structured breakdown you can review and file.
+Groomie is a [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin. Point it at
+one badly-written, single-feature Jira issue (vague, over-stuffed, no acceptance criteria)
+and it recovers the real feature underneath, researches it as deeply as your environment
+allows, and hands back a structured **epic → user stories → technical tasks** breakdown you
+can review and file.
 
-## What it produces
+> [!NOTE]
+> Groomie is **read-only against Jira** — it never creates or edits issues. It produces
+> markdown you stay in control of.
 
-- **1 Epic** — the feature.
-- **User stories** — vertical, user-visible slices, each with acceptance criteria.
-- **Technical tasks** — implementation work, each explicitly **blocking** the story it
-  enables.
-- **Bugs** — only when the source issue reports genuinely broken behavior.
-- **Open questions** — ambiguities are surfaced, never silently invented.
+## What you get
 
-Output is markdown. Groomie **does not write to Jira** — you stay in control of what
-gets filed.
+- **Epic(s)** — the feature, bounded and closeable, with a `Description` + `Business Value`.
+- **User stories** (`S1`, `S2`, …) — user-facing behavior only, written as
+  `As a <role>, I want <capability>, so that <benefit>.`, each with **acceptance criteria**
+  and **test cases**. (A pure technical migration has no stories — Groomie won't invent them.)
+- **Technical tasks** (`T1`, `T2`, …) — `[Discipline]`-tagged implementation work with a
+  detailed plan, wired to what they **block** / are **blocked by** (Jira link terms).
+- **Bugs** and **open questions** — surfaced, never silently invented.
+
+The whole breakdown is saved to `<ISSUE-KEY>-groomed.md` and printed for you.
 
 ## Requirements
 
 - **Claude Code.**
-- **Atlassian MCP** connected to your Jira (the one hard dependency — Groomie reads the
-  issue through it).
-- Optional: any research capability in your session (a code/knowledge-base MCP, web
-  search, subagents). Groomie detects what's available and researches accordingly. None
-  of it is required, and nothing is company-specific.
+- **Atlassian MCP** connected to your Jira — the one hard dependency; Groomie reads the issue
+  through it.
+- *Optional:* any research capability in your session (a code/knowledge-base MCP, web search,
+  subagents). Groomie detects what's available and digs accordingly — none of it is required,
+  and nothing is company-specific.
 
 ## Install
 
@@ -44,35 +47,50 @@ gets filed.
 /groomie PROJ-123 --stories  # quick: epic + user stories only (behavior/scope, no tasks)
 ```
 
-Groomie fetches the issue, tells you how deep it can research, produces the breakdown,
-**saves it to `<ISSUE-KEY>-groomed.md`**, and also prints it. `--full` (the default) reads
-the code to write accurate technical tasks; `--stories` skips tasks for a faster,
-behavior-only pass.
+`--full` (the default) reads the code to write accurate technical tasks; `--stories` skips
+tasks for a faster, behavior-only pass.
 
-## Development
+## What the output looks like
 
-The core of Groomie is a prompt-based skill (`skills/groomie/`), so most changes are to
-markdown. Conventions:
+```markdown
+# Epic: Dark Mode
 
-- **Conventional Commits** — commit messages drive versioning and the changelog.
-- **Every change goes through a PR**, which runs an advisory Claude AI review
-  (`.github/workflows/claude-review.yml`). The review needs a `CLAUDE_CODE_OAUTH_TOKEN`
-  repo secret (`claude setup-token`).
-- **TDD** for any deterministic code we add (none yet — the grooming logic is the LLM's).
+**Description:** Let users switch the app between light and dark themes.
+**Business Value:** Reduces eye strain and matches OS preference, a top-requested setting.
 
-### Releasing
+## Stories
 
-Versioning uses [release-it](https://github.com/release-it/release-it) with the
-conventional-changelog plugin. From `main`:
+### S1 — As a user, I want to switch between light and dark themes, so that the app matches my preference.
 
+**Acceptance Criteria**
+- A theme toggle is available in settings.
+- The chosen theme persists across sessions.
+
+**Test Cases**
+- Toggle to dark → every screen renders in dark theme.
+- Reload the app → the last chosen theme is still applied.
+
+**Is blocked by:** T1, T2
+
+## Tasks
+
+### T1 — [Backend] Persist the user's theme preference
+...
+**Blocks:** S1
+
+### T2 — [Frontend] Theme toggle + dark palette
+...
+**Blocks:** S1
 ```
-npm install
-npm run release
-```
 
-It bumps the version (in both `package.json` and `.claude-plugin/plugin.json`), updates
-`CHANGELOG.md`, tags, and creates a GitHub release — all from your Conventional Commits.
+## How it works
 
-## License
+1. **Fetch** the issue from Jira (summary, description, comments, history, links).
+2. **Research** the feature — following links and, when a codebase is reachable, reading the
+   actual code so tasks are grounded in reality.
+3. **Groom** it into the epic / stories / tasks breakdown.
+4. **Save & print** the markdown.
 
-MIT © Mehmet Fahri Özmen
+---
+
+Contributing? See [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under [MIT](LICENSE).
