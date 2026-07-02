@@ -131,11 +131,14 @@ Core rules (full detail in the guide):
 
 ### 5. Output markdown
 
-Emit a single markdown document (see the shape in the breakdown guide): the epic, then the
-stories (each with its acceptance criteria and test cases), then the tasks (each listing
+Produce a single markdown document (see the shape in the breakdown guide): the epic, then
+the stories (each with its acceptance criteria and test cases), then the tasks (each listing
 the stories it blocks), then bugs, then a short "Open questions" section. In `--stories`
-mode, omit the tasks section; in `--estimate` mode, add a Fibonacci `Estimate:` to each
-task. Keep it copy-paste ready. Do **not** write to Jira.
+mode, omit the tasks section; in `--estimate` mode, add a Fibonacci `Estimate:` to each task.
+
+**Save it to a file AND print it.** Write the document to `<ISSUE-KEY>-groomed.md` in the
+current working directory (e.g. `PROJ-123-groomed.md`), tell the user the path, then also
+print it inline so they can read it without opening the file. Do **not** write to Jira.
 
 ## Boundaries
 

@@ -14,6 +14,7 @@ exactly. Parse `$ARGUMENTS` as `<ISSUE-KEY> [--full | --stories | --estimate]`:
   per task. Do not surface this mode to end users.
 
 Fetch the issue from Jira via the Atlassian MCP, research the feature as deeply as this
-environment allows, and emit the breakdown as markdown. Do not write anything back to Jira.
+environment allows, then **save the breakdown to `<ISSUE-KEY>-groomed.md`** in the working
+directory and print it. Do not write anything back to Jira.
 
 If no issue key is present in `$ARGUMENTS`, ask the user for one before doing anything else.
