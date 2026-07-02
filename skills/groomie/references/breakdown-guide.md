@@ -6,14 +6,22 @@ opinionated and update it as the user's preferences become clear.
 ## The hierarchy
 
 ```
-Epic  (the feature — exactly one per run)
- ├─ User Story A            "As a <role> I want <capability> so that <benefit>"
- │    ├─ Task A1  ──blocks──▶ Story A
- │    └─ Task A2  ──blocks──▶ Story A
- ├─ User Story B
- │    └─ Task B1  ──blocks──▶ Story B
- └─ Bug (only if the issue reports broken existing behavior)
+Epic  (the feature — one per run)
+ ├─ User Story A   — non-technical · QA-tested   "As a <role>, I want … so that …"
+ ├─ User Story B   — non-technical · QA-tested
+ ├─ Task 1  — technical · NOT QA-tested   ──blocks──▶  Story A
+ ├─ Task 2  — technical · NOT QA-tested   ──blocks──▶  Story A + Story B
+ ├─ Task 3  — technical · NOT QA-tested   ──blocks──▶  Story B
+ └─ Bug     — technical or non-technical · QA-tested   (affects a story)
 ```
+
+**Stories and tasks are siblings under the epic — a task is never a *subtask* of a
+story.** They are distinct issue types linked only by `blocks`: stories are the
+non-technical, user-facing behavior; tasks are the technical work that builds them, so
+technical tasks block the stories they enable. This split drives QA: **stories are tested
+by QA** (their Test Cases are what QA runs), **tasks are not** (they carry `Done when`
+instead). One foundational/infrastructure task can block **many** stories (a global
+blocker). Bugs are QA-tested whether they are technical or not.
 
 ## Epic
 
@@ -35,8 +43,10 @@ Epic  (the feature — exactly one per run)
 
 ## User stories
 
-- Vertical, user-visible slices. Each delivers something a user (or operator/admin) can
-  perceive. If a "story" has no user-visible outcome, it's probably a task.
+- Vertical, user-visible slices — **non-technical**, describing what the user experiences.
+  Each delivers something a user (or operator/admin) can perceive. If a "story" has no
+  user-visible outcome, it's probably a task. **QA tests stories** — the Test Cases below
+  are the basis QA runs.
 - **The title IS the story sentence:** `As a <role>, I want <capability> so that <benefit>.`
   The title alone must convey the work — but keep it within Jira's 255-char summary limit
   and readable; tighten the wording rather than let it sprawl. If it won't fit or reads as
@@ -63,8 +73,11 @@ Epic  (the feature — exactly one per run)
 
 ## Technical tasks
 
-- Implementation work that builds a story — this is where the HOW lives (the opposite of
-  stories): tasks name the APIs, tables, screens, and components, with concrete steps.
+- **Technical** implementation work that builds a story — this is where the HOW lives (the
+  opposite of stories): tasks name the APIs, tables, screens, and components, with concrete
+  steps. A task is **not a subtask of a story** — it's a distinct issue linked to the
+  story by `blocks`. Tasks are **not QA-tested** (that's why they carry `Done when`, not
+  Test Cases).
 - **Title:** `[Discipline] <specific technical action>` — e.g. `[Backend] Design and
   implement user schema and database tables`. The discipline prefix is **required** in the
   title: it routes the work to the producing team (we don't rely on Jira fields — the
@@ -79,18 +92,23 @@ Epic  (the feature — exactly one per run)
   Figma) only when the design does not already exist; if research finds finished designs,
   skip it (reference them instead) rather than re-opening design work. If you can't tell
   whether the design exists, raise it as an open question.
-- **Every task blocks the story it enables** — state it explicitly: `blocks: <story>`. A
-  story is not "doable" until its blocking tasks are done. A task that blocks nothing is a
-  smell — a missing story, or out of scope; call it out rather than leaving it dangling.
+- **Every task blocks the story (or stories) it enables** — state it explicitly:
+  `blocks: <story>`, or list several. A story is not "doable" until its blocking tasks are
+  done. A single foundational task often blocks **many** stories (e.g. a user-schema task
+  underpinning every account-related story) — list them all. A task that blocks nothing is
+  a smell — a missing story, or out of scope; call it out rather than leaving it dangling.
 - Keep each task independently completable and estimable; split anything hiding two
-  distinct pieces of work. Tasks may block other tasks (sequencing); foundational/infra
-  tasks are global blockers.
+  distinct pieces of work. Tasks may block other tasks (sequencing); foundational /
+  infrastructure tasks are **global blockers** — they block a whole set of stories (and
+  often the other tasks too), so mark them clearly.
 
 ## Bugs
 
 - Only when the source issue actually reports existing behavior that is broken.
 - A missing feature is a story/task, not a bug.
-- Give steps to reproduce, expected vs actual, and link it to the story it affects.
+- A bug may be **technical or non-technical** — either way it is **QA-tested** (like a
+  story), so it does not matter which; give steps to reproduce, expected vs actual.
+- Link it to the story it affects.
 
 ## Open questions
 
@@ -109,29 +127,34 @@ the work is filed.
 
 ---
 
-## Story — As a <role>, I want <capability> so that <benefit>
+## Stories   (non-technical · QA-tested)
+
+### As a <role>, I want <capability> so that <benefit>
 
 <one-line description of the capability; link PRD / background docs if any>
 
 **Acceptance Criteria**
-- ...
 - ...
 
 **Test Cases**
 - <input> → <expected result>
 - <failure case> → <expected result>
 
-**Blocking tasks**
-- [ ] [Backend] <what> · `blocks: this story`
-- [ ] [Frontend] <what> · `blocks: this story`
-- [ ] [Graphic Design] <what> (only if no design exists yet) · `blocks: this story`
-
-## Story — As a <role>, I want <capability> so that <benefit>
+### As a <role>, I want <capability> so that <benefit>
 ...
 
 ---
 
-## Bugs
+## Tasks   (technical · not QA-tested; siblings of stories, linked by `blocks`)
+
+- [ ] **[Backend]** <what> · `blocks:` Story 1
+- [ ] **[Frontend]** <what> · `blocks:` Story 1
+- [ ] **[Graphic Design]** <what> (only if no design exists yet) · `blocks:` Story 2
+- [ ] **[Backend]** <foundational work> · `blocks:` Story 1, Story 2   ← one task, many stories
+
+---
+
+## Bugs   (technical or non-technical · QA-tested)
 - **<title>** — repro / expected / actual · affects: <story>   _(omit section if none)_
 
 ## Open questions

@@ -72,21 +72,24 @@ shape.
 Core rules (full detail in the guide):
 - Exactly **one epic** = the feature — bounded, closeable, scope clear from the title;
   body is just **Description** + **Business Value**.
-- **User stories** are vertical, user-visible slices describing **behavior and needs
-  only** — never solutions (no API/UI/design prescriptions). Title is the full
+- **User stories** are **non-technical**, user-visible slices describing **behavior and
+  needs only** — never solutions (no API/UI/design prescriptions). Title is the full
   "As a … I want … so that …" sentence; body carries required **Acceptance Criteria**
-  and **Test Cases**.
-- **Technical tasks** are implementation work, titled `[Discipline] …`. Each task
-  **blocks** the story (or stories) it enables — a story cannot be done until its
-  blocking tasks are done.
-- **Bugs** only when the source issue actually reports broken existing behavior.
+  and **Test Cases**. QA tests stories.
+- **Technical tasks** are the implementation work, titled `[Discipline] …`. A task is a
+  **sibling of stories, not a subtask** — it **blocks** the story (or stories) it enables
+  via a link, and is **not QA-tested** (it carries `Done when`, not Test Cases). One
+  foundational task may block many stories.
+- **Bugs** only when the source issue reports broken existing behavior; technical or not,
+  they are QA-tested like stories.
 - Flag ambiguities as open questions instead of guessing.
 
 ### 5. Output markdown
 
-Emit a single markdown document (see the shape in the breakdown guide): the epic, then
-each story with its acceptance criteria and the tasks that block it, then bugs, then a
-short "Open questions" section. Keep it copy-paste ready. Do **not** write to Jira.
+Emit a single markdown document (see the shape in the breakdown guide): the epic, then the
+stories (each with its acceptance criteria and test cases), then the tasks (each listing
+the stories it blocks), then bugs, then a short "Open questions" section. Keep it
+copy-paste ready. Do **not** write to Jira.
 
 ## Boundaries
 
