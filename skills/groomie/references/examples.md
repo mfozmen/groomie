@@ -63,21 +63,23 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 - Duplicate email → clear "already registered" error
 - Clicking the verification link → account marked as verified
 
-**Is blocked by:** T1, T2, T3
+**Is blocked by:** T1 — Design and implement user schema and database tables, T2 — Design registration flow UI mockups, T3 — Implement registration UI using Unity
 ```
 
-(Keyed `S1`; note the comma before *so that* and the period at the end. "user" here is a
-real product persona — the game's player. Never write a story as the recipient of an
-outbound artifact; that's not our user.)
+(Keyed `S1`; note the comma before *so that* and the period at the end, one responsibility
+(INVEST), and blocking refs carry `<key> — <title>`. "user" here is a real product persona —
+the game's player. Never write a story as the recipient of an outbound artifact.)
 
 ## Technical tasks
 
-Tasks carry the HOW. Each is keyed (`T1`, `T2`, …), the title leads with a required
-discipline prefix, and the body is a detailed, step-by-step `Implementation` plus
-`Done when`, then `Blocks:` / `Is blocked by:` by key (Jira's link terms). A single story is
-usually built by several tasks across disciplines (the account-creation story above, for
-instance, is built by `[Backend]`, `[Graphic Design]`, and `[Game Dev]` tasks); conversely
-one foundational task underpins several stories, as the `[Backend]` schema task below shows.
+Tasks carry the HOW. Each is keyed (`T1`, `T2`, …), the title is an **imperative** action
+under a required discipline prefix (one responsibility per task), and the body is a
+detailed, step-by-step `Implementation` plus `Done when`, then `Blocks:` / `Is blocked by:`
+as `<key> — <title>` (Jira's link terms). A single story is usually built by several tasks
+across disciplines (the account-creation story above is built by `[Backend]`,
+`[Graphic Design]`, and `[Game Dev]` tasks — a separate task each, split by responsibility);
+conversely one foundational task underpins several stories, as the `[Backend]` schema task
+below shows.
 
 ```markdown
 ### T1 — [Backend] Design and implement user schema and database tables
@@ -96,7 +98,7 @@ email-verification fields.
 - Migrations create the tables and email uniqueness is enforced at the DB level.
 - Repository CRUD operations are covered by tests.
 
-**Blocks:** S1, S2, S3   <!-- a foundational task blocks many stories (account creation, password reset, password change) -->
+**Blocks:** S1 — As a user, I want to create an account using email and password …, S2 — As a user, I want to reset my password via email …, S3 — As a logged-in user, I want to change my password …
 ```
 
 This backend task is a good illustration of the model: it is **not a subtask** of any one
