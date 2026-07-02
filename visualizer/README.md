@@ -27,8 +27,19 @@ npm --prefix visualizer run build:single   # one self-contained dist/index.html
 ```
 
 `build:single` inlines everything into a single HTML that reads `window.__GROOMIE_GRAPH__`.
-A future Groomie step will inject the groomed JSON into that template to emit a portable,
-offline `<ISSUE-KEY>-groomed.html`.
+
+## Export a portable HTML
+
+Turn any `*-groomed.json` into a **standalone, offline** `.html` (the single-file build with the
+graph injected as `window.__GROOMIE_GRAPH__`) — double-click it, no server, no internet:
+
+```
+npm --prefix visualizer run emit -- path/to/PROJ-123-groomed.json   # -> PROJ-123-groomed.html
+npm --prefix visualizer run emit -- graph.json out.html             # or an explicit output path
+```
+
+This is a **companion-app** feature, not part of the plugin: `/groomie` stays prompt-only and
+emits the `.json`; this repo turns it into a shareable `.html`.
 
 ## Input
 
