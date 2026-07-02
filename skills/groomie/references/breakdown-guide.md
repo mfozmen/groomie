@@ -348,6 +348,7 @@ heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
       "description": "...", "businessValue": "...", "design": null },
     { "id": "S1", "kind": "story", "epicId": "E1",
       "title": "As a user, I want to create an account …, so that ….",
+      "description": "Lets new users register with email and password.", "links": [],
       "acceptanceCriteria": ["..."], "testCases": ["..."] },
     { "id": "T1", "kind": "task", "epicId": "E1",
       "title": "Design and implement user schema and database tables",
@@ -365,13 +366,17 @@ heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
 Rules:
 - `mode ∈ full | stories | estimate`. Common node fields: `id`, `kind` (`epic|story|task|bug`),
   `title`. Non-epic nodes carry `epicId`.
-- **Story:** `acceptanceCriteria[]`, `testCases[]` (the markdown bullets, split).
+- **Story:** `description` (the one-liner), `links[]` (PRD / background docs, `[]` if none),
+  `acceptanceCriteria[]`, `testCases[]` (the markdown bullets, split).
 - **Task:** `discipline` (from the `[Discipline]` prefix), `implementation[]`, `doneWhen[]`,
   and `estimate` **only in `--estimate`**.
 - **Bug:** `repro`, `expected`, `actual`.
-- **Edges** are directed, `kind ∈ blocks | affects`, **deduped**. Derive `blocks` edges from
-  **both** a task's `Blocks:` and any `Is blocked by:` (the two directions of the same link):
-  task→story wherever a task builds a story, **and task→task wherever one task must precede
-  another** (sequencing — in any epic, not only story-less ones). `affects` runs bug→story.
+- **Edges** are directed **blocker → blocked**, `kind ∈ blocks | affects`, **deduped**. Derive
+  `blocks` edges from **both** a task's `Blocks:` and any `Is blocked by:` (the two directions of
+  the same link): task→story wherever a task builds a story, **and task→task wherever one task
+  must precede another** (sequencing — in any epic, not only story-less ones). From an
+  `Is blocked by:` list the **listed** node is the `source` (blocker) and the owning node is the
+  `target`; from a `Blocks:` list the owning node is the `source` — both yield the same
+  blocker→blocked edge, so dedup them. `affects` runs bug→story.
 - **Modes:** `--stories` → no `task` nodes and no `blocks` edges (bug `affects` stays);
   `--estimate` → each task node has `estimate`. The `nodes`/`edges` arrays always exist.
