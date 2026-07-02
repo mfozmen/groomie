@@ -163,6 +163,11 @@ rules. Omit the `## Diagram` when there are no nodes.
 current working directory (e.g. `PROJ-123-groomed.md`), tell the user the path, then also
 print it inline so they can read it without opening the file. Do **not** write to Jira.
 
+**Also emit a JSON graph** `<ISSUE-KEY>-groomed.json` next to the markdown — the same
+epic/story/task/bug nodes and `blocks`/`affects` edges as a machine-readable graph (the
+input for the visualizer). See the guide's *JSON graph output* section for the schema. Tell
+the user this path too.
+
 ## Boundaries
 
 - Read-only against Jira. Never create, edit, or transition issues.

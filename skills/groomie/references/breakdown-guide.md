@@ -12,7 +12,7 @@ Epic  (the feature — usually one)
  ├─ Task T1    — technical · not QA-tested   ──blocks──▶  S1
  ├─ Task T2    — technical · not QA-tested   ──blocks──▶  S1 + S2
  ├─ Task T3    — technical · not QA-tested   ──blocks──▶  S2
- └─ Bug        — technical or non-technical · QA-tested   (affects a story)
+ └─ Bug B1     — technical or non-technical · QA-tested   (affects a story)
 ```
 
 **Stories and tasks are siblings under the epic — a task is never a *subtask* of a
@@ -330,3 +330,46 @@ flowchart TD
   class T1,T2 task;
   class B1 bug;
 ```
+
+## JSON graph output
+
+Alongside the markdown, write `<ISSUE-KEY>-groomed.json` — the **same graph, machine-readable**
+(the visualizer's input). One flat `nodes[]` array (epics are first-class `kind:"epic"` nodes)
+plus a directed `edges[]` array. Epics get JSON-only ids `E1`, `E2`, … (the markdown `# Epic:`
+heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
+
+```json
+{
+  "issueKey": "PROJ-123",
+  "mode": "full",
+  "nodes": [
+    { "id": "E1", "kind": "epic", "title": "Traditional Authentication",
+      "description": "...", "businessValue": "...", "design": null },
+    { "id": "S1", "kind": "story", "epicId": "E1",
+      "title": "As a user, I want to create an account …, so that ….",
+      "acceptanceCriteria": ["..."], "testCases": ["..."] },
+    { "id": "T1", "kind": "task", "epicId": "E1",
+      "title": "Design and implement user schema and database tables",
+      "discipline": "Backend", "implementation": ["..."], "doneWhen": ["..."], "estimate": 5 },
+    { "id": "B1", "kind": "bug", "epicId": "E1", "title": "Verification email not sent",
+      "repro": "...", "expected": "...", "actual": "..." }
+  ],
+  "edges": [
+    { "source": "T1", "target": "S1", "kind": "blocks" },
+    { "source": "B1", "target": "S1", "kind": "affects" }
+  ]
+}
+```
+
+Rules:
+- `mode ∈ full | stories | estimate`. Common node fields: `id`, `kind` (`epic|story|task|bug`),
+  `title`. Non-epic nodes carry `epicId`.
+- **Story:** `acceptanceCriteria[]`, `testCases[]` (the markdown bullets, split).
+- **Task:** `discipline` (from the `[Discipline]` prefix), `implementation[]`, `doneWhen[]`,
+  and `estimate` **only in `--estimate`**.
+- **Bug:** `repro`, `expected`, `actual`.
+- **Edges** are directed with `kind ∈ blocks | affects`, **deduped** (the markdown stores
+  blocking on both endpoints — emit one edge). `blocks` runs task→story (or task→task in a
+  story-less epic); `affects` runs bug→story.
+- **Modes:** `--stories` → no `task` nodes and no `blocks` edges (bug `affects` stays);
+  `--estimate` → each task node has `estimate`. The `nodes`/`edges` arrays always exist.
