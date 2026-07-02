@@ -55,7 +55,7 @@ export interface GroomEdge {
 
 export interface GroomedGraph {
   issueKey?: string
-  mode?: string
+  mode?: 'full' | 'stories' | 'estimate'
   nodes: GroomNode[]
   edges: GroomEdge[]
 }

@@ -18,11 +18,11 @@ import { TaskNode } from './nodes/TaskNode'
 import { BugNode } from './nodes/BugNode'
 import { DetailsPanel } from './components/DetailsPanel'
 import { Loader } from './components/Loader'
+import { EPIC_COLOR, KIND_COLOR } from './colors'
 
 const nodeTypes = { epic: EpicNode, story: StoryNode, task: TaskNode, bug: BugNode }
 
-const nodeColor = (n: Node) =>
-  n.type === 'task' ? '#22c55e' : n.type === 'bug' ? '#ef4444' : n.type === 'story' ? '#3b82f6' : '#cbd5e1'
+const nodeColor = (n: Node) => KIND_COLOR[n.type ?? ''] ?? EPIC_COLOR
 
 // A single-file HTML export injects the graph here before the bundle runs.
 declare global {
@@ -36,14 +36,20 @@ export function App() {
   const [nodes, setNodes] = useState<Node[]>([])
   const [edges, setEdges] = useState<Edge[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const loadGraph = useCallback(async (g: GroomedGraph) => {
-    const flow = toFlow(g)
-    const laidOut = await layout(flow.nodes, flow.edges)
-    setGraph(g)
-    setNodes(laidOut)
-    setEdges(flow.edges)
-    setSelectedId(null)
+    try {
+      const flow = toFlow(g)
+      const laidOut = await layout(flow.nodes, flow.edges)
+      setGraph(g)
+      setNodes(laidOut)
+      setEdges(flow.edges)
+      setSelectedId(null)
+      setError(null)
+    } catch (e) {
+      setError(`Could not render this graph: ${(e as Error).message}`)
+    }
   }, [])
 
   useEffect(() => {
@@ -55,7 +61,7 @@ export function App() {
     [graph, selectedId],
   )
 
-  if (!graph) return <Loader onLoad={loadGraph} />
+  if (!graph) return <Loader onLoad={loadGraph} error={error} />
 
   return (
     <ReactFlowProvider>
