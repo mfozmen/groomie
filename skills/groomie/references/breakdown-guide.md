@@ -99,11 +99,15 @@ blocker). Bugs are QA-tested whether they are technical or not.
   Figma) only when the design does not already exist; if research finds finished designs,
   skip it (reference them instead) rather than re-opening design work. If you can't tell
   whether the design exists, raise it as an open question.
-- **Every task blocks the story (or stories) it enables** — state it explicitly:
-  `blocks: <story>`, or list several. A story is not "doable" until its blocking tasks are
-  done. A single foundational task often blocks **many** stories (e.g. a user-schema task
-  underpinning every account-related story) — list them all. A task that blocks nothing is
-  a smell — a missing story, or out of scope; call it out rather than leaving it dangling.
+- **State what each task blocks** with `blocks: …`. When the epic has stories, a task
+  blocks the story (or stories) it enables — a story is not "doable" until its blocking
+  tasks are done, and a single foundational task often blocks **many** stories (e.g. a
+  user-schema task underpinning every account-related story) — list them all. **In a
+  story-less epic** (a pure migration/refactor/infra epic), tasks instead block the tasks
+  they must precede (sequencing, e.g. schema → backfill → verify); a leaf task that
+  precedes nothing simply omits `blocks:`.
+- **Only when the epic has stories:** a task that blocks nothing is a smell — a missing
+  story, or out of scope; call it out rather than leaving it dangling.
 - Keep each task independently completable and estimable; split anything hiding two
   distinct pieces of work. Tasks may block other tasks (sequencing); foundational /
   infrastructure tasks are **global blockers** — they block a whole set of stories (and

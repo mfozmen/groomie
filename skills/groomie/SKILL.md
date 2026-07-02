@@ -36,6 +36,8 @@ use **`--full`**.
 - **`--stories`** — epic + user stories only, **no technical tasks**. Lighter and faster:
   you still research enough to understand the feature and its user-facing behavior, but
   you do not need to read the code to derive tasks. Use to see the behavior/scope quickly.
+  Presumes a user-facing feature — on a pure migration/infra issue (no behavior change,
+  hence no stories) this yields just the epic; use `--full` for those.
 - **`--estimate`** — *experimental, development-only; do not advertise to end users.*
   Produces the full breakdown and adds a **Fibonacci** point estimate (1, 2, 3, 5, 8,
   13, …) to **each task**. Estimates are a rough first pass and **must be calibrated over
@@ -135,8 +137,8 @@ Core rules (full detail in the guide):
 
 Produce a single markdown document (see the shape in the breakdown guide): the epic, then —
 only if the feature changes user-facing behavior — the stories (each with acceptance
-criteria and test cases), then the tasks (each listing the stories it blocks), then bugs,
-then open questions. **Omit any empty section entirely** — no `## Stories` when there's no
+criteria and test cases), then the tasks (each stating what it blocks — the stories it
+enables, or, in a story-less epic, the tasks it must precede), then bugs, then open questions. **Omit any empty section entirely** — no `## Stories` when there's no
 behavior change, no `## Bugs` when there are none, no empty `## Open questions`; never print
 a "(none)" placeholder. In `--stories` mode, omit the tasks section; in `--estimate` mode,
 add a Fibonacci `Estimate:` to each task.
