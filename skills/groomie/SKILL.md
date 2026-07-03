@@ -169,6 +169,30 @@ epic/story/task/bug nodes and `blocks`/`affects` edges as a machine-readable gra
 input for the visualizer). See the guide's *JSON graph output* section for the schema. Tell
 the user this path too.
 
+**Also emit a standalone interactive HTML** `<ISSUE-KEY>-groomed.html` — the graph visualizer
+with this breakdown baked in: offline, double-clickable, no server. **No Node/npm needed** — you
+concatenate the two shipped template halves around the graph with plain shell. This skill ships
+`assets/visualizer-head.html` and `assets/visualizer-tail.html`; use **this skill's own directory**
+(the harness gives it to you as the skill's base path — substitute it for `$SKILL` below). Escape
+`<` to `\u003c` so a `</script>` inside any title can't break out of the injected tag:
+
+```bash
+if [ -s "$SKILL/assets/visualizer-head.html" ] && [ -s "$SKILL/assets/visualizer-tail.html" ]; then
+  TMP=$(mktemp)
+  sed 's/</\\u003c/g' <ISSUE-KEY>-groomed.json > "$TMP"
+  { cat "$SKILL/assets/visualizer-head.html"; \
+    printf '<script>globalThis.__GROOMIE_GRAPH__='; cat "$TMP"; printf '</script>'; \
+    cat "$SKILL/assets/visualizer-tail.html"; } > <ISSUE-KEY>-groomed.html
+  rm -f "$TMP"
+fi
+```
+
+The guard means that if the two template assets can't be found (e.g. `$SKILL` wasn't resolved to
+this skill's real base path), you skip the HTML rather than write a truncated, broken file. Tell the
+user the `.html` path when it's produced. If the assets are missing or `sed`/`cat` are unavailable,
+skip the HTML — the `.md` (with its mermaid diagram, which renders in any markdown viewer) and the
+`.json` are the primary outputs and always ship.
+
 ## Boundaries
 
 - Read-only against Jira. Never create, edit, or transition issues.

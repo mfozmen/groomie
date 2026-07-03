@@ -5,3 +5,4 @@ node_modules/
 # Groomie output (local, not part of the plugin)
 *-groomed.md
 *-groomed.json
+*-groomed.html

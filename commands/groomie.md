@@ -20,7 +20,7 @@ still works — do not surface `--estimate` to end users.
 
 Fetch the issue from Jira via the Atlassian MCP, research the feature as deeply as this
 environment allows, then **save the breakdown to `<ISSUE-KEY>-groomed.md`** (plus a machine-readable
-`<ISSUE-KEY>-groomed.json` graph) in the working directory and print the markdown. Do not
-write anything back to Jira.
+`<ISSUE-KEY>-groomed.json` graph and a standalone interactive `<ISSUE-KEY>-groomed.html`) in the
+working directory and print the markdown. Do not write anything back to Jira.
 
 If no issue key is present in `$ARGUMENTS`, ask the user for one before doing anything else.
