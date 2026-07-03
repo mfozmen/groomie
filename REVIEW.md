@@ -43,3 +43,18 @@ each item; the guide's skeleton only shows document layout.
   **`--estimate` is experimental / development-only** — keep it out of the public README
   until calibrated.
 - Conventional Commits; every change goes through a PR + the required Claude AI review.
+
+## 5. Visualizer UI/UX (the `visualizer/` companion app)
+
+A distilled subset of the [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+pre-delivery checklist, scoped to what this small graph viewer actually needs. When a PR touches
+`visualizer/` UI, check:
+
+- **Icons are SVG, not emoji** (React Flow's own controls, or Lucide / Heroicons if we add any).
+- **Interactive elements have hover *and* focus states** — a 150–300 ms transition on hover, and a
+  visible `:focus-visible` outline for keyboard navigation.
+- **Motion respects `prefers-reduced-motion`** — guard transforms/transitions behind it.
+- **Text contrast ≥ 4.5:1** in light mode; the kind palette (epic purple, story green, task blue,
+  bug red) and muted greys must stay legible on their backgrounds.
+- **The kind palette is *semantic* colour** (Jira defaults) — don't repurpose it as a brand accent.
+- **Wide content scrolls in its own container** (`overflow-x`), never the page body.
