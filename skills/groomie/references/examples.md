@@ -133,8 +133,9 @@ flowchart TD
   T1 --> S3
   T2 --> S1
   T3 --> S1
-  classDef story fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
-  classDef task  fill:#dcfce7,stroke:#22c55e,color:#14532d;
+  classDef story fill:#dcfce7,stroke:#22c55e,color:#14532d;
+  classDef task  fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
   class S1,S2,S3 story;
   class T1,T2,T3 task;
+  style epic1 fill:#f5f3ff,stroke:#8b5cf6,color:#6d28d9;
 ```
