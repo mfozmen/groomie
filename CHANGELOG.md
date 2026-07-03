@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0](https://github.com/mfozmen/groomie/compare/v0.2.0...v0.3.0) (2026-07-03)
+
+### Features
+
+* ship a standalone interactive <KEY>-groomed.html for end users ([#25](https://github.com/mfozmen/groomie/issues/25)) ([6a98b69](https://github.com/mfozmen/groomie/commit/6a98b6963a60f542eadddf970f369c63e13758fc))
+
 ## [0.2.0](https://github.com/mfozmen/groomie/compare/v0.1.0...v0.2.0) (2026-07-03)
 
 ### Features
