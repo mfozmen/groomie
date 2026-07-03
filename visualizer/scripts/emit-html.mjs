@@ -44,7 +44,7 @@ export function resolvePaths(jsonArg, outArg, base) {
   return { jsonPath, outPath }
 }
 
-function readGraph(jsonPath) {
+export function readGraph(jsonPath) {
   let text
   try {
     text = readFileSync(jsonPath, 'utf8')
@@ -58,6 +58,8 @@ function readGraph(jsonPath) {
   }
 }
 
+/* v8 ignore start -- CLI entry glue: argv + file IO orchestration, exercised end-to-end by
+   `npm run emit`. Its logic (injectGraph, resolvePaths, readGraph) is unit-tested above. */
 function main() {
   const [jsonArg, outArg] = argv.slice(2)
   if (!jsonArg) {
@@ -77,3 +79,4 @@ function main() {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main()
+/* v8 ignore stop */

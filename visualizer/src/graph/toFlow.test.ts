@@ -60,4 +60,17 @@ describe('toFlow referential integrity (ELK rejects unknown shape ids)', () => {
   it('drops edges whose endpoints are not real nodes', () => {
     expect(edges).toHaveLength(0)
   })
+
+  it('sorts an unexpected kind as a non-epic (the ?? 1 fallback)', () => {
+    const { nodes } = toFlow({
+      nodes: [
+        { id: 'X', kind: 'chore', epicId: 'E1', title: 'x' },
+        { id: 'Y', kind: 'spike', epicId: 'E1', title: 'y' },
+        { id: 'E1', kind: 'epic', title: 'e' },
+      ],
+      edges: [],
+    })
+    expect(nodes[0].id).toBe('E1') // epic stays first; the unknown kinds sort after it
+    expect(nodes.find((n) => n.id === 'X')?.type).toBe('chore')
+  })
 })

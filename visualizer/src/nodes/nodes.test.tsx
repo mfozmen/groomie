@@ -19,10 +19,11 @@ describe('node components', () => {
     expect(screen.getByText(/Dark Mode/)).toBeInTheDocument()
   })
 
-  it('StoryNode shows the key and title', () => {
-    wrap(<StoryNode {...p({ id: 'S1', kind: 'story', epicId: 'E1', title: 'a story' })} />)
+  it('StoryNode shows the key and title (selected)', () => {
+    const { container } = wrap(<StoryNode {...p({ id: 'S1', kind: 'story', epicId: 'E1', title: 'a story' }, true)} />)
     expect(screen.getByText('S1')).toBeInTheDocument()
     expect(screen.getByText('a story')).toBeInTheDocument()
+    expect(container.querySelector('.gnode.story.selected')).not.toBeNull()
   })
 
   it('TaskNode shows discipline + estimate badges (and selected style)', () => {
@@ -40,9 +41,10 @@ describe('node components', () => {
     expect(container.querySelectorAll('.badge')).toHaveLength(0)
   })
 
-  it('BugNode shows the key and title', () => {
-    wrap(<BugNode {...p({ id: 'B1', kind: 'bug', epicId: 'E1', title: 'a bug' })} />)
+  it('BugNode shows the key and title (selected)', () => {
+    const { container } = wrap(<BugNode {...p({ id: 'B1', kind: 'bug', epicId: 'E1', title: 'a bug' }, true)} />)
     expect(screen.getByText('B1')).toBeInTheDocument()
     expect(screen.getByText('a bug')).toBeInTheDocument()
+    expect(container.querySelector('.gnode.bug.selected')).not.toBeNull()
   })
 })
