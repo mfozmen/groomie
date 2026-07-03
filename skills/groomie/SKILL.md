@@ -174,7 +174,7 @@ with this breakdown baked in: offline, double-clickable, no server. **No Node/np
 concatenate the two shipped template halves around the graph with plain shell. This skill ships
 `assets/visualizer-head.html` and `assets/visualizer-tail.html`; use **this skill's own directory**
 (the harness gives it to you as the skill's base path — substitute it for `$SKILL` below). Escape
-`<` to `<` so a `</script>` inside any title can't break out of the injected tag:
+`<` to `\u003c` so a `</script>` inside any title can't break out of the injected tag:
 
 ```bash
 if [ -s "$SKILL/assets/visualizer-head.html" ] && [ -s "$SKILL/assets/visualizer-tail.html" ]; then
