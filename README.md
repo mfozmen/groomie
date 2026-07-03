@@ -28,19 +28,16 @@ can review and file.
   detailed plan, wired to what they **block** / are **blocked by** (Jira link terms).
 - **Bugs** and **open questions** — surfaced, never silently invented.
 
-The whole breakdown is saved to `<ISSUE-KEY>-groomed.md` and printed for you. The markdown
-also ends with a **mermaid diagram** of the blocker graph (renders on GitHub, VS Code, and
-other markdown viewers), and a machine-readable **`<ISSUE-KEY>-groomed.json`** graph is
-written next to it (the input for the visualizer).
-
-For an **interactive** view of the blocker graph — epics as containers, stories/tasks/bugs
-nested, blockers as arrows — load that `.json` into the companion [`visualizer/`](visualizer/),
-or turn it into a standalone offline HTML with
-`npm --prefix visualizer run emit -- <ISSUE-KEY>-groomed.json`.
+The whole breakdown is saved to `<ISSUE-KEY>-groomed.md` and printed for you. The markdown ends
+with a **mermaid diagram** of the blocker graph (renders on GitHub, VS Code, and other markdown
+viewers). Two more files are written next to it: a machine-readable **`<ISSUE-KEY>-groomed.json`**
+graph, and a standalone **`<ISSUE-KEY>-groomed.html`** — the interactive visualizer (below) with
+your breakdown baked in: epics as containers, stories/tasks/bugs nested, blockers as arrows.
+**Offline, double-click to open, no server or install.**
 
 ![The Groomie visualizer: a purple epic container holding blue tasks, green stories and a red bug, with blocker arrows, and a details panel on the right.](docs/visualizer.png)
 
-<sub>The companion visualizer on synthetic demo data (Jira-default colours — epic purple, story green, task blue, bug red). Click a node for its acceptance criteria, tasks, or repro.</sub>
+<sub>The `<ISSUE-KEY>-groomed.html` output on synthetic demo data (Jira-default colours — epic purple, story green, task blue, bug red). Click a node for its acceptance criteria, tasks, or repro.</sub>
 
 ## Requirements
 
