@@ -110,7 +110,8 @@ skips tasks for a faster, behavior-only pass. (The old `--full` / `--stories` fl
 2. **Research** the feature — following links and, when a codebase is reachable, reading the
    actual code so tasks are grounded in reality.
 3. **Groom** it into the epic / stories / tasks breakdown.
-4. **Save & print** the markdown (with a mermaid diagram) and write the JSON graph next to it.
+4. **Save & print** the markdown (with a mermaid diagram), and write the JSON graph plus a
+   standalone interactive `<ISSUE-KEY>-groomed.html` (offline, double-clickable) next to it.
 
 ---
 

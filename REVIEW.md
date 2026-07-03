@@ -19,8 +19,8 @@ else may be a hard dependency:
 - **The standalone-HTML output is a deliberate exception to "prompt-only":** the plugin ships a
   prebuilt visualizer template (`skills/groomie/assets/visualizer-{head,tail}.html`, ~1.9 MB) and
   the skill concatenates it around the graph. That must stay **Node-free at groom time** — only
-  POSIX `sed` + `cat` (no `npm`/`node`/network), and it must **degrade gracefully** (skip the
-  `.html`; the `.md` + mermaid + `.json` always ship). Regenerate the assets with
+  a POSIX shell (`sed`/`cat`/`printf`/`mktemp`/`rm`, no `npm`/`node`/network), and it must
+  **degrade gracefully** (skip the `.html`; the `.md` + mermaid + `.json` always ship). Regenerate the assets with
   `npm --prefix visualizer run build:template` whenever the visualizer changes.
 
 ## 2. Grooming-model integrity
