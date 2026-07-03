@@ -4,10 +4,38 @@ import type { FlowNode } from '../graph/toFlow'
 
 const elk = new ELK()
 
+// Item nodes are a fixed 240px wide (index.css `.gnode`) but their HEIGHT grows with the title —
+// a 6-line story wraps far past a one-line task. ELK only avoids overlaps for the sizes we give it,
+// so we must estimate real height per node; feeding it a fixed height is exactly what let tall
+// nodes overlap their neighbours. Width stays fixed to match the CSS.
 const NODE_W = 240
-const NODE_H = 92
+const NODE_H = 92 // matches `.gnode { min-height }` — the floor for short titles
+
 const EPIC_PAD = 24
-const EPIC_HEADER = 30
+// Top inset for the epic header. Epic titles routinely wrap to two lines ("Epic: <long title>"),
+// so reserve two lines' worth of room or children tuck under the header (as they did before).
+const EPIC_HEADER = 52
+
+// Layout spacing. The canvas is effectively unbounded, so err toward air between nodes rather
+// than a cramped graph — overlaps and edges hidden under boxes read as broken.
+const SPACING_NODE = 72
+const SPACING_LAYERS = 96
+
+// Approx chars per line inside a `.gnode` (240px − 24px padding at ~12px font). Deliberately LOW
+// so we over-count lines and over-estimate height — extra vertical air is harmless, an
+// under-estimate reintroduces overlap.
+const CHARS_PER_LINE = 30
+const LINE_H = 17
+
+// Estimated rendered height of an item node from its title length. Biased tall (see CHARS_PER_LINE)
+// and floored at NODE_H. Exported for unit testing.
+export function estimateItemHeight(node: FlowNode): number {
+  const title = (node.data?.groom as { title?: string })?.title ?? ''
+  const lines = Math.max(1, Math.ceil(title.length / CHARS_PER_LINE))
+  // padding(20) + key/badge row(22) + title margin(4) + wrapped title + slack(10)
+  const estimated = 20 + 22 + 4 + lines * LINE_H + 10
+  return Math.max(NODE_H, estimated)
+}
 
 // Layered layout with container hierarchy: each epic is an ELK node whose children are its
 // stories/tasks/bugs. ELK returns child coordinates relative to their parent — exactly what
@@ -20,6 +48,7 @@ export async function layout(nodes: FlowNode[], edges: Edge[]): Promise<FlowNode
   const orphans = nodes.filter((n) => n.type !== 'epic' && !n.parentId)
 
   const padding = `[top=${EPIC_PAD + EPIC_HEADER},left=${EPIC_PAD},bottom=${EPIC_PAD},right=${EPIC_PAD}]`
+  const sized = (c: FlowNode) => ({ id: c.id, width: NODE_W, height: estimateItemHeight(c) })
 
   const graph: ElkNode = {
     id: 'root',
@@ -27,19 +56,17 @@ export async function layout(nodes: FlowNode[], edges: Edge[]): Promise<FlowNode
       'elk.algorithm': 'layered',
       'elk.direction': 'DOWN',
       'elk.hierarchyHandling': 'INCLUDE_CHILDREN',
-      'elk.layered.spacing.nodeNodeBetweenLayers': '64',
-      'elk.spacing.nodeNode': '44',
+      'elk.layered.spacing.nodeNodeBetweenLayers': String(SPACING_LAYERS),
+      'elk.spacing.nodeNode': String(SPACING_NODE),
       'elk.padding': padding,
     },
     children: [
       ...epics.map((epic) => ({
         id: epic.id,
         layoutOptions: { 'elk.padding': padding },
-        children: children
-          .filter((c) => c.parentId === epic.id)
-          .map((c) => ({ id: c.id, width: NODE_W, height: NODE_H })),
+        children: children.filter((c) => c.parentId === epic.id).map(sized),
       })),
-      ...orphans.map((o) => ({ id: o.id, width: NODE_W, height: NODE_H })),
+      ...orphans.map(sized),
     ],
     edges: edges.map((e) => ({ id: e.id, sources: [e.source], targets: [e.target] })),
   }

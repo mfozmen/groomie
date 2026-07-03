@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { toFlow } from './toFlow'
+import { EDGE_AFFECTS, EDGE_BLOCKS } from '../colors'
 import type { GroomedGraph } from '../types'
 
 const graph: GroomedGraph = {
@@ -39,6 +40,30 @@ describe('toFlow', () => {
     expect(affects.style?.strokeDasharray).toBe('6 4')
     expect(blocks.animated).toBe(false)
     expect(blocks.style?.strokeDasharray).toBeUndefined()
+  })
+
+  it('labels each edge with its relationship, lifts it above nodes, and uses the custom edge', () => {
+    const affects = edges.find((e) => e.source === 'B1')!
+    const blocks = edges.find((e) => e.source === 'T1')!
+    expect(blocks.label).toBe('blocks')
+    expect(affects.label).toBe('affects')
+    expect(blocks.type).toBe('labeled')
+    expect((blocks.data as { color?: string }).color).toBe(EDGE_BLOCKS)
+    expect((affects.data as { color?: string }).color).toBe(EDGE_AFFECTS)
+    // z-order above nodes so an edge grazing a box stays visible
+    expect(blocks.zIndex).toBeGreaterThan(0)
+    expect(affects.zIndex).toBeGreaterThan(0)
+  })
+
+  it('staggers label distance for edges sharing a target so labels do not stack', () => {
+    // B1→S1 and T1→S1 both point at S1; the two get different labelT so the labels fan out.
+    const affects = edges.find((e) => e.source === 'B1')! // 1st into S1
+    const blocks = edges.find((e) => e.source === 'T1')! // 2nd into S1
+    const ta = (affects.data as { labelT: number }).labelT
+    const tb = (blocks.data as { labelT: number }).labelT
+    expect(ta).not.toBe(tb)
+    expect(ta).toBeGreaterThanOrEqual(0.4)
+    expect(tb).toBeGreaterThanOrEqual(0.4)
   })
 })
 

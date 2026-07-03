@@ -18,9 +18,11 @@ import { TaskNode } from './nodes/TaskNode'
 import { BugNode } from './nodes/BugNode'
 import { DetailsPanel } from './components/DetailsPanel'
 import { Loader } from './components/Loader'
+import { LabeledEdge } from './edges/LabeledEdge'
 import { EPIC_COLOR, KIND_COLOR } from './colors'
 
 const nodeTypes = { epic: EpicNode, story: StoryNode, task: TaskNode, bug: BugNode }
+const edgeTypes = { labeled: LabeledEdge }
 
 const nodeColor = (n: Node) => KIND_COLOR[n.type ?? ''] ?? EPIC_COLOR
 
@@ -69,6 +71,7 @@ export function App() {
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           fitView
           minZoom={0.1}
           onNodeClick={(_, n) => setSelectedId(n.id)}

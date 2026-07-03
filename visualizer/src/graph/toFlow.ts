@@ -30,20 +30,35 @@ export function toFlow(graph: GroomedGraph): { nodes: FlowNode[]; edges: Edge[] 
     return epicIds.has(n.epicId) ? { ...base, parentId: n.epicId, extent: 'parent' } : base
   })
 
+  // Stagger the label distance for edges sharing a target: the 1st edge into a node labels near
+  // the target, each subsequent one a step earlier, so converging labels (e.g. a task that blocks
+  // a story AND a bug that affects it) fan out along the approach instead of stacking on the node.
+  const perTarget = new Map<string, number>()
+
   const edges: Edge[] = graph.edges
     .filter((e) => nodeIds.has(e.source) && nodeIds.has(e.target))
     .map((e, i) => {
       const affects = e.kind === 'affects'
+      const color = affects ? EDGE_AFFECTS : EDGE_BLOCKS
+      const order = perTarget.get(e.target) ?? 0
+      perTarget.set(e.target, order + 1)
+      // near the target (0.82), backing off 0.16 per additional incoming edge, floored at 0.4
+      const labelT = Math.max(0.4, 0.82 - order * 0.16)
       return {
         id: `e${i}`,
         source: e.source,
         target: e.target,
-        markerEnd: { type: MarkerType.ArrowClosed, color: affects ? EDGE_AFFECTS : EDGE_BLOCKS },
+        // Custom edge (LabeledEdge) so the relationship label sits near the target, not the
+        // midpoint where it would land on a node the edge skips over.
+        type: 'labeled',
+        markerEnd: { type: MarkerType.ArrowClosed, color },
         animated: affects,
-        style: affects
-          ? { stroke: EDGE_AFFECTS, strokeDasharray: '6 4' }
-          : { stroke: EDGE_BLOCKS },
-        data: { kind: e.kind },
+        style: affects ? { stroke: color, strokeDasharray: '6 4' } : { stroke: color },
+        // Name the relationship on the edge (the arrows alone were ambiguous), and lift edges
+        // above the nodes so a route that grazes a box stays readable instead of hiding under it.
+        label: e.kind,
+        zIndex: 1000,
+        data: { kind: e.kind, color, labelT },
       }
     })
 

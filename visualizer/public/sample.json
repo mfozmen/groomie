@@ -77,11 +77,10 @@
     }
   ],
   "edges": [
-    { "source": "T1", "target": "S1", "kind": "blocks" },
+    { "source": "T1", "target": "T2", "kind": "blocks" },
     { "source": "T2", "target": "S1", "kind": "blocks" },
     { "source": "T2", "target": "S2", "kind": "blocks" },
     { "source": "T3", "target": "S2", "kind": "blocks" },
-    { "source": "T1", "target": "T2", "kind": "blocks" },
     { "source": "B1", "target": "S1", "kind": "affects" }
   ]
 }
