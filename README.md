@@ -38,6 +38,10 @@ nested, blockers as arrows — load that `.json` into the companion [`visualizer
 or turn it into a standalone offline HTML with
 `npm --prefix visualizer run emit -- <ISSUE-KEY>-groomed.json`.
 
+![The Groomie visualizer: a purple epic container holding blue tasks, green stories and a red bug, with blocker arrows, and a details panel on the right.](docs/visualizer.png)
+
+<sub>The companion visualizer on synthetic demo data (Jira-default colours — epic purple, story green, task blue, bug red). Click a node for its acceptance criteria, tasks, or repro.</sub>
+
 ## Requirements
 
 - **Claude Code.**
