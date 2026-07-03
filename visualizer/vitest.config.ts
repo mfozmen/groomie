@@ -14,9 +14,18 @@ export default defineConfig({
       reporter: ['text', 'lcov'],
       reportsDirectory: 'coverage',
       include: ['src/**/*.{ts,tsx}', 'scripts/**/*.mjs'],
-      // main.tsx is the ReactDOM bootstrap; types.ts is type-only (no runtime). Nothing else is
-      // excluded — the components, nodes, layout and graph logic are all unit-tested.
-      exclude: ['**/*.test.{ts,tsx}', 'src/main.tsx', 'src/types.ts', 'src/vite-env.d.ts'],
+      // main.tsx is the ReactDOM bootstrap; types.ts is type-only (no runtime);
+      // build-plugin-template.mjs is build glue (shells out to `vite build` + writes the two
+      // shipped assets) — its output contract is covered by plugin-template.test.ts, not by
+      // unit-testing execSync/fs. Nothing else is excluded — the components, nodes, layout, graph
+      // and emit logic are all unit-tested.
+      exclude: [
+        '**/*.test.{ts,tsx}',
+        'src/main.tsx',
+        'src/types.ts',
+        'src/vite-env.d.ts',
+        'scripts/build-plugin-template.mjs',
+      ],
     },
   },
 })

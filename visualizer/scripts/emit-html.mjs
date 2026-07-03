@@ -14,10 +14,14 @@ import { isAbsolute, resolve } from 'node:path'
 // boundary, so a rename on one side would not be caught by any build/type check.
 const GRAPH_GLOBAL = '__GROOMIE_GRAPH__'
 
+// The split point shared by injectGraph, the template builder, and the plugin-template test:
+// the injected <script> goes immediately after <head>, so the two shipped assets split here too.
+export const HEAD_MARKER = '<head>'
+
 // Pure + testable. Escape `<` so a `</script>` inside any title/description can't break out of
 // the injected tag (JS still parses < back to '<', so the graph is unchanged at runtime).
 export function injectGraph(templateHtml, graph) {
-  if (!templateHtml.includes('<head>')) {
+  if (!templateHtml.includes(HEAD_MARKER)) {
     throw new Error(
       'template has no <head> — dist/index.html is missing; `npm run emit` builds it first ' +
         '(or run `npm run build:single`)',
@@ -27,7 +31,7 @@ export function injectGraph(templateHtml, graph) {
   const tag = `<script>globalThis.${GRAPH_GLOBAL}=${payload}</script>`
   // Function replacement: a plain replacement string would treat `$&`, `$\``, `$'`, `$$` in the
   // payload (e.g. a title containing `$'`) as special patterns and corrupt the injected JSON.
-  return templateHtml.replace('<head>', () => `<head>${tag}`)
+  return templateHtml.replace(HEAD_MARKER, () => `${HEAD_MARKER}${tag}`)
 }
 
 // Pure + testable. `npm --prefix visualizer run emit` runs with cwd=visualizer/, but INIT_CWD is
