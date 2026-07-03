@@ -1,6 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 // @ts-expect-error — plain .mjs helper, no types
-import { injectGraph, resolvePaths } from './emit-html.mjs'
+import { injectGraph, resolvePaths, readGraph } from './emit-html.mjs'
 
 const TPL = '<!doctype html><html><head><title>t</title></head><body></body></html>'
 
@@ -54,5 +57,31 @@ describe('resolvePaths', () => {
 
   it('refuses to overwrite the input when the output would equal it (non-.json input)', () => {
     expect(() => resolvePaths('/a/graph.txt', undefined, '/base')).toThrow(/overwrite/)
+  })
+})
+
+describe('readGraph', () => {
+  let dir: string
+  beforeAll(() => {
+    dir = mkdtempSync(join(tmpdir(), 'groomie-'))
+  })
+  afterAll(() => {
+    rmSync(dir, { recursive: true, force: true })
+  })
+
+  it('parses a valid graph file', () => {
+    const p = join(dir, 'g.json')
+    writeFileSync(p, JSON.stringify({ nodes: [{ id: 'E1' }], edges: [] }))
+    expect(readGraph(p)).toEqual({ nodes: [{ id: 'E1' }], edges: [] })
+  })
+
+  it('throws a friendly error when the file is missing', () => {
+    expect(() => readGraph(join(dir, 'nope.json'))).toThrow(/cannot read/)
+  })
+
+  it('throws a friendly error on malformed JSON', () => {
+    const p = join(dir, 'bad.json')
+    writeFileSync(p, 'not json{')
+    expect(() => readGraph(p)).toThrow(/is not valid JSON/)
   })
 })

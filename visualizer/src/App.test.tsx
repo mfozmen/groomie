@@ -8,8 +8,13 @@ const sample: GroomedGraph = {
   nodes: [
     { id: 'E1', kind: 'epic', title: 'Dark Mode' },
     { id: 'S1', kind: 'story', epicId: 'E1', title: 'a story' },
+    { id: 'T1', kind: 'task', epicId: 'E1', title: 'a task' },
+    { id: 'B1', kind: 'bug', epicId: 'E1', title: 'a bug' },
   ],
-  edges: [],
+  edges: [
+    { source: 'T1', target: 'S1', kind: 'blocks' },
+    { source: 'B1', target: 'S1', kind: 'affects' },
+  ],
 }
 
 afterEach(() => {
