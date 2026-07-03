@@ -30,9 +30,11 @@ those rules and adding real before/after examples to `examples.md` — no model 
   `visualizer/` companion app has real code — unit-test it with vitest (`npm --prefix
   visualizer test`).
 - **SonarCloud** (`.github/workflows/sonarcloud.yml`) runs static analysis + coverage on
-  `visualizer/`. One-time setup by the repo owner: create the project on
+  `visualizer/`; its quality gate (`SonarCloud Code Analysis`) is a **required** check
+  alongside the Claude review. Coverage comes from vitest — run `npm --prefix visualizer run
+  test:coverage` locally. (One-time owner setup: create the project on
   [sonarcloud.io](https://sonarcloud.io) (org `mfozmen`, key `mfozmen_groomie`), turn **off**
-  Automatic Analysis (it conflicts with the CI scan), and add a `SONAR_TOKEN` repo secret.
+  Automatic Analysis, and add a `SONAR_TOKEN` repo secret.)
 - Before opening a PR, skim [`REVIEW.md`](REVIEW.md) — it lists what reviewers check first,
   led by the open-source dependency rule (**Atlassian MCP is the only hard dependency**;
   never introduce company- or vendor-specific tooling).
