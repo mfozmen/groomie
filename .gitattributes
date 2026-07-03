@@ -1,0 +1,7 @@
+# The shipped visualizer template halves are generated single-file bundles (the tail is a
+# ~1.9MB minified React app) — regenerate with `npm --prefix visualizer run build:template`,
+# never hand-edit. Mark them generated + non-diffable so `git diff` / `gh pr diff` collapse
+# them to "Binary files differ" instead of dumping the whole bundle (which otherwise blows the
+# CI review agent's turn budget and shows up as noise in every diff).
+skills/groomie/assets/visualizer-head.html -diff linguist-generated
+skills/groomie/assets/visualizer-tail.html -diff linguist-generated
