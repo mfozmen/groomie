@@ -299,8 +299,8 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
   (task→story) and `T2 --> T4` wherever one task must precede another (task→task sequencing,
   in any epic); a bug's `affects` is dashed, `B1 -.-> S1`. Emit each edge **once** (the markdown
   stores blocking on both endpoints — dedupe here).
-- **Colour by kind** with a `classDef` block: story blue, task green, bug red. The epic is shown
-  by the subgraph, not a class.
+- **Colour by kind** (Jira defaults) with a `classDef` block: story green, task blue, bug red;
+  the epic subgraph gets a purple tint via a `style epic1 …` line.
 - **Labels are short, sanitized summaries.** Take a 3–6 word gist (the "I want …" for stories,
   the imperative minus discipline for tasks; the name for epics). **Sanitize just the gist** to
   ASCII letters, digits, spaces, and hyphens — drop everything else (`"`, `#`, `<`, `>`, `,`,
@@ -324,12 +324,13 @@ flowchart TD
   T1 --> S2
   T2 --> S1
   B1 -.-> S1
-  classDef story fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
-  classDef task  fill:#dcfce7,stroke:#22c55e,color:#14532d;
+  classDef story fill:#dcfce7,stroke:#22c55e,color:#14532d;
+  classDef task  fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
   classDef bug   fill:#fee2e2,stroke:#ef4444,color:#7f1d1d;
   class S1,S2 story;
   class T1,T2 task;
   class B1 bug;
+  style epic1 fill:#f5f3ff,stroke:#8b5cf6,color:#6d28d9;
 ```
 
 ## JSON graph output

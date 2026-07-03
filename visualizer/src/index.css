@@ -1,10 +1,13 @@
 :root {
-  --story: #3b82f6;
-  --story-bg: #dbeafe;
-  --task: #22c55e;
-  --task-bg: #dcfce7;
+  --story: #22c55e;
+  --story-bg: #dcfce7;
+  --task: #3b82f6;
+  --task-bg: #dbeafe;
   --bug: #ef4444;
   --bug-bg: #fee2e2;
+  --epic: #8b5cf6;
+  --epic-bg: rgba(139, 92, 246, 0.06);
+  --epic-ink: #6d28d9;
   --ink: #0f172a;
   --muted: #64748b;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -84,19 +87,26 @@ body,
 .epic-node {
   width: 100%;
   height: 100%;
-  border: 1px dashed #94a3b8;
-  border-radius: 12px;
-  background: rgba(148, 163, 184, 0.06);
+  border: 1.5px solid var(--epic);
+  border-radius: 14px;
+  background: var(--epic-bg);
 }
 .epic-header {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  color: #334155;
-  padding: 6px 12px;
+  color: var(--epic-ink);
+  padding: 13px 16px;
+  letter-spacing: 0.005em;
 }
 .epic-key {
-  color: var(--muted);
-  font-weight: 600;
+  color: #fff;
+  background: var(--epic);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-right: 7px;
 }
 
 /* ---- item nodes ---- */
@@ -108,19 +118,33 @@ body,
   border: 1.5px solid;
   background: #fff;
   font-size: 12px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.gnode:hover {
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+  transform: translateY(-1px);
 }
 .gnode.selected {
   box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.18);
 }
+@media (prefers-reduced-motion: reduce) {
+  .gnode {
+    transition: none;
+  }
+  .gnode:hover {
+    transform: none;
+  }
+}
 .gnode.story {
   border-color: var(--story);
   background: var(--story-bg);
-  color: #1e3a8a;
+  color: #14532d;
 }
 .gnode.task {
   border-color: var(--task);
   background: var(--task-bg);
-  color: #14532d;
+  color: #1e3a8a;
 }
 .gnode.bug {
   border-color: var(--bug);
