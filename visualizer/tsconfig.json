@@ -17,5 +17,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts"],
+  "//": "Tests are run by vitest (esbuild strips types, so they are not type-checked); excluding them keeps jest-dom matcher types out of the production build's tsc.",
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }
