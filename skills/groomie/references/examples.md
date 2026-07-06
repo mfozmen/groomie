@@ -79,10 +79,13 @@ Tasks carry the HOW. Each is keyed (`T1`, `T2`, …), the title is an **imperati
 under a required discipline prefix (one responsibility per task), and the body is a
 detailed, step-by-step `Implementation` plus `Done when`, then `Blocks:` / `Is blocked by:`
 as `<key> — <title>` (Jira's link terms). A single story is usually built by several tasks
-across disciplines (the account-creation story above is built by `[Backend]`,
-`[Graphic Design]`, and `[Game Dev]` tasks — a separate task each, split by responsibility);
-conversely one foundational task underpins several stories, as the `[Backend]` schema task
-below shows.
+**split across disciplines / repos** (the account-creation story above is built by one
+`[Backend]`, one `[Graphic Design]`, and one `[Game Dev]` task — a separate task per
+discipline, not per step); conversely one foundational task underpins several stories, as the
+`[Backend]` schema task below shows. Note how the Backend task **consolidates** the schema,
+the migrations, and *its own tests* into a single unit (tests appear in `Done when`, not a
+separate `[QA]` task) — that's the granularity to aim for: one shippable unit per discipline,
+not a micro-task per endpoint.
 
 ```markdown
 ### T1 — [Backend] Design and implement user schema and database tables

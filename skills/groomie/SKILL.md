@@ -134,12 +134,19 @@ Core rules (full detail in the guide):
   migration/refactor/infra epic has **no stories**. Not every epic has stories; never force one.
 - **Technical tasks** are the implementation work, keyed `T1`, `T2`, …, titled in the
   **imperative** — `[Discipline] <verb …>` (e.g. `[Backend] Implement the login API
-  endpoints`), one clear responsibility each; split fine (a task per service / endpoint /
-  screen / UI, per discipline), never a terse note. A task is a **sibling of stories, not a
-  subtask** — it is **not QA-tested** (carries `Done when`, not Test Cases) and states its
-  links both ways in Jira's terms, one reference per line as `- <key> — <title>`: **`Blocks:`** the stories it
-  enables — or, in a story-less epic, the tasks it precedes — and **`Is blocked by:`** the
-  tasks that must come first. One foundational task may block many stories.
+  endpoints`), never a terse note. **Size each task to a real unit of delivery, one
+  discipline can ship on its own — do not slice per step.** Split along boundaries that need
+  separate ownership/review/CI: a **different repo or discipline is always its own task**;
+  otherwise keep a single responsibility whole (schema + its endpoints + their tests in one
+  repo = one task, not four). **Tests and in-repo docs live *inside* the task** (note them in
+  `Done when`), never as separate `[QA]`/`[Docs]` tasks — the one exception is
+  documentation produced **outside the repo** (e.g. Confluence), especially when a
+  company-wide process mandates it. Prefer a few well-scoped tasks over many tiny ones (CI
+  overhead is real). A task is a **sibling of stories, not a subtask** — it is **not
+  QA-tested** (carries `Done when`, not Test Cases) and states its links both ways in Jira's
+  terms, one reference per line as `- <key> — <title>`: **`Blocks:`** the stories it enables
+  — or, in a story-less epic, the tasks it precedes — and **`Is blocked by:`** the tasks that
+  must come first. One foundational task may block many stories.
 - **Bugs** only when the source issue reports broken existing behavior; technical or not,
   they are QA-tested like stories.
 - Flag ambiguities as open questions instead of guessing.
