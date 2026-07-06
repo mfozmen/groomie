@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.1](https://github.com/mfozmen/groomie/compare/v0.3.0...v0.3.1) (2026-07-06)
+
+### Bug Fixes
+
+* **visualizer:** size nodes to content, label & separate the edges ([#26](https://github.com/mfozmen/groomie/issues/26)) ([a83c37b](https://github.com/mfozmen/groomie/commit/a83c37b6f60b6fbddc426438e513436e76388f0f))
+
 ## [0.3.0](https://github.com/mfozmen/groomie/compare/v0.2.0...v0.3.0) (2026-07-03)
 
 ### Features
