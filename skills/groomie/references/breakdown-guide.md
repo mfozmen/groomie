@@ -118,11 +118,26 @@ blocker). Bugs are QA-tested whether they are technical or not.
   management` — **not a terse note.** The `[Discipline]` prefix is **required** (it routes
   the work to the producing team — we don't rely on Jira fields). Infer disciplines per
   project; common ones are Backend, Frontend, Graphic Design, Game Dev.
-- **One responsibility per task — split it as fine as the reference backlog does.** A
-  separate task per service / endpoint / screen / UI, per discipline — e.g. registration is
-  *schema*, *email-verification service*, *registration REST endpoints*, *screen mockups*,
-  and *the Unity UI* as five distinct tasks, not one. If a task hides two pieces of work,
-  split it; prefer more small tasks over few big ones.
+- **One responsibility per task — sized to a real unit of delivery, not sliced per step.** A
+  task is one coherent piece of work that one discipline can ship on its own. **Split along
+  boundaries that need separate ownership, review, or CI — a different repository or a
+  different discipline is always its own task.** But do **not** shatter a single
+  responsibility into micro-tasks: the schema, the endpoints that use it, and their tests —
+  same repo, same discipline — are **one** Backend task, not three or four. Every task
+  carries real PR/CI overhead (pipelines can be long), so each must be worth its own cycle;
+  **prefer a few well-scoped tasks over many tiny ones.** Split only when the work crosses a
+  repo boundary, a discipline boundary, or bundles two genuinely independent deliverables —
+  never just to make tasks smaller. Example: registration is a **Backend** task (schema +
+  email-verification + REST endpoints + their tests, one repo) and a **Frontend/Game Dev**
+  task (the UI) — plus a **Graphic Design** task only if mockups don't already exist — not
+  five micro-tasks.
+- **Testing and in-repo documentation belong *inside* the task, not as separate tasks.** The
+  engineer writes the tests and updates in-repo docs (README, code comments, in-repo API
+  docs) as part of doing the work — record them in **`Done when`** (e.g. "unit tests cover
+  the new endpoints", "README updated"), never as a standalone `[QA] Write tests` or
+  `[Docs] Update docs` task. **Exception:** documentation that must be produced **outside the
+  repo** — e.g. a Confluence page — *especially when a company-wide process requires it* —
+  may be its own task, since it's a distinct deliverable in another system.
 - **Body — detailed, step by step:**
   - **Implementation** — concrete technical steps, detailed enough that the engineer can
     follow them without re-deriving the design.
@@ -150,8 +165,9 @@ blocker). Bugs are QA-tested whether they are technical or not.
   stories:** a task that blocks nothing is a smell — a missing story, or out of scope; call
   it out. Foundational / infrastructure tasks are **global blockers** — they block a whole
   set of stories (and often other tasks); mark them clearly.
-- Keep each task independently completable and estimable; split anything hiding two distinct
-  pieces of work.
+- Keep each task independently completable and estimable. Split when a task crosses a
+  repo/discipline boundary or bundles two genuinely independent deliverables — not merely to
+  make it smaller.
 
 ## Estimation (experimental, development-only)
 
