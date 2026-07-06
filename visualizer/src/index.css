@@ -190,6 +190,18 @@ body,
   color: #78350f;
 }
 
+/* ---- edge label (relationship name near the target end) ---- */
+.edge-label {
+  position: absolute;
+  pointer-events: none;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
 /* ---- loader ---- */
 .loader {
   display: flex;
