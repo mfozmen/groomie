@@ -115,4 +115,5 @@ skips tasks for a faster, behavior-only pass. (The old `--full` / `--stories` fl
 
 ---
 
-Contributing? See [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under [MIT](LICENSE).
+What's next? See the [roadmap](docs/ROADMAP.md). Contributing? See [CONTRIBUTING.md](CONTRIBUTING.md).
+Licensed under [MIT](LICENSE).
