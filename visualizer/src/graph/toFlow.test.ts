@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { toFlow } from './toFlow'
-import { EDGE_AFFECTS, EDGE_BLOCKS } from '../colors'
+import { EDGE_AFFECTS_INK, EDGE_BLOCKS_INK } from '../colors'
 import type { GroomedGraph } from '../types'
 
 const graph: GroomedGraph = {
@@ -48,8 +48,8 @@ describe('toFlow', () => {
     expect(blocks.label).toBe('blocks')
     expect(affects.label).toBe('affects')
     expect(blocks.type).toBe('labeled')
-    expect((blocks.data as { color?: string }).color).toBe(EDGE_BLOCKS)
-    expect((affects.data as { color?: string }).color).toBe(EDGE_AFFECTS)
+    expect((blocks.data as { labelColor?: string }).labelColor).toBe(EDGE_BLOCKS_INK)
+    expect((affects.data as { labelColor?: string }).labelColor).toBe(EDGE_AFFECTS_INK)
     // z-order above nodes so an edge grazing a box stays visible
     expect(blocks.zIndex).toBeGreaterThan(0)
     expect(affects.zIndex).toBeGreaterThan(0)

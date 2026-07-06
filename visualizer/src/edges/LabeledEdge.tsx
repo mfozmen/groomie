@@ -1,14 +1,14 @@
+import { memo } from 'react'
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from '@xyflow/react'
+import { LABEL_T_BASE, type EdgeData } from '../graph/toFlow'
 
 // Places the relationship label ("blocks"/"affects") along the edge toward the TARGET end — in the
 // gap approaching the node it points into — instead of at the geometric midpoint. React Flow's
 // default edge label sits at the midpoint, which for an edge that skips a layer lands on top of an
-// unrelated node in the middle. `labelT` (from toFlow, default 0.82) is how far along the edge
-// (0 = source, 1 = target) the label sits, staggered per incoming edge so converging labels don't
-// stack on the target.
-const DEFAULT_LABEL_T = 0.82
-
-export function LabeledEdge({
+// unrelated node in the middle. `labelT` (from toFlow, default LABEL_T_BASE) is how far along the
+// edge (0 = source, 1 = target) the label sits, staggered per incoming edge so converging labels
+// don't stack on the target.
+export const LabeledEdge = memo(function LabeledEdge({
   id,
   sourceX,
   sourceY,
@@ -22,11 +22,10 @@ export function LabeledEdge({
   data,
 }: EdgeProps) {
   const [path] = getBezierPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition })
-  const meta = (data ?? {}) as { color?: string; labelT?: number }
-  const t = meta.labelT ?? DEFAULT_LABEL_T
+  const meta = (data ?? {}) as Partial<EdgeData>
+  const t = meta.labelT ?? LABEL_T_BASE
   const x = sourceX + (targetX - sourceX) * t
   const y = sourceY + (targetY - sourceY) * t
-  const color = meta.color
 
   return (
     <>
@@ -34,11 +33,11 @@ export function LabeledEdge({
       <EdgeLabelRenderer>
         <div
           className="edge-label"
-          style={{ transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`, color }}
+          style={{ transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`, color: meta.labelColor }}
         >
           {label}
         </div>
       </EdgeLabelRenderer>
     </>
   )
-}
+})

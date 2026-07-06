@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import type { EdgeProps } from '@xyflow/react'
+import { EDGE_BLOCKS_INK } from '../colors'
 
 // React Flow doesn't render edges in jsdom (it needs measured nodes), so stub the three edge
 // primitives to plain DOM and unit-test LabeledEdge's own logic: the label text and its
@@ -20,7 +21,7 @@ const props = {
   targetX: 100,
   targetY: 200,
   label: 'blocks',
-  data: { kind: 'blocks', color: '#64748b' },
+  data: { kind: 'blocks', labelColor: EDGE_BLOCKS_INK, labelT: 0.82 },
 } as unknown as EdgeProps
 
 describe('LabeledEdge', () => {
