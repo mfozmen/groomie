@@ -44,8 +44,8 @@ export function App() {
       const flow = toFlow(g)
       const laidOut = await layout(flow.nodes, flow.edges)
       setGraph(g)
-      setNodes(laidOut)
-      setEdges(flow.edges)
+      setNodes(laidOut.nodes)
+      setEdges(laidOut.edges)
       setSelectedId(null)
       setError(null)
     } catch (e) {

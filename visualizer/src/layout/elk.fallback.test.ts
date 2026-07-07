@@ -30,7 +30,7 @@ describe('layout read-back fallbacks (defensive: ELK returns no coords)', () => 
       edges: [],
     }
     const { nodes, edges } = toFlow(g)
-    const laid = await layout(nodes, edges)
+    const { nodes: laid } = await layout(nodes, edges)
 
     expect(laid.find((n) => n.id === 'E1')?.position).toEqual({ x: 0, y: 0 })
     expect(laid.find((n) => n.id === 'S1')?.position).toEqual({ x: 0, y: 0 })

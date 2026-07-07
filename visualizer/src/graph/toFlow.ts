@@ -1,12 +1,20 @@
 import { MarkerType, type Edge, type Node } from '@xyflow/react'
 import type { EdgeKind, GroomedGraph, GroomNode, NodeKind } from '../types'
+import type { Pt } from '../edges/geometry'
 import { EDGE_AFFECTS, EDGE_AFFECTS_INK, EDGE_BLOCKS, EDGE_BLOCKS_INK } from '../colors'
 
 export type FlowNode = Node<{ groom: GroomNode }>
 
 // The data every `labeled` edge carries — the single source of truth LabeledEdge consumes
 // (mirrors FlowNode's typed data). `labelColor` is the contrast-safe label ink, not the stroke.
-export type EdgeData = { kind: EdgeKind; labelColor: string; labelT: number }
+// `points` are ELK's routed bend points (absolute flow coords), attached by layout() when the edge
+// has to steer around intervening nodes; absent for a straight adjacent-layer edge.
+export type EdgeData = {
+  kind: EdgeKind
+  labelColor: string
+  labelT: number
+  points?: Pt[]
+}
 
 // Label placement along the edge (0 = source, 1 = target): start near the target, back off a step
 // per additional incoming edge so converging labels fan out instead of stacking, floored so a
