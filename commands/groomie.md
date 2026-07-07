@@ -4,7 +4,10 @@ description: "Groom a messy single-feature Jira issue into an epic / user-story 
 
 Groom a Jira issue into a clean backlog breakdown. Arguments: `$ARGUMENTS`
 
-Invoke the **groomie** skill (use the Skill tool with skill `groomie`) and follow it exactly.
+Invoke the **groomie** skill (use the Skill tool with skill `groomie`) **in this (main) thread** and
+follow it exactly. Do **not** hand the grooming to a general-purpose subagent — it would groom from
+its own idea of grooming and drop the skill's rules; if grooming must run in a subagent, dispatch the
+dedicated `groomie` agent instead.
 This bare `/groomie <ISSUE-KEY>` runs the default **full** mode. The mode can also be picked by
 subcommand — `/groomie:full` and `/groomie:stories` — which is the preferred way.
 
