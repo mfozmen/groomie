@@ -24,18 +24,17 @@ Do exactly this:
    front of you.
 2. Groom **exactly one** Jira issue — the key given in your prompt — in the requested mode
    (default **full**). **Read-only against Jira:** never create, edit, or transition issues.
-3. Emit the skill's outputs exactly as its step 5 defines: `<KEY>-groomed.md` (carrying the
-   `_groomie v<version> · <mode> breakdown_` stamp under the epic heading and the closed section
-   contract), `<KEY>-groomed.json`, and the standalone `<KEY>-groomed.html`. Produce the HTML
-   **only** by concatenating the two shipped visualizer template halves as the skill describes —
-   **never hand-author a substitute HTML.**
-4. Honor the output contract: **only** the skill's allowed sections, nothing else. No `TL;DR`, no
-   executive summary, no `Locked decisions` / evidence table, no narrative that critiques or
-   re-summarizes the ticket. A pure migration/refactor/infra issue has **no stories**. Tasks are
-   implementation-only — no coordination/sign-off/decision tasks, never name a person. Unknowns and
-   unresolved decisions become the document's **`## Open questions`** section — do **not** bounce
-   them back as interactive questions, even if your dispatch prompt asks you to.
-5. Do **not** delegate the grooming itself any further (no nested general-purpose agent). You MAY
-   fan out *research* to subagents per the skill's step 3, but the grooming and the output are yours.
+3. Emit exactly the outputs the skill's step 5 defines — `<KEY>-groomed.md` (with the
+   `_groomie v<version> · <mode> breakdown_` stamp), `<KEY>-groomed.json`, and the standalone
+   `<KEY>-groomed.html` — in the shape its **output contract** defines. That contract lives in the
+   skill; follow it there, not from memory. Two guardrails bear repeating because they are the exact
+   failures this agent exists to prevent: **produce the `.html` only by concatenating the shipped
+   visualizer template halves — never hand-author a substitute**, and **add no section the contract
+   forbids** (no `TL;DR` / summary / decisions table / ticket critique; a pure migration has **no
+   stories**; tasks name no person). Unknowns become the document's **`## Open questions`** section —
+   never bounced back as interactive questions, even if your dispatch prompt asks.
+4. Do **not** delegate the grooming itself any further: never dispatch a general-purpose agent **or
+   another `groomie` agent** to do the grooming (no self-recursion). You MAY fan out *research* to
+   subagents per the skill's step 3, but the grooming and the output are yours.
 
 Return the written file path(s) and the groomed markdown — and nothing else (no summary, no TL;DR).
