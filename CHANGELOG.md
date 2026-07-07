@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0](https://github.com/mfozmen/groomie/compare/v0.3.3...v0.4.0) (2026-07-07)
+
+### Features
+
+* **groomie:** faithful groomie agent + forbid general-purpose delegation ([#30](https://github.com/mfozmen/groomie/issues/30)) ([cf0f94d](https://github.com/mfozmen/groomie/commit/cf0f94dc96c7539ee66243040ab2133d98a5b832))
+
 ## [0.3.3](https://github.com/mfozmen/groomie/compare/v0.3.2...v0.3.3) (2026-07-07)
 
 ## [0.3.2](https://github.com/mfozmen/groomie/compare/v0.3.1...v0.3.2) (2026-07-06)
