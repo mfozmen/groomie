@@ -85,13 +85,18 @@ describe('layout (ELK)', () => {
     expect(pts).toBeDefined()
     expect(pts!.length).toBeGreaterThan(0)
 
-    // The route must clear T2's box: some bend point sits outside T2's horizontal span (in absolute
-    // flow coords). T2's absolute x-range is epicX + T2.x .. + T2.x + 240.
+    // The real invariant: NO bend point may sit inside T2's box (in absolute flow coords). A route
+    // that enters T2 is exactly the overlap bug — ELK's coords are container-relative, so if we
+    // don't add the epic origin the points land 24px/76px off and cut through T2.
     const epic = laid.find((n) => n.id === 'E1')!
     const t2 = laid.find((n) => n.id === 'T2')!
     const t2Left = epic.position.x + t2.position.x
     const t2Right = t2Left + 240
-    const clears = pts!.some((p) => p.x <= t2Left || p.x >= t2Right)
-    expect(clears).toBe(true)
+    const t2Top = epic.position.y + t2.position.y
+    const t2Bottom = t2Top + estimateItemHeight(t2)
+    const entersT2 = pts!.some(
+      (p) => p.x > t2Left && p.x < t2Right && p.y > t2Top && p.y < t2Bottom,
+    )
+    expect(entersT2).toBe(false)
   })
 })
