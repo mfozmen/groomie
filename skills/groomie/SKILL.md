@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Does NOT write anything back to Jira.
+description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Does NOT write anything back to Jira.
 ---
 
 # Groomie
@@ -250,3 +250,10 @@ the user into thinking they got the real output, and hides that the template ste
 - Read-only against Jira. Never create, edit, or transition issues.
 - One feature per run.
 - No invented requirements — unknowns become open questions.
+- **Run this skill in the main thread** (invoked directly / via `/groomie`). Do **not** delegate the
+  grooming to a **general-purpose** subagent — a general-purpose agent grooms from its own idea of
+  "grooming" and drops these rules, the references, and the asset step, which produces exactly the
+  malformed output this skill exists to prevent. You MAY fan out *research* to subagents (step 3),
+  but the grooming and the output stay here. If grooming genuinely must run inside a subagent (an
+  orchestration flow), dispatch the dedicated **`groomie` agent**, which loads and follows this skill
+  faithfully — never a bare general-purpose agent.
