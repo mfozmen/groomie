@@ -96,19 +96,24 @@ export async function layout(
     }
   }
 
-  // Collect each edge's routed bend points, translated into absolute flow coordinates. ELK hoists
-  // an edge to the least-common-ancestor of its endpoints, so an edge between two children of an
-  // epic lives under that epic and its section coordinates are epic-relative — add the epic origin.
-  // We keep only the interior bend points; the endpoints stay glued to React Flow's handles.
+  // Collect each edge's routed bend points, translated into absolute flow coordinates. ELK returns
+  // every edge with a `container` field naming the node in whose coordinate system its section
+  // points live — the least-common-ancestor of its endpoints (e.g. the epic holding both tasks),
+  // NOT the root. So a T1→T3 edge's bend points are epic-relative even though ELK lists the edge in
+  // the root `edges` array; we offset them by that container's absolute position (from `laid`).
+  // Reading them with a zero offset was the bug that left the route 24px/76px off — cutting through
+  // the node in the middle instead of clearing it. Endpoints stay glued to React Flow's handles.
   const routed = new Map<string, Pt[]>()
-  const readEdges = (container: ElkNode, ox: number, oy: number) => {
-    for (const e of container.edges ?? []) {
-      const bends = (e.sections?.[0]?.bendPoints ?? []).map((p) => ({ x: p.x + ox, y: p.y + oy }))
+  const collectEdges = (n: ElkNode) => {
+    for (const e of n.edges ?? []) {
+      const container = (e as { container?: string }).container
+      const off = (container ? laid.get(container) : undefined) ?? { x: 0, y: 0 }
+      const bends = (e.sections?.[0]?.bendPoints ?? []).map((p) => ({ x: p.x + off.x, y: p.y + off.y }))
       routed.set(e.id, bends)
     }
+    for (const c of n.children ?? []) collectEdges(c)
   }
-  readEdges(res, 0, 0)
-  for (const epic of res.children ?? []) readEdges(epic, epic.x ?? 0, epic.y ?? 0)
+  collectEdges(res)
 
   const outNodes = nodes.map((n) => {
     const p = laid.get(n.id)
