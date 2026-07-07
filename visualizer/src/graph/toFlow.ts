@@ -1,6 +1,7 @@
 import { MarkerType, type Edge, type Node } from '@xyflow/react'
 import type { EdgeKind, GroomedGraph, GroomNode, NodeKind } from '../types'
 import type { Pt } from '../edges/geometry'
+import { transitiveReduction } from './reduce'
 import { EDGE_AFFECTS, EDGE_AFFECTS_INK, EDGE_BLOCKS, EDGE_BLOCKS_INK } from '../colors'
 
 export type FlowNode = Node<{ groom: GroomNode }>
@@ -56,9 +57,12 @@ export function toFlow(graph: GroomedGraph): { nodes: FlowNode[]; edges: Edge[] 
   // a story AND a bug that affects it) fan out along the approach instead of stacking on the node.
   const perTarget = new Map<string, number>()
 
-  const edges: Edge<EdgeData>[] = graph.edges
-    .filter((e) => nodeIds.has(e.source) && nodeIds.has(e.target))
-    .map((e, i) => {
+  // Drop transitively-implied blocks edges before layout so a redundant skip edge never gets drawn
+  // (and never has to detour around the nodes it skips). The JSON keeps every edge — this only
+  // affects what's rendered.
+  const validEdges = graph.edges.filter((e) => nodeIds.has(e.source) && nodeIds.has(e.target))
+
+  const edges: Edge<EdgeData>[] = transitiveReduction(validEdges).map((e, i) => {
       const affects = e.kind === 'affects'
       const stroke = affects ? EDGE_AFFECTS : EDGE_BLOCKS
       const order = perTarget.get(e.target) ?? 0

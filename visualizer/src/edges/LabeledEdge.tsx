@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from '@xyflow/react'
 import { LABEL_T_BASE, type EdgeData } from '../graph/toFlow'
-import { pathThrough, pointAlong } from './geometry'
+import { roundedPath, pointAlong } from './geometry'
 
 // Draws the edge along ELK's routed bend points when it has to steer around intervening nodes
 // (`data.points`, set by layout), falling back to a bezier for straight adjacent-layer edges.
@@ -34,7 +34,7 @@ export const LabeledEdge = memo(function LabeledEdge({
   if (routed && routed.length > 0) {
     // Endpoints stay glued to the handles; ELK's bend points steer the middle around the boxes.
     const full = [{ x: sourceX, y: sourceY }, ...routed, { x: targetX, y: targetY }]
-    path = pathThrough(full)
+    path = roundedPath(full)
     const at = pointAlong(full, t)
     x = at.x
     y = at.y

@@ -99,3 +99,26 @@ describe('toFlow referential integrity (ELK rejects unknown shape ids)', () => {
     expect(nodes.find((n) => n.id === 'X')?.type).toBe('chore')
   })
 })
+
+describe('toFlow — transitive reduction of blocks edges', () => {
+  it('does not render a blocks edge implied by a longer path', () => {
+    // T1→T2, T2→T3, T1→T3 — the direct T1→T3 is implied by T1→T2→T3, so it isn't drawn.
+    const { edges } = toFlow({
+      nodes: [
+        { id: 'E1', kind: 'epic', title: 'e' },
+        { id: 'T1', kind: 'task', epicId: 'E1', title: 't1' },
+        { id: 'T2', kind: 'task', epicId: 'E1', title: 't2' },
+        { id: 'T3', kind: 'task', epicId: 'E1', title: 't3' },
+      ],
+      edges: [
+        { source: 'T1', target: 'T2', kind: 'blocks' },
+        { source: 'T2', target: 'T3', kind: 'blocks' },
+        { source: 'T1', target: 'T3', kind: 'blocks' },
+      ],
+    })
+    expect(edges).toHaveLength(2)
+    expect(edges.some((e) => e.source === 'T1' && e.target === 'T3')).toBe(false)
+    expect(edges.some((e) => e.source === 'T1' && e.target === 'T2')).toBe(true)
+    expect(edges.some((e) => e.source === 'T2' && e.target === 'T3')).toBe(true)
+  })
+})

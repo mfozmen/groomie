@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Edge } from '@xyflow/react'
 import { layout, estimateItemHeight } from './elk'
 import { toFlow } from '../graph/toFlow'
 import type { EdgeData, FlowNode } from '../graph/toFlow'
@@ -77,10 +78,15 @@ describe('layout (ELK)', () => {
       ],
     }
     const flow = toFlow(skip)
-    const { nodes: laid, edges } = await layout(flow.nodes, flow.edges)
+    // toFlow drops the transitively-implied T1→T3; add it back explicitly so this test exercises
+    // layout()'s ROUTING of a genuine skip edge (routing is layout's job, reduction is toFlow's).
+    const withSkip: Edge[] = [
+      ...flow.edges,
+      { id: 'skip', source: 'T1', target: 'T3', type: 'labeled', data: { kind: 'blocks', labelColor: '#000', labelT: 0.8 } },
+    ]
+    const { nodes: laid, edges } = await layout(flow.nodes, withSkip)
 
-    // T1→T3 is the third edge (id e2). It must carry routed bend points.
-    const skipEdge = edges.find((e) => e.id === 'e2')!
+    const skipEdge = edges.find((e) => e.id === 'skip')!
     const pts = (skipEdge.data as EdgeData).points
     expect(pts).toBeDefined()
     expect(pts!.length).toBeGreaterThan(0)
