@@ -132,6 +132,11 @@ Core rules (full detail in the guide):
   by:`** the tasks that build it (one per line as `- <key> — <title>`). QA tests stories. **Only write
   stories when the feature changes user-facing behavior** — a pure technical
   migration/refactor/infra epic has **no stories**. Not every epic has stories; never force one.
+  A **technical outcome dressed as a story is not a story**: "the snapshot is queryable in the
+  primary store", "the backfill is verifiable/reversible", or any operator/"system" story invented
+  on a migration must **not** appear (worked anti-patterns: the guide's story section and
+  examples.md). If there is no real end-user `As a …, I want …, so that ….` behavior, emit **no**
+  stories at all (epic + tasks only) — do not manufacture them to fill the layer.
 - **Technical tasks** are the implementation work, keyed `T1`, `T2`, …, titled in the
   **imperative** — `[Discipline] <verb …>` (e.g. `[Backend] Implement the login API
   endpoints`), never a terse note. **Size each task to a real unit of delivery, one
@@ -146,7 +151,10 @@ Core rules (full detail in the guide):
   QA-tested** (carries `Done when`, not Test Cases) and states its links both ways in Jira's
   terms, one reference per line as `- <key> — <title>`: **`Blocks:`** the stories it enables
   — or, in a story-less epic, the tasks it precedes — and **`Is blocked by:`** the tasks that
-  must come first. One foundational task may block many stories.
+  must come first. One foundational task may block many stories. **Tasks are implementation work
+  only** — never a coordination, sign-off, decision, approval, or meeting task (no `T0 — Decision
+  & coordination`), and **never name a person** (no `Get sign-off from <name>`). An unresolved
+  decision — which table, whose approval, which endpoint — is an **open question**, not a task.
 - **Bugs** only when the source issue reports broken existing behavior; technical or not,
   they are QA-tested like stories.
 - Flag ambiguities as open questions instead of guessing.
@@ -160,6 +168,36 @@ acceptance criteria, test cases, and `Is blocked by:` its task keys), then the t
 empty section entirely** — no `## Stories` when there's no behavior change, no `## Bugs`
 when there are none, no empty `## Open questions`; never print a "(none)" placeholder. In `--stories` mode, omit the tasks section; in `--estimate` mode,
 add a Fibonacci `Estimate:` to each task.
+
+**Output contract — emit these sections and NOTHING else.** In this exact order:
+
+1. `# Epic: <name>` — the heading, then the version stamp line (see below), then
+   Description + Business Value [+ Design].
+2. `## Stories` — **only** if the feature changes user-facing behavior; omit entirely otherwise.
+3. `## Tasks` — omitted entirely in `--stories` mode.
+4. `## Bugs` — only if the issue reports broken behavior.
+5. `## Open questions` — only if any.
+6. `## Diagram`
+
+Emit **no other sections and no preamble.** Specifically **forbidden:** a `TL;DR` / executive
+summary / "the work, simplified", a `Locked decisions` / decisions / evidence / rationale table,
+an `Epic (context)` or any narrative that **critiques, "refutes", or re-summarizes the ticket.**
+Your research shapes the *content* of the sections above — it is never shown as its own narrative.
+A contradiction between the ticket and the code is an **open question**, never a commentary section.
+
+**Version stamp (every run).** Immediately under the first `# Epic:` heading (before its
+`**Description:**`; once per document, not per epic), emit one italic line so both you and the
+reader know which Groomie — and which mode — produced the breakdown:
+
+```markdown
+_groomie v<version> · <mode> breakdown_
+```
+
+`<mode>` is the active mode word: `full`, `stories`, or `estimate` (e.g.
+`_groomie v0.3.3 · stories breakdown_`). Read `<version>` from the `version` field of the plugin
+manifest at `$SKILL/../../.claude-plugin/plugin.json` (the same `$SKILL` base path used for the
+HTML step, e.g. `grep '"version"' "$SKILL/../../.claude-plugin/plugin.json"`). If it can't be
+read, stamp `_groomie (version unknown) · <mode> breakdown_` rather than omitting the line.
 
 End with a **`## Diagram`** section — one fenced ```mermaid `flowchart TD` that renders the
 breakdown as a graph: one `subgraph` per epic (container) holding its story/task/bug nodes,
@@ -199,6 +237,13 @@ this skill's real base path), you skip the HTML rather than write a truncated, b
 user the `.html` path when it's produced. If the assets are missing or `sed`/`cat` are unavailable,
 skip the HTML — the `.md` (with its mermaid diagram, which renders in any markdown viewer) and the
 `.json` are the primary outputs and always ship.
+
+**Never hand-author the `.html` yourself.** It is produced *only* by concatenating the two shipped
+template halves around the graph, as above — that file IS the interactive visualizer (a ~1.9 MB
+React/React-Flow bundle). If you cannot run that step (assets not found, `$SKILL` unresolved, no
+shell), **skip the `.html` entirely and say so** — do **not** substitute a bespoke, static, or
+hand-written HTML. A hand-rolled card-list page is *not* the visualizer: it has no graph, misleads
+the user into thinking they got the real output, and hides that the template step failed.
 
 ## Boundaries
 

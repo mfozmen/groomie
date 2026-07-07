@@ -54,6 +54,14 @@ blocker). Bugs are QA-tested whether they are technical or not.
   infra work — it has **no stories**: emit the epic + tasks only. **Not every epic has
   stories.** Never fabricate operator / "system" / consumer stories to fill the layer, and
   **omit the `## Stories` section entirely** when there are none. Don't force it.
+  - A **technical outcome dressed as a story is not a story.** These are the tell-tale anti-patterns
+    — none of them is a story:
+    - ❌ "The snapshot is queryable in the primary store" (a data-layer outcome)
+    - ❌ "Existing records are backfilled safely in one pass" (an operator/migration step)
+    - ❌ "The backfill is verifiable and reversible" (a task's `Done when`, not a user need)
+  - If nothing rephrases into a genuine `As a <real user>, I want …, so that ….` behavior, the
+    honest answer is **zero stories** — a backfill/migration is epic + `## Tasks` + `## Open
+    questions`.
 - Vertical, user-visible slices — **non-technical**, describing what the user experiences.
   Each delivers something a user (or operator/admin) can perceive. If a "story" has no
   user-visible outcome, it's probably a task. **QA tests stories** — the Test Cases below
@@ -138,6 +146,11 @@ blocker). Bugs are QA-tested whether they are technical or not.
   `[Docs] Update docs` task. **Exception:** documentation that must be produced **outside the
   repo** — e.g. a Confluence page — *especially when a company-wide process requires it* —
   may be its own task, since it's a distinct deliverable in another system.
+- **Tasks are implementation work only.** Never emit a coordination, sign-off, decision, approval,
+  or meeting task (no `T0 — Decision & coordination`), and **never name a person** (no
+  `Get sign-off from <name>`). An unresolved decision — which table to use, whose approval is
+  needed, which endpoint is correct — is an **open question**, not a task. A task tells one
+  discipline what to *build*.
 - **Body — detailed, step by step:**
   - **Implementation** — concrete technical steps, detailed enough that the engineer can
     follow them without re-deriving the design.
@@ -207,6 +220,8 @@ the work is filed.
 
 ```markdown
 # Epic: <bounded capability name>
+
+_groomie v<version> · <mode> breakdown_   <!-- version from .claude-plugin/plugin.json; mode = full|stories|estimate; see SKILL.md step 5 -->
 
 **Description:** <what the feature implements — one sentence>
 
@@ -298,9 +313,17 @@ behavior change → no `## Stories`; no bugs → no `## Bugs`; no open questions
 `## Open questions`. Never print an empty heading or a "(none)" placeholder. A pure
 technical migration, for example, is often just the epic + `## Tasks` + `## Open questions`.
 
+**Emit these sections and no others.** The allowed set is exactly: the `# Epic:` block (with its
+version-stamp line), `## Stories`, `## Tasks`, `## Bugs`, `## Open questions`, `## Diagram`. Do
+**not** add a `TL;DR` / executive summary / "the work, simplified", a `Locked decisions` /
+decisions / evidence / rationale table, an `Epic (context)` preamble, or any narrative that
+critiques, "refutes", or re-summarizes the ticket. Research shapes the *content* of the sections
+above; it is never a section of its own.
+
 **Mode deltas** (see the skill's Modes section): in `--stories` mode omit the `## Tasks`
 section entirely; in `--estimate` mode each task carries an `**Estimate:**` line
-(Fibonacci — see Estimation above).
+(Fibonacci — see Estimation above). The version stamp's `<mode>` word follows the run:
+`full`, `stories`, or `estimate`.
 
 ## Diagram (mermaid)
 
