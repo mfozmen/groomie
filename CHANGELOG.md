@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.0](https://github.com/mfozmen/groomie/compare/v0.5.0...v0.6.0) (2026-07-07)
+
+### Features
+
+* **visualizer:** transitive-reduce blocks edges + round routed corners ([#34](https://github.com/mfozmen/groomie/issues/34)) ([7cc00fe](https://github.com/mfozmen/groomie/commit/7cc00fe8a94dd64125d8ada4f26f5d93b8fc4b68))
+
+### Bug Fixes
+
+* **visualizer:** offset routed edges by their ELK container, not zero ([#33](https://github.com/mfozmen/groomie/issues/33)) ([2c66b19](https://github.com/mfozmen/groomie/commit/2c66b1963fbef62d10596f23d9a4506e1ac7c751))
+
 ## [0.5.0](https://github.com/mfozmen/groomie/compare/v0.4.1...v0.5.0) (2026-07-07)
 
 ### Features
