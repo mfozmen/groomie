@@ -56,7 +56,7 @@ blocker). Bugs are QA-tested whether they are technical or not.
   **omit the `## Stories` section entirely** when there are none. Don't force it.
   - A **technical outcome dressed as a story is not a story.** These are the tell-tale anti-patterns
     — none of them is a story:
-    - ❌ "The snapshot is queryable in the new store" (a data-layer outcome)
+    - ❌ "The snapshot is queryable in the primary store" (a data-layer outcome)
     - ❌ "Existing records are backfilled safely in one pass" (an operator/migration step)
     - ❌ "The backfill is verifiable and reversible" (a task's `Done when`, not a user need)
   - If nothing rephrases into a genuine `As a <real user>, I want …, so that ….` behavior, the
@@ -147,10 +147,10 @@ blocker). Bugs are QA-tested whether they are technical or not.
   repo** — e.g. a Confluence page — *especially when a company-wide process requires it* —
   may be its own task, since it's a distinct deliverable in another system.
 - **Tasks are implementation work only.** Never emit a coordination, sign-off, decision, approval,
-  or meeting task (no `T0 — Decision & coordination`), and **never name a person** (no "Get sign-off
-  from <name>"). An unresolved decision — which table to use, whose approval is needed, which
-  endpoint is correct — is an **open question**, not a task. A task tells one discipline what to
-  *build*.
+  or meeting task (no `T0 — Decision & coordination`), and **never name a person** (no
+  `Get sign-off from <name>`). An unresolved decision — which table to use, whose approval is
+  needed, which endpoint is correct — is an **open question**, not a task. A task tells one
+  discipline what to *build*.
 - **Body — detailed, step by step:**
   - **Implementation** — concrete technical steps, detailed enough that the engineer can
     follow them without re-deriving the design.
@@ -221,7 +221,7 @@ the work is filed.
 ```markdown
 # Epic: <bounded capability name>
 
-_groomie v<version> · full breakdown_   <!-- version from .claude-plugin/plugin.json; see SKILL.md step 5 -->
+_groomie v<version> · <mode> breakdown_   <!-- version from .claude-plugin/plugin.json; mode = full|stories|estimate; see SKILL.md step 5 -->
 
 **Description:** <what the feature implements — one sentence>
 
@@ -321,7 +321,8 @@ Research shapes the *content* of the sections above; it is never a section of it
 
 **Mode deltas** (see the skill's Modes section): in `--stories` mode omit the `## Tasks`
 section entirely; in `--estimate` mode each task carries an `**Estimate:**` line
-(Fibonacci — see Estimation above).
+(Fibonacci — see Estimation above). The version stamp's `<mode>` word follows the run:
+`full`, `stories`, or `estimate`.
 
 ## Diagram (mermaid)
 

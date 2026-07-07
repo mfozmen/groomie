@@ -132,10 +132,11 @@ Core rules (full detail in the guide):
   by:`** the tasks that build it (one per line as `- <key> — <title>`). QA tests stories. **Only write
   stories when the feature changes user-facing behavior** — a pure technical
   migration/refactor/infra epic has **no stories**. Not every epic has stories; never force one.
-  A **technical outcome dressed as a story is not a story**: "the records are queryable in the new
-  store", "the backfill is verifiable/reversible", or any operator/"system" story invented on a
-  migration must **not** appear. If there is no real end-user `As a …, so that .` behavior, emit
-  **no** stories at all (epic + tasks only) — do not manufacture them to fill the layer.
+  A **technical outcome dressed as a story is not a story**: "the snapshot is queryable in the
+  primary store", "the backfill is verifiable/reversible", or any operator/"system" story invented
+  on a migration must **not** appear (worked anti-patterns: the guide's story section and
+  examples.md). If there is no real end-user `As a …, I want …, so that ….` behavior, emit **no**
+  stories at all (epic + tasks only) — do not manufacture them to fill the layer.
 - **Technical tasks** are the implementation work, keyed `T1`, `T2`, …, titled in the
   **imperative** — `[Discipline] <verb …>` (e.g. `[Backend] Implement the login API
   endpoints`), never a terse note. **Size each task to a real unit of delivery, one
@@ -170,13 +171,13 @@ add a Fibonacci `Estimate:` to each task.
 
 **Output contract — emit these sections and NOTHING else.** In this exact order:
 
-1. `# Epic: <name>` (Description + Business Value [+ Design])
-2. A version stamp line directly under the epic heading — see below.
-3. `## Stories` — **only** if the feature changes user-facing behavior; omit entirely otherwise.
-4. `## Tasks`
-5. `## Bugs` — only if the issue reports broken behavior.
-6. `## Open questions` — only if any.
-7. `## Diagram`
+1. `# Epic: <name>` — the heading, then the version stamp line (see below), then
+   Description + Business Value [+ Design].
+2. `## Stories` — **only** if the feature changes user-facing behavior; omit entirely otherwise.
+3. `## Tasks` — omitted entirely in `--stories` mode.
+4. `## Bugs` — only if the issue reports broken behavior.
+5. `## Open questions` — only if any.
+6. `## Diagram`
 
 Emit **no other sections and no preamble.** Specifically **forbidden:** a `TL;DR` / executive
 summary / "the work, simplified", a `Locked decisions` / decisions / evidence / rationale table,
@@ -184,17 +185,19 @@ an `Epic (context)` or any narrative that **critiques, "refutes", or re-summariz
 Your research shapes the *content* of the sections above — it is never shown as its own narrative.
 A contradiction between the ticket and the code is an **open question**, never a commentary section.
 
-**Version stamp (every run).** Immediately under the `# Epic:` heading, emit one italic line so
-both you and the reader know which Groomie produced the breakdown:
+**Version stamp (every run).** Immediately under the first `# Epic:` heading (before its
+`**Description:**`; once per document, not per epic), emit one italic line so both you and the
+reader know which Groomie — and which mode — produced the breakdown:
 
 ```markdown
-_groomie v<version> · full breakdown_
+_groomie v<version> · <mode> breakdown_
 ```
 
-Read `<version>` from the `version` field of the plugin manifest at
-`$SKILL/../../.claude-plugin/plugin.json` (the same `$SKILL` base path used for the HTML step,
-e.g. `grep '"version"' "$SKILL/../../.claude-plugin/plugin.json"`). If it can't be read, stamp
-`_groomie (version unknown) · full breakdown_` rather than omitting the line.
+`<mode>` is the active mode word: `full`, `stories`, or `estimate` (e.g.
+`_groomie v0.3.3 · stories breakdown_`). Read `<version>` from the `version` field of the plugin
+manifest at `$SKILL/../../.claude-plugin/plugin.json` (the same `$SKILL` base path used for the
+HTML step, e.g. `grep '"version"' "$SKILL/../../.claude-plugin/plugin.json"`). If it can't be
+read, stamp `_groomie (version unknown) · <mode> breakdown_` rather than omitting the line.
 
 End with a **`## Diagram`** section — one fenced ```mermaid `flowchart TD` that renders the
 breakdown as a graph: one `subgraph` per epic (container) holding its story/task/bug nodes,
