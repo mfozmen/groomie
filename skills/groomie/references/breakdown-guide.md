@@ -315,9 +315,10 @@ technical migration, for example, is often just the epic + `## Tasks` + `## Open
 
 **Emit these sections and no others.** The allowed set is exactly: the `# Epic:` block (with its
 version-stamp line), `## Stories`, `## Tasks`, `## Bugs`, `## Open questions`, `## Diagram`. Do
-**not** add a `TL;DR` / executive summary, a `Locked decisions` / decisions / evidence / rationale
-table, an `Epic (context)` preamble, or any narrative that critiques or re-summarizes the ticket.
-Research shapes the *content* of the sections above; it is never a section of its own.
+**not** add a `TL;DR` / executive summary / "the work, simplified", a `Locked decisions` /
+decisions / evidence / rationale table, an `Epic (context)` preamble, or any narrative that
+critiques, "refutes", or re-summarizes the ticket. Research shapes the *content* of the sections
+above; it is never a section of its own.
 
 **Mode deltas** (see the skill's Modes section): in `--stories` mode omit the `## Tasks`
 section entirely; in `--estimate` mode each task carries an `**Estimate:**` line
