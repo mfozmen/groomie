@@ -119,6 +119,29 @@ story — it's a foundational piece that `Blocks:` every account-related story i
 It carries `Done when` (not Test Cases) because tasks are not QA-tested; the stories it
 blocks are the ones QA verifies.
 
+## Anti-patterns (what a groomed doc must never do)
+
+Calibration on a **backfill/migration** issue — one that copies existing data into a new store and
+changes **no** user-facing behavior. Every item below is a real failure mode; the fix is the honest
+shape. (Synthetic example — a generic "snapshot legacy records into the primary store" migration.)
+
+- **A TL;DR / "the work, simplified" / decisions or evidence table.** ❌ Only the contracted
+  sections exist (epic → stories? → tasks → bugs? → open questions → diagram). Research shapes the
+  *content*; it is never its own narrative, and the doc never "refutes" or re-summarizes the ticket.
+- **Technical outcomes dressed as stories.** ❌ `S1 — The snapshot is queryable in the primary
+  store`, `S2 — Existing records are backfilled in one pass`, `S3 — The backfill is verifiable and
+  reversible`. None is an `As a <real user>, I want …, so that .` behavior — so a pure migration has
+  **zero stories**. ✅ Emit just the epic + `## Tasks` + `## Open questions`.
+- **A coordination / sign-off / decision task.** ❌ `T0 — Decision & coordination (blocking): get
+  DBA sign-off`. Tasks are implementation only and never name a person. ✅ The unresolved decisions
+  (which holder table, whose approval, the schema-change process) go under `## Open questions`.
+- **A standalone tests task.** ❌ `T4 — Tests`. ✅ Tests live in the producing task's `Done when`
+  (e.g. the backfill task's "unit tests cover happy-path, idempotency, and count-verify").
+
+So the bad run's `TL;DR + S1/S2/S3 + T0 + …T4(Tests) + Locked decisions` collapses to the honest
+shape: **one epic, a handful of implementation tasks (schema, backfill+verify+tests), and the open
+questions** — with the `_groomie v<version>_` stamp under the epic heading.
+
 ## Diagram
 
 The document ends with a `## Diagram` mermaid block: one `subgraph` per epic (container),
