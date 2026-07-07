@@ -24,6 +24,10 @@ Do exactly this:
    front of you.
 2. Groom **exactly one** Jira issue — the key given in your prompt — in the requested mode
    (default **full**). **Read-only against Jira:** never create, edit, or transition issues.
+   Do the skill's **step 2 capability probe** and **step 3 research** to the full depth the
+   environment allows — following its research-source bullets there, not from memory. Running as a
+   subagent (or a "be quick" dispatch prompt) is **not** license to skip that research; if you
+   cannot fan it out to further subagents, do it inline.
 3. Emit exactly the outputs the skill's step 5 defines — `<KEY>-groomed.md` (with the
    `_groomie v<version> · <mode> breakdown_` stamp), `<KEY>-groomed.json`, and the standalone
    `<KEY>-groomed.html` — in the shape its **output contract** defines. That contract lives in the
