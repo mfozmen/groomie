@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.0](https://github.com/mfozmen/groomie/compare/v0.4.1...v0.5.0) (2026-07-07)
+
+### Features
+
+* **visualizer:** route edges around nodes with ELK's orthogonal router ([#32](https://github.com/mfozmen/groomie/issues/32)) ([026b42f](https://github.com/mfozmen/groomie/commit/026b42f2d3f7a1c2274da5835d4c6b660808669b))
+
 ## [0.4.1](https://github.com/mfozmen/groomie/compare/v0.4.0...v0.4.1) (2026-07-07)
 
 ## [0.4.0](https://github.com/mfozmen/groomie/compare/v0.3.3...v0.4.0) (2026-07-07)
