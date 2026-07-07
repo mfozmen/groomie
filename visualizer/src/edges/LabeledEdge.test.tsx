@@ -43,16 +43,19 @@ describe('LabeledEdge', () => {
     expect(label.style.color).toBe('')
   })
 
-  it('draws the routed polyline (not a bezier) when the edge carries bend points', () => {
+  it('draws the routed path (rounded, not a bezier) when the edge carries bend points', () => {
     const routed = {
       ...props,
       data: { kind: 'blocks', labelColor: EDGE_BLOCKS_INK, labelT: 0.82, points: [{ x: 150, y: 100 }] },
     } as unknown as EdgeProps
     render(<LabeledEdge {...routed} />)
-    // source (0,0) → bend (150,100) → target (100,200): the path threads the bend point, and the
-    // mocked getBezierPath fixture ('M0,0') is NOT used.
+    // source (0,0) → bend (150,100) → target (100,200): the path starts at the source, rounds the
+    // bend with a quadratic whose control point is the bend, ends at the target — and the mocked
+    // getBezierPath fixture ('M0,0') is NOT used.
     const d = screen.getByTestId('base').getAttribute('d')!
-    expect(d).toBe('M0,0 L150,100 L100,200')
+    expect(d.startsWith('M0,0')).toBe(true)
+    expect(d).toContain('Q150,100')
+    expect(d.endsWith('L100,200')).toBe(true)
     expect(screen.getByText('blocks')).toBeInTheDocument()
   })
 })
