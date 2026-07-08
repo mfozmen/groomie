@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.1](https://github.com/mfozmen/groomie/compare/v0.6.0...v0.6.1) (2026-07-08)
+
+### Bug Fixes
+
+* **visualizer:** show every blocker link (revert transitive reduction) + hide handles ([#35](https://github.com/mfozmen/groomie/issues/35)) ([4669c86](https://github.com/mfozmen/groomie/commit/4669c86f4b5170a4dc4574fa2c66219ac2ee43c7))
+
 ## [0.6.0](https://github.com/mfozmen/groomie/compare/v0.5.0...v0.6.0) (2026-07-07)
 
 ### Features
