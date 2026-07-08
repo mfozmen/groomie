@@ -1,13 +1,16 @@
 # Groomie visualizer
 
 An interactive graph view of a Groomie breakdown. It loads a `<ISSUE-KEY>-groomed.json`
-(emitted by the `/groomie` skill) and renders it with [React Flow](https://reactflow.dev) laid
-out by [ELK](https://github.com/kieler/elkjs): **epics are containers**, stories / tasks / bugs
-nest inside without overlap, and `Blocks:` / `Is blocked by:` links become arrows (a bug's
-`affects` is dashed). Click any node for its details.
+(emitted by the `/groomie` skill) and draws it with [Graphviz](https://graphviz.org) — the
+`dot` engine, compiled to WebAssembly via
+[`@hpcc-js/wasm-graphviz`](https://github.com/hpcc-systems/hpcc-js-wasm). Graphviz does the whole
+drawing job: layer nodes by blocker order, place them, and route the `blocks` / `affects` edges as
+smooth splines. **Epics are containers**, tasks / stories / bugs sit inside, a bug's `affects` edge
+is dashed red, and clicking any node (or an epic) shows its details in the side panel.
 
 > This is a **companion app** — not part of the plugin. The plugin stays prompt-only; this
-> `visualizer/` has its own `package.json` and dependencies.
+> `visualizer/` has its own `package.json` and dependencies. Our code only translates the groomed
+> graph into a DOT program (`src/dot.ts`); layout and edge routing are entirely Graphviz's.
 
 ## Run
 
@@ -23,10 +26,11 @@ so you can try it immediately.
 
 ```
 npm --prefix visualizer run build          # dist/ (static site)
-npm --prefix visualizer run build:single   # one self-contained dist/index.html
+npm --prefix visualizer run build:single   # one self-contained dist/index.html (WASM inlined)
 ```
 
-`build:single` inlines everything into a single HTML that reads `window.__GROOMIE_GRAPH__`.
+`build:single` inlines everything — including the Graphviz WASM — into a single HTML that reads
+`window.__GROOMIE_GRAPH__`. No network, works over `file://`.
 
 ## Export a portable HTML
 

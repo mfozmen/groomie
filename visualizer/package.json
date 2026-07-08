@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Interactive React Flow + ELK viewer for a Groomie <ISSUE-KEY>-groomed.json graph.",
+  "description": "Graphviz (WASM) viewer for a Groomie <ISSUE-KEY>-groomed.json graph — dot layout + spline edges, click a node for details.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -15,18 +15,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@xyflow/react": "^12.3.5",
-    "elkjs": "^0.9.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "@hpcc-js/wasm-graphviz": "^1.24.1"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "2.1.9",
     "jsdom": "^26.1.0",
     "typescript": "^5.7.2",
