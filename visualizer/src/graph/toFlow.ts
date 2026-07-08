@@ -1,7 +1,6 @@
 import { MarkerType, type Edge, type Node } from '@xyflow/react'
 import type { EdgeKind, GroomedGraph, GroomNode, NodeKind } from '../types'
 import type { Pt } from '../edges/geometry'
-import { transitiveReduction } from './reduce'
 import { EDGE_AFFECTS, EDGE_AFFECTS_INK, EDGE_BLOCKS, EDGE_BLOCKS_INK } from '../colors'
 
 export type FlowNode = Node<{ groom: GroomNode }>
@@ -57,34 +56,35 @@ export function toFlow(graph: GroomedGraph): { nodes: FlowNode[]; edges: Edge[] 
   // a story AND a bug that affects it) fan out along the approach instead of stacking on the node.
   const perTarget = new Map<string, number>()
 
-  // Drop transitively-implied blocks edges before layout so a redundant skip edge never gets drawn
-  // (and never has to detour around the nodes it skips). The JSON keeps every edge — this only
-  // affects what's rendered.
+  // Render EVERY explicit blocker link — this is a "who blocks whom" view, so a directly-stated
+  // dependency (e.g. T1 blocks T3) is drawn even when a longer path (T1→T2→T3) also implies it.
+  // Hiding it as "redundant" made the graph read as the wrong shape; ELK routes the skip edge
+  // cleanly around the node between its endpoints instead.
   const validEdges = graph.edges.filter((e) => nodeIds.has(e.source) && nodeIds.has(e.target))
 
-  const edges: Edge<EdgeData>[] = transitiveReduction(validEdges).map((e, i) => {
-      const affects = e.kind === 'affects'
-      const stroke = affects ? EDGE_AFFECTS : EDGE_BLOCKS
-      const order = perTarget.get(e.target) ?? 0
-      perTarget.set(e.target, order + 1)
-      const labelT = Math.max(LABEL_T_MIN, LABEL_T_BASE - order * LABEL_T_STEP)
-      return {
-        id: `e${i}`,
-        source: e.source,
-        target: e.target,
-        // Custom edge (LabeledEdge) so the relationship label sits near the target, not the
-        // midpoint where it would land on a node the edge skips over.
-        type: 'labeled',
-        markerEnd: { type: MarkerType.ArrowClosed, color: stroke },
-        animated: affects,
-        style: affects ? { stroke, strokeDasharray: '6 4' } : { stroke },
-        // Name the relationship on the edge (the arrows alone were ambiguous), and lift edges
-        // above the nodes so a route that grazes a box stays readable instead of hiding under it.
-        label: e.kind,
-        zIndex: EDGE_Z,
-        data: { kind: e.kind, labelColor: affects ? EDGE_AFFECTS_INK : EDGE_BLOCKS_INK, labelT },
-      }
-    })
+  const edges: Edge<EdgeData>[] = validEdges.map((e, i) => {
+    const affects = e.kind === 'affects'
+    const stroke = affects ? EDGE_AFFECTS : EDGE_BLOCKS
+    const order = perTarget.get(e.target) ?? 0
+    perTarget.set(e.target, order + 1)
+    const labelT = Math.max(LABEL_T_MIN, LABEL_T_BASE - order * LABEL_T_STEP)
+    return {
+      id: `e${i}`,
+      source: e.source,
+      target: e.target,
+      // Custom edge (LabeledEdge) so the relationship label sits near the target, not the
+      // midpoint where it would land on a node the edge skips over.
+      type: 'labeled',
+      markerEnd: { type: MarkerType.ArrowClosed, color: stroke },
+      animated: affects,
+      style: affects ? { stroke, strokeDasharray: '6 4' } : { stroke },
+      // Name the relationship on the edge (the arrows alone were ambiguous), and lift edges
+      // above the nodes so a route that grazes a box stays readable instead of hiding under it.
+      label: e.kind,
+      zIndex: EDGE_Z,
+      data: { kind: e.kind, labelColor: affects ? EDGE_AFFECTS_INK : EDGE_BLOCKS_INK, labelT },
+    }
+  })
 
   return { nodes, edges }
 }

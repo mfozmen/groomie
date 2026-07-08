@@ -100,9 +100,10 @@ describe('toFlow referential integrity (ELK rejects unknown shape ids)', () => {
   })
 })
 
-describe('toFlow — transitive reduction of blocks edges', () => {
-  it('does not render a blocks edge implied by a longer path', () => {
-    // T1→T2, T2→T3, T1→T3 — the direct T1→T3 is implied by T1→T2→T3, so it isn't drawn.
+describe('toFlow — renders every explicit blocker edge (no transitive reduction)', () => {
+  it('keeps a directly-stated edge even when a longer path also implies it', () => {
+    // T1→T2, T2→T3, T1→T3: the direct T1→T3 is transitively implied but must still be drawn —
+    // this is a "who blocks whom" view, so every explicit link is faithful.
     const { edges } = toFlow({
       nodes: [
         { id: 'E1', kind: 'epic', title: 'e' },
@@ -116,9 +117,7 @@ describe('toFlow — transitive reduction of blocks edges', () => {
         { source: 'T1', target: 'T3', kind: 'blocks' },
       ],
     })
-    expect(edges).toHaveLength(2)
-    expect(edges.some((e) => e.source === 'T1' && e.target === 'T3')).toBe(false)
-    expect(edges.some((e) => e.source === 'T1' && e.target === 'T2')).toBe(true)
-    expect(edges.some((e) => e.source === 'T2' && e.target === 'T3')).toBe(true)
+    expect(edges).toHaveLength(3)
+    expect(edges.some((e) => e.source === 'T1' && e.target === 'T3')).toBe(true)
   })
 })
