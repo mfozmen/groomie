@@ -1,28 +1,14 @@
-:root {
-  --story: #22c55e;
-  --story-bg: #dcfce7;
-  --task: #3b82f6;
-  --task-bg: #dbeafe;
-  --bug: #ef4444;
-  --bug-bg: #fee2e2;
-  --epic: #8b5cf6;
-  --epic-bg: rgba(139, 92, 246, 0.06);
-  --epic-ink: #6d28d9;
-  --ink: #0f172a;
-  --muted: #64748b;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: var(--ink);
-}
-
 * {
   box-sizing: border-box;
 }
-
 html,
 body,
 #root {
   margin: 0;
   height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1c2024;
+  background: #f6f7f9;
 }
 
 /* ---- layout ---- */
@@ -30,14 +16,27 @@ body,
   display: flex;
   height: 100vh;
 }
-.app .react-flow {
+.canvas {
   flex: 1;
+  overflow: auto;
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
-/* Hide connection-handle dots — read-only graph, so handles are just edge anchors, not draggable. */
-.app .react-flow__handle {
-  opacity: 0;
-  pointer-events: none;
+.canvas svg {
+  max-width: none;
+  height: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
 }
+/* Clickable nodes/epics: Graphviz carries our ids onto the SVG groups. */
+.canvas svg [id] {
+  cursor: pointer;
+}
+
+/* ---- details panel ---- */
 .panel {
   width: 340px;
   border-left: 1px solid #e2e8f0;
@@ -52,194 +51,83 @@ body,
   margin-bottom: 12px;
 }
 .panel button {
-  font-size: 12px;
-  padding: 4px 10px;
   border: 1px solid #cbd5e1;
-  border-radius: 6px;
   background: #f8fafc;
+  border-radius: 6px;
+  padding: 4px 10px;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-.panel button:hover {
-  background: #eef2f7;
-  border-color: #94a3b8;
-}
-.panel button:focus-visible,
-.loader-card input:focus-visible {
-  outline: 2px solid var(--task);
-  outline-offset: 2px;
+  font-size: 12px;
 }
 .panel h2 {
   font-size: 15px;
-  margin: 0 0 4px;
+  margin: 8px 0 4px;
 }
 .panel h3 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  margin: 0 0 8px;
+  margin: 4px 0 8px;
+  color: #334155;
 }
 .panel h4 {
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted);
+  letter-spacing: 0.03em;
+  color: #64748b;
   margin: 12px 0 4px;
 }
-.panel ul {
-  margin: 0;
-  padding-left: 18px;
-}
-.panel li,
-.panel p {
+.panel p,
+.panel li {
   font-size: 13px;
   line-height: 1.45;
 }
+.panel ul {
+  margin: 4px 0;
+  padding-left: 18px;
+}
 .muted {
-  color: var(--muted);
-}
-
-/* ---- epic container ---- */
-.epic-node {
-  width: 100%;
-  height: 100%;
-  border: 1.5px solid var(--epic);
-  border-radius: 14px;
-  background: var(--epic-bg);
-}
-.epic-header {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--epic-ink);
-  padding: 13px 16px;
-  letter-spacing: 0.005em;
-}
-.epic-key {
-  color: #fff;
-  background: var(--epic);
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  padding: 2px 8px;
-  border-radius: 999px;
-  margin-right: 7px;
-}
-
-/* ---- item nodes ---- */
-.gnode {
-  width: 240px;
-  min-height: 92px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1.5px solid;
-  background: #fff;
-  font-size: 12px;
-  cursor: pointer;
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
-}
-.gnode:hover {
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
-  transform: translateY(-1px);
-}
-.gnode.selected {
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.18);
-}
-@media (prefers-reduced-motion: reduce) {
-  .gnode,
-  .panel button {
-    transition: none;
-  }
-  .gnode:hover {
-    transform: none;
-  }
-}
-.gnode.story {
-  border-color: var(--story);
-  background: var(--story-bg);
-  color: #14532d;
-}
-.gnode.task {
-  border-color: var(--task);
-  background: var(--task-bg);
-  color: #1e3a8a;
-}
-.gnode.bug {
-  border-color: var(--bug);
-  background: var(--bug-bg);
-  color: #7f1d1d;
-}
-.gnode-key {
-  font-weight: 700;
-  font-size: 12px;
-}
-.gnode-row {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.gnode-title {
-  margin-top: 4px;
-  font-weight: 500;
-  line-height: 1.35;
+  color: #64748b;
 }
 .badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: #e2e8f0;
-  color: #1e293b;
+  display: inline-block;
+  font-size: 11px;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 6px;
+  padding: 1px 7px;
+  vertical-align: middle;
 }
 .badge.est {
-  background: #fde68a;
-  color: #78350f;
-}
-
-/* ---- edge label (relationship name near the target end) ---- */
-.edge-label {
-  position: absolute;
-  pointer-events: none;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.92);
-  white-space: nowrap;
+  background: #ecfdf5;
+  color: #047857;
 }
 
 /* ---- loader ---- */
 .loader {
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background: #f8fafc;
 }
 .loader.over .loader-card {
-  border-color: var(--story);
-  background: var(--story-bg);
+  border-color: #8b5cf6;
+  background: #f5f3ff;
 }
 .loader-card {
   border: 2px dashed #cbd5e1;
   border-radius: 16px;
+  background: #fff;
   padding: 40px 48px;
   text-align: center;
-  background: #fff;
+  max-width: 460px;
 }
 .loader-card h1 {
-  font-size: 20px;
+  font-size: 18px;
   margin: 0 0 8px;
 }
 .loader-card p {
-  color: var(--muted);
+  color: #475569;
   font-size: 14px;
 }
-.loader-card code {
-  background: #f1f5f9;
-  padding: 1px 5px;
-  border-radius: 4px;
-}
 .error {
-  color: var(--bug);
-  font-weight: 600;
+  color: #b91c1c;
 }

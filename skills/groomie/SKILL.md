@@ -239,8 +239,8 @@ skip the HTML — the `.md` (with its mermaid diagram, which renders in any mark
 `.json` are the primary outputs and always ship.
 
 **Never hand-author the `.html` yourself.** It is produced *only* by concatenating the two shipped
-template halves around the graph, as above — that file IS the interactive visualizer (a ~1.9 MB
-React/React-Flow bundle). If you cannot run that step (assets not found, `$SKILL` unresolved, no
+template halves around the graph, as above — that file IS the interactive visualizer (a
+self-contained ~0.8 MB Graphviz-rendered bundle). If you cannot run that step (assets not found, `$SKILL` unresolved, no
 shell), **skip the `.html` entirely and say so** — do **not** substitute a bespoke, static, or
 hand-written HTML. A hand-rolled card-list page is *not* the visualizer: it has no graph, misleads
 the user into thinking they got the real output, and hides that the template step failed.
