@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.7.0](https://github.com/mfozmen/groomie/compare/v0.6.1...v0.7.0) (2026-07-08)
+
+### Features
+
+* **visualizer:** render the breakdown with Graphviz instead of ELK + React Flow ([#36](https://github.com/mfozmen/groomie/issues/36)) ([2fbbf1d](https://github.com/mfozmen/groomie/commit/2fbbf1d70bd86ed8ecc7bbc61454567cd4778398))
+
 ## [0.6.1](https://github.com/mfozmen/groomie/compare/v0.6.0...v0.6.1) (2026-07-08)
 
 ### Bug Fixes
