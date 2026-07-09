@@ -48,6 +48,40 @@ your breakdown baked in: epics as containers, stories/tasks/bugs nested, blocker
   subagents). Groomie detects what's available and digs accordingly — none of it is required,
   and nothing is company-specific.
 
+## Configuration (optional)
+
+Groomie works with zero configuration. If your team has **company-wide conventions**, drop an
+optional **`groomie.config.md`** at your repo root and Groomie reads it while grooming. Everything in
+it is optional — leave the file out (or any section out) and Groomie behaves exactly as it does by
+default.
+
+```markdown
+# Groomie config
+
+## Repo → discipline
+- api-service → Backend
+- web-frontend → Frontend
+- mobile-app → Mobile
+- data-pipeline → Data
+
+## Disciplines
+- Backend
+- Frontend
+- Mobile
+- Data
+
+## Documentation policy
+- API specs are published to Confluence as a separate task.
+
+## Granularity
+- Prefer fewer, larger tasks; consolidate same-repo/same-discipline work.
+```
+
+With this, a task whose work lands in a mapped repo gets the right `[Discipline]` from the map instead
+of a guess, and your docs/granularity conventions are honored. A repo you don't list still gets an
+inferred discipline — nothing breaks. Copy [`docs/groomie.config.example.md`](docs/groomie.config.example.md)
+to get started.
+
 ## Install
 
 ```

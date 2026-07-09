@@ -165,6 +165,32 @@ Contrast a **removal** — "drop S2": delete the `S2` node and every edge touchi
 `T3→S2` blocks edge and any `Is blocked by: T3` line that only served `S2`), and **do not** reassign
 `S2` to some other story later. A subsequent "add a story" takes `S3`, not the retired `S2`.
 
+## Per-project config
+
+When a `groomie.config.md` sits in the working directory, Groomie applies it (see the breakdown
+guide's *Per-project config* section). Example config (all sections optional, all values synthetic):
+
+```markdown
+# Groomie config
+
+## Repo → discipline
+- api-service → Backend
+- web-frontend → Frontend
+
+## Documentation policy
+- Public API changes are documented on Confluence as a separate task.
+```
+
+Grooming a "publish a new public REST endpoint" feature **with** this config vs. **without** it:
+
+- **Without config:** the API work is one inferred `[Backend]` task; API docs fold into its
+  `Done when` (in-repo docs stay in the task).
+- **With config:** the same work lands in the `api-service` repo → the task is `[Backend]` **from the
+  map**, and because the documentation policy names public-API docs as a separate Confluence task, a
+  distinct `[Docs] Document the endpoint on Confluence` task appears alongside it. A task landing in a
+  repo the map doesn't list (say `search-indexer`) still gets an inferred discipline — the missing
+  mapping never blocks or invents.
+
 ## Diagram
 
 The document ends with a `## Diagram` mermaid block: one `subgraph` per epic (container),
