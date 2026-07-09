@@ -84,6 +84,14 @@ Look for, in rough order of usefulness:
 Say one line about what you found and the depth you'll use. If nothing beyond the Jira
 issue is available, say so and groom from the issue text alone — that is a valid mode.
 
+**Also read the per-project config, if any.** Look for a `groomie.config.md` in the working
+directory (and, when the cwd is inside a git repo, at the repo root). It is a team's optional,
+company-wide grooming conventions — a repo→discipline map, the disciplines they use, an out-of-repo
+documentation policy, and a granularity preference. **It is entirely optional and every section
+independently so:** if the file is missing (or a section is), groom exactly as you do today. When
+you load one, say one line naming what it set. Apply it in step 4 per the guide's *Per-project config
+(`groomie.config.md`)* section — never let it introduce a hard dependency or block the groom.
+
 ### 3. Research the feature
 
 Using what step 2 surfaced, dig until you understand the feature well enough to break it
@@ -157,6 +165,12 @@ Core rules (full detail in the guide):
   decision — which table, whose approval, which endpoint — is an **open question**, not a task.
 - **Bugs** only when the source issue reports broken existing behavior; technical or not,
   they are QA-tested like stories.
+- **Honor `groomie.config.md` when step 2 loaded one** — each setting optional, each falling back to
+  the defaults above when absent: use its **repo→discipline map** for the `[Discipline]` prefix on
+  work landing in a named repo (a repo not in the map ⇒ infer as usual, never block); its
+  **disciplines** as the `[Discipline]` vocabulary; its **documentation policy** to decide when the
+  out-of-repo-docs exception yields a separate docs task; and its **granularity** preference to bias
+  task consolidation. Full schema in the guide's *Per-project config (`groomie.config.md`)* section.
 - Flag ambiguities as open questions instead of guessing.
 
 ### 5. Output markdown
@@ -263,7 +277,8 @@ as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing br
    `references/examples.md` rules that govern generation govern edits too: a new story still needs a
    real-user `As a …, I want …, so that ….` role + Acceptance Criteria + Test Cases; a split or added
    task obeys the task-granularity rules (no separate test/docs tasks, don't over-split, split on
-   repo/discipline); the allowed-section set and omit-empty rules still hold.
+   repo/discipline); the allowed-section set and omit-empty rules still hold. If a `groomie.config.md`
+   is present, a task you add or re-discipline honors its repo→discipline map / vocabulary too.
 4. **Research only when the change needs new content** it can't derive locally — e.g. "add tasks to
    implement X" — using step 3's research sources (read the code/Jira, read-only). Pure structural or
    prose edits (remove, rename, re-word, re-wire) stay **local**, no Jira/network round-trip. An

@@ -125,7 +125,9 @@ blocker). Bugs are QA-tested whether they are technical or not.
   Design the login screen mockups`, `[Game Dev] Implement the login UI and session
   management` — **not a terse note.** The `[Discipline]` prefix is **required** (it routes
   the work to the producing team — we don't rely on Jira fields). Infer disciplines per
-  project; common ones are Backend, Frontend, Graphic Design, Game Dev.
+  project; common ones are Backend, Frontend, Graphic Design, Game Dev. When a
+  `groomie.config.md` is present, take the discipline (and the repo→discipline mapping) from it
+  instead of inferring — see *Per-project config (`groomie.config.md`)*.
 - **One responsibility per task — sized to a real unit of delivery, not sliced per step.** A
   task is one coherent piece of work that one discipline can ship on its own. **Split along
   boundaries that need separate ownership, review, or CI — a different repository or a
@@ -145,7 +147,9 @@ blocker). Bugs are QA-tested whether they are technical or not.
   the new endpoints", "README updated"), never as a standalone `[QA] Write tests` or
   `[Docs] Update docs` task. **Exception:** documentation that must be produced **outside the
   repo** — e.g. a Confluence page — *especially when a company-wide process requires it* —
-  may be its own task, since it's a distinct deliverable in another system.
+  may be its own task, since it's a distinct deliverable in another system. A
+  `groomie.config.md` **documentation policy** makes this org-specific and explicit (see
+  *Per-project config (`groomie.config.md`)*).
 - **Tasks are implementation work only.** Never emit a coordination, sign-off, decision, approval,
   or meeting task (no `T0 — Decision & coordination`), and **never name a person** (no
   `Get sign-off from <name>`). An unresolved decision — which table to use, whose approval is
@@ -181,6 +185,57 @@ blocker). Bugs are QA-tested whether they are technical or not.
 - Keep each task independently completable and estimable. Split when a task crosses a
   repo/discipline boundary or bundles two genuinely independent deliverables — not merely to
   make it smaller.
+
+## Per-project config (`groomie.config.md`)
+
+A team may drop an **optional** `groomie.config.md` at their repo root to hand Groomie its
+company-wide conventions. The skill reads it during its capability probe (SKILL.md step 2) from the
+working directory (or the cwd's git repo root). **It is entirely optional and so is every section:**
+a missing file — or a missing section — changes nothing; Groomie grooms exactly as the rest of this
+guide describes. It never adds a hard dependency and never blocks a groom.
+
+The file is plain markdown; Groomie reads these sections by heading (all optional):
+
+```markdown
+# Groomie config
+
+## Repo → discipline
+- api-service → Backend
+- web-frontend → Frontend
+- mobile-app → Mobile
+- data-pipeline → Data
+
+## Disciplines
+- Backend
+- Frontend
+- Mobile
+- Data
+
+## Documentation policy
+- API specs are published to Confluence as a separate task.
+
+## Granularity
+- Prefer fewer, larger tasks; consolidate same-repo/same-discipline work.
+```
+
+How each section maps onto the rules above:
+
+- **Repo → discipline** — when research places a task's work in a repo **named in the map**, use the
+  mapped discipline for its `[Discipline]` prefix (authoritative — don't re-infer), and keep the
+  standing rule that a different repo is its own task. A repo **not in the map** falls back to
+  per-project inference (below) — never invent a discipline, never raise an open question just
+  because a repo is unmapped.
+- **Disciplines** — the vocabulary this org uses for `[Discipline]` prefixes; prefer these names.
+  Outside them, infer per project as usual.
+- **Documentation policy** — turns the *out-of-repo docs* exception (see Technical tasks) from a
+  maybe into an explicit rule: when the epic produces the artifact the policy names (e.g. API specs)
+  and the policy says "separate task", emit that out-of-repo docs task. In-repo docs still stay
+  inside their task.
+- **Granularity** — biases the task-consolidation judgment (Technical tasks) toward the stated
+  preference (e.g. consolidate more aggressively, or split finer).
+
+Apply only what a section provides; leave everything else at its default. Partial or unfamiliar
+content is ignored, not an error.
 
 ## Estimation (experimental, development-only)
 

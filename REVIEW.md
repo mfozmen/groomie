@@ -23,6 +23,28 @@ else may be a hard dependency:
   **degrade gracefully** (skip the `.html`; the `.md` + mermaid + `.json` always ship). Regenerate the assets with
   `npm --prefix visualizer run build:template` whenever the visualizer changes.
 
+## 1b. Open-source hygiene — no proprietary leakage (blocking)
+
+Groomie is a **public, open-source** repo. Nothing company-, employer-, or customer-specific may
+appear anywhere in it — skill prose, references, examples, fixtures, config samples, tests, docs, or
+comments. Treat any of the following in the diff as a **blocking** finding:
+
+- **Real internal identifiers** — actual repository names, service/microservice names, team names,
+  internal tool or project names, or internal hostnames/domains (e.g. anything under a corporate
+  zone, `*.internal`, VPN-only hosts).
+- **Real ticket keys or URLs** — concrete Jira keys (e.g. `ABC-1234`), Confluence/Jira/dashboard
+  links, or anything that resolves only inside a company.
+- **Customer data or PII** — real names, emails, account IDs, campaign data, or any real customer
+  content, even as "example" data.
+- **Org-specific conventions presented as Groomie defaults** — e.g. hard-coding one company's
+  discipline names, repo layout, or process into the skill instead of the optional
+  `groomie.config.md`.
+
+Everything illustrative must be **synthetic and generic** — invented repo names (`api-service`,
+`web-frontend`), placeholder keys (`PROJ-123`), and made-up feature domains (the auth / saved-search
+examples). The user's personal calibration project (`SAP`) is the one allowed non-generic reference,
+and it is a personal hobby project, not company data. When in doubt, genericize.
+
 ## 2. Grooming-model integrity
 
 - **Stories are behavior/needs only** — never prescribe a solution (no API/UI/design

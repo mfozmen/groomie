@@ -27,7 +27,9 @@ Do exactly this:
    Do the skill's **step 2 capability probe** and **step 3 research** to the full depth the
    environment allows — following its research-source bullets there, not from memory. Running as a
    subagent (or a "be quick" dispatch prompt) is **not** license to skip that research; if you
-   cannot fan it out to further subagents, do it inline.
+   cannot fan it out to further subagents, do it inline. Step 2 also reads an optional
+   `groomie.config.md` per the skill's own lookup rule — honor it (repo→discipline map, disciplines,
+   docs policy, granularity) exactly as the skill defines; absent ⇒ default behavior.
 3. Emit exactly the outputs the skill's step 5 defines — `<KEY>-groomed.md` (with the
    `_groomie v<version> · <mode> breakdown_` stamp), `<KEY>-groomed.json`, and the standalone
    `<KEY>-groomed.html` — in the shape its **output contract** defines. That contract lives in the
