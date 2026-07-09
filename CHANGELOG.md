@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.0](https://github.com/mfozmen/groomie/compare/v0.7.0...v0.8.0) (2026-07-09)
+
+### Features
+
+* **groomie:** revise an existing breakdown in place ([#37](https://github.com/mfozmen/groomie/issues/37)) ([b0384c1](https://github.com/mfozmen/groomie/commit/b0384c169f6fc0627fa32f031b704783c41ea79a))
+
 ## [0.7.0](https://github.com/mfozmen/groomie/compare/v0.6.1...v0.7.0) (2026-07-08)
 
 ### Features
