@@ -325,6 +325,27 @@ section entirely; in `--estimate` mode each task carries an `**Estimate:**` line
 (Fibonacci — see Estimation above). The version stamp's `<mode>` word follows the run:
 `full`, `stories`, or `estimate`.
 
+## Revising a breakdown
+
+When editing an **already-produced** breakdown (the skill's *Revise* flow) rather than grooming
+fresh, the same rules above still apply to every node you touch — plus three invariants that keep the
+`.md` and `.json` coherent across an edit:
+
+- **Keys are stable and never reused.** Existing `E#`/`S#`/`T#`/`B#` keys never renumber. A removed
+  node's key is **retired** — a later add takes the next free number, not the freed one — so any
+  reference the user kept elsewhere stays valid.
+- **Edges follow the nodes.** Removing a node drops every edge that touches it (and any dangling
+  `Blocks:` / `Is blocked by:` line). Splitting a node re-wires its `blocks` to the right halves.
+  The MD's link lines and the JSON's directed edges must state the **same** blocker→blocked pairs,
+  deduped.
+- **Edit only what the change implies.** Touch the named node(s) plus the unavoidable key/edge
+  consequences; leave every other node's wording and keys byte-for-byte unchanged. This preserves the
+  consistency guarantee for the parts the user didn't ask to change.
+
+A committed synthetic pair lives at `references/fixtures/revise-e2e.{md,json}` (the revise
+end-to-end test's fixed input), and `scripts/check-graph.mjs` asserts these invariants — it also
+runs as the skill's post-revise self-check.
+
 ## Diagram (mermaid)
 
 End the document with a `## Diagram` section containing **one fenced `mermaid` `flowchart TD`**

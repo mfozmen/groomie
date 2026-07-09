@@ -1,0 +1,89 @@
+{
+  "issueKey": "DEMO-1",
+  "mode": "full",
+  "nodes": [
+    { "id": "E1", "kind": "epic", "title": "Saved Search Filters",
+      "description": "Let shoppers save a set of search filters and re-apply it later.",
+      "businessValue": "Shoppers who refine long filter lists can return to them without re-entering, increasing repeat search use.",
+      "design": null },
+    { "id": "S1", "kind": "story", "epicId": "E1",
+      "title": "As a shopper, I want to save my current search filters, so that I can reuse them later.",
+      "description": "Lets a shopper name and store the filters currently applied to a search.",
+      "links": [],
+      "acceptanceCriteria": [
+        "A shopper can save the active filter set with a name.",
+        "Saved sets are listed for the shopper on their next visit.",
+        "Saving shows a clear success or error message."
+      ],
+      "testCases": [
+        "Save with a unique name → set stored, appears in the saved list.",
+        "Save with a name already used → clear duplicate-name error.",
+        "Save with no active filters → save action is unavailable."
+      ] },
+    { "id": "S2", "kind": "story", "epicId": "E1",
+      "title": "As a shopper, I want to apply a saved filter set in one click, so that I do not have to re-enter filters.",
+      "description": "Lets a shopper pick a previously saved set and apply all its filters at once.",
+      "links": [],
+      "acceptanceCriteria": [
+        "A shopper can pick a saved set from a list.",
+        "Applying a set replaces the current filters with the saved ones.",
+        "The result count updates to reflect the applied filters."
+      ],
+      "testCases": [
+        "Apply a saved set → all its filters become active and results refresh.",
+        "Apply a set whose filter no longer exists → that filter is skipped with a notice.",
+        "Empty saved list → the picker shows an empty state."
+      ] },
+    { "id": "T1", "kind": "task", "epicId": "E1",
+      "title": "Implement saved-filters storage and API",
+      "discipline": "Backend",
+      "implementation": [
+        "Add a saved_filters table: id, shopper_id, name (unique per shopper), filter_json, created_at.",
+        "Expose create / list / apply-read endpoints scoped to the current shopper.",
+        "Validate names for per-shopper uniqueness and reject empty filter sets."
+      ],
+      "doneWhen": [
+        "Endpoints create, list, and read saved filter sets for a shopper.",
+        "Per-shopper name uniqueness is enforced at the DB level.",
+        "Unit tests cover create, list, duplicate-name, and empty-set cases."
+      ] },
+    { "id": "T2", "kind": "task", "epicId": "E1",
+      "title": "Build the save-filter UI",
+      "discipline": "Frontend",
+      "implementation": [
+        "Add a Save control to the filter bar that opens a name prompt.",
+        "Call the create endpoint and show success/error feedback.",
+        "Disable the control when no filters are active."
+      ],
+      "doneWhen": [
+        "A shopper can name and save the active filters from the search page.",
+        "Success and duplicate-name errors are surfaced inline.",
+        "Component tests cover the enabled/disabled and error states."
+      ] },
+    { "id": "T3", "kind": "task", "epicId": "E1",
+      "title": "Build the saved-filters picker",
+      "discipline": "Frontend",
+      "implementation": [
+        "Add a picker listing the shopper's saved sets.",
+        "On selection, read the set and apply its filters to the current search.",
+        "Show an empty state when the shopper has no saved sets."
+      ],
+      "doneWhen": [
+        "Selecting a saved set applies its filters and refreshes results.",
+        "The empty state renders when there are no saved sets.",
+        "Component tests cover selection, empty, and missing-filter cases."
+      ] },
+    { "id": "B1", "kind": "bug", "epicId": "E1",
+      "title": "Saved-filters list does not refresh after a save",
+      "repro": "Save a new filter set, then reopen the saved list without reloading the page.",
+      "expected": "The newly saved set appears in the list immediately.",
+      "actual": "The list still shows the pre-save sets until a full page reload." }
+  ],
+  "edges": [
+    { "source": "T1", "target": "S1", "kind": "blocks" },
+    { "source": "T1", "target": "S2", "kind": "blocks" },
+    { "source": "T2", "target": "S1", "kind": "blocks" },
+    { "source": "T3", "target": "S2", "kind": "blocks" },
+    { "source": "B1", "target": "S1", "kind": "affects" }
+  ]
+}

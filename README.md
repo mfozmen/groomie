@@ -67,6 +67,22 @@ Pick the mode by **subcommand** (`/groomie:full`, `/groomie:stories`) or just ru
 for the default full breakdown. Full reads the code to write accurate technical tasks; stories
 skips tasks for a faster, behavior-only pass. (The old `--full` / `--stories` flags still work.)
 
+### Revising a breakdown
+
+Not happy with something Groomie produced, or need to add or drop a piece? Revise it in place —
+no re-groom, no reshuffle:
+
+```
+/groomie:revise PROJ-123 split T3 into two tasks
+/groomie:revise PROJ-123 remove S2
+/groomie:revise PROJ-123 add a [Frontend] task for the empty-state
+/groomie:revise PROJ-123 the epic's business value is wrong — it's X
+```
+
+Revise reads your existing `PROJ-123-groomed.{md,json}`, applies just that change under the same
+rules (existing `S#`/`T#` keys stay stable, blockers stay consistent), and re-writes all three
+files — the markdown, the JSON graph, and the `.html`. Groom the issue first if you haven't yet.
+
 ## What the output looks like
 
 ```markdown
