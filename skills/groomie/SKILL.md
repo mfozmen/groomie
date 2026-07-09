@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Does NOT write anything back to Jira.
+description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task). Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Does NOT write anything back to Jira.
 ---
 
 # Groomie
@@ -244,6 +244,50 @@ self-contained ~0.8 MB Graphviz-rendered bundle). If you cannot run that step (a
 shell), **skip the `.html` entirely and say so** — do **not** substitute a bespoke, static, or
 hand-written HTML. A hand-rolled card-list page is *not* the visualizer: it has no graph, misleads
 the user into thinking they got the real output, and hides that the template step failed.
+
+## Revise an existing breakdown
+
+Groom is one-shot: a plain `/groomie <KEY>` grooms fresh and **overwrites** the three files. When the
+user instead wants to **change what a previous run produced** — "split T3 into two", "remove S2",
+"add a `[Frontend]` task for the empty-state", "the epic's business value is wrong, it's X" — invoked
+as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing breakdown, do a
+**targeted edit** instead of re-grooming. Do NOT run steps 1–5; run this:
+
+1. **Resolve the target + change.** Get the issue key and the natural-language change. If
+   `<KEY>-groomed.md` **or** `<KEY>-groomed.json` is not in the working directory, **stop** and tell
+   the user to run `/groomie <KEY>` first — never silently groom a fresh breakdown here.
+2. **Load the current state.** Read `<KEY>-groomed.md` and `<KEY>-groomed.json`; treat them as one
+   model (the JSON is the structured graph, the MD the rich prose). The mode is the JSON `mode` field
+   / the version-stamp word — keep it.
+3. **Apply the change under the same contract.** The `references/breakdown-guide.md` +
+   `references/examples.md` rules that govern generation govern edits too: a new story still needs a
+   real-user `As a …, I want …, so that ….` role + Acceptance Criteria + Test Cases; a split or added
+   task obeys the task-granularity rules (no separate test/docs tasks, don't over-split, split on
+   repo/discipline); the allowed-section set and omit-empty rules still hold.
+4. **Research only when the change needs new content** it can't derive locally — e.g. "add tasks to
+   implement X" — using step 3's research sources (read the code/Jira, read-only). Pure structural or
+   prose edits (remove, rename, re-word, re-wire) stay **local**, no Jira/network round-trip. An
+   unknown becomes an `## Open questions` entry — never an invented requirement.
+5. **Keep keys and edges intact.**
+   - **Keys are stable.** Never renumber an existing `E#`/`S#`/`T#`/`B#`. A removed key is **retired**
+     — do not reuse it; a new node takes the next free number.
+   - **Edges stay consistent.** Removing a node drops its edges; splitting re-wires `blocks`; the MD's
+     `Blocks:` / `Is blocked by:` lines and the JSON's directed edges must agree, and edges stay
+     deduped (see the guide's *JSON graph output* rules).
+   - **Targeted, not a re-groom.** Touch only what the change implies plus its unavoidable key/edge
+     consequences. Do **not** reshuffle or re-word untouched nodes — that preserves determinism for
+     everything the user didn't ask to change.
+6. **Re-emit all three files** exactly as step 5's output does: rewrite `<KEY>-groomed.md`, rewrite
+   `<KEY>-groomed.json` (and its mermaid `## Diagram`), and **regenerate `<KEY>-groomed.html` with the
+   same shell concat** — the HTML is a pure derivative of the JSON and can only be rebuilt, never
+   patched. Keep the version stamp (current version, unchanged mode word).
+7. **Self-verify, then report the delta.** Best-effort, `node`-optional (like the `.html` step): if
+   `node` is available, run `node "$SKILL/scripts/check-graph.mjs" <KEY>-groomed.json
+   <KEY>-groomed.md` (substitute this skill's base path for `$SKILL`) and fix any violation it prints
+   before presenting; if `node` can't run, just eyeball the same invariants (every edge/`epicId`
+   resolves, keys unique, MD blockers match the JSON edges) — never block the revise on the checker.
+   Then print a short change summary (added / removed / edited / re-wired, by key) followed by the
+   updated markdown.
 
 ## Boundaries
 

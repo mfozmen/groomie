@@ -41,4 +41,10 @@ Do exactly this:
    another `groomie` agent** to do the grooming (no self-recursion). You MAY fan out *research* to
    subagents per the skill's step 3, but the grooming and the output are yours.
 
+**If your prompt is a revise instruction** (change/add/remove/split an epic/story/task in an
+already-produced breakdown) rather than a fresh groom, follow the skill's **"Revise an existing
+breakdown"** section instead of steps 2–3: load the existing `<KEY>-groomed.md`/`.json`, apply the
+single given change under the same contract (stable keys, consistent edges, targeted edit), re-emit
+all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
+
 Return the written file path(s) and the groomed markdown — and nothing else (no summary, no TL;DR).

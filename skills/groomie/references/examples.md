@@ -147,6 +147,24 @@ So the bad run's `TL;DR + S1/S2/S3 + T0 + …T4(Tests) + Locked decisions` colla
 shape: **one epic, a handful of implementation tasks (schema, backfill+verify+tests), and the open
 questions** — with the `_groomie v<version> · <mode> breakdown_` stamp under the epic heading.
 
+## Revising a breakdown
+
+When the user edits an existing breakdown (the skill's *Revise* flow), keep existing keys stable and
+re-wire only what the change implies. Worked example on the auth breakdown above — the user says
+**"split T3 (the Unity registration UI) into the screen build and session management."**
+
+- `T3` **stays** the screen-build task; the new session-management work becomes **`T4`** — the next
+  free key, never a renumber of the existing tasks. Both still block `S1`.
+- Edges before: `T1→S1`, `T2→S1`, `T3→S1`. After: `T1→S1`, `T2→S1`, `T3→S1`, **`T4→S1`** — the split
+  adds one edge; the others are untouched.
+- In the MD, `S1`'s `Is blocked by:` gains `- T4 — [Game Dev] …`, and the new `### T4` task states
+  `Blocks: - S1 — …`; the JSON gains the `T4` node + the `T4→S1` `blocks` edge. `T1`/`T2`'s wording is
+  unchanged.
+
+Contrast a **removal** — "drop S2": delete the `S2` node and every edge touching it (e.g. a
+`T3→S2` blocks edge and any `Is blocked by: T3` line that only served `S2`), and **do not** reassign
+`S2` to some other story later. A subsequent "add a story" takes `S3`, not the retired `S2`.
+
 ## Diagram
 
 The document ends with a `## Diagram` mermaid block: one `subgraph` per epic (container),
