@@ -188,16 +188,36 @@ blocker). Bugs are QA-tested whether they are technical or not.
 
 ## Per-project config (`groomie.config.md`)
 
-A team may drop an **optional** `groomie.config.md` at their repo root to hand Groomie its
-company-wide conventions. The skill reads it during its capability probe (SKILL.md step 2) from the
-working directory (or the cwd's git repo root). **It is entirely optional and so is every section:**
-a missing file — or a missing section — changes nothing; Groomie grooms exactly as the rest of this
-guide describes. It never adds a hard dependency and never blocks a groom.
+A team may hand Groomie its company-wide conventions through an **optional** config. **The primary
+way to set it is by conversation — `/groomie:config <what you want>` (see the skill's *Configure by
+conversation* section); Groomie writes the file for you, so you never have to hand-edit it.** The file
+below is what Groomie writes; you *may* hand-edit it, but you don't have to.
+
+Config lives in **two places, merged so settings accumulate:**
+
+- **Global** — `~/.groomie/config.md` in the user's home directory, applied to **every** project.
+- **Per-project** — `groomie.config.md` in the working directory (or the cwd's git repo root),
+  layered on top of the global file. The merge is **by kind of setting**, so nothing global is
+  silently lost:
+  - **Scalar settings** (Output language, Granularity, Documentation policy) — the per-project value
+    wins when present; otherwise the global value; otherwise the default.
+  - **List settings** (Repo → discipline, Disciplines) — the **union** of the global and per-project
+    entries; a per-project entry overrides a global entry on the **same key** (e.g. the same repo).
+    A per-project `## Repo → discipline` therefore *adds to / overrides* the global map, it does not
+    erase it.
+
+The skill reads the **merged** effective config during its capability probe (SKILL.md step 2). **Both
+files and every section are entirely optional:** a missing file — or a missing section — changes
+nothing; Groomie grooms exactly as the rest of this guide describes. It never adds a hard dependency
+and never blocks a groom.
 
 The file is plain markdown; Groomie reads these sections by heading (all optional):
 
 ```markdown
 # Groomie config
+
+## Output language
+- English
 
 ## Repo → discipline
 - api-service → Backend
@@ -220,6 +240,15 @@ The file is plain markdown; Groomie reads these sections by heading (all optiona
 
 How each section maps onto the rules above:
 
+- **Output language** — the language of the groomed **output content**: the `.md` prose (epic/story/
+  task/bug bodies and descriptions), the node labels in the `.json` and mermaid `## Diagram`, and the
+  derived `.html`. **Only human-readable content is translated — the contract skeleton stays fixed:**
+  node keys (`E#`/`S#`/`T#`/`B#`), `[Discipline]` prefixes, the Jira link / bug markers
+  (`Blocks:` / `Is blocked by:` / `affects:`), the fixed section/field headings (`## Tasks`, `## Open questions`,
+  `## Diagram`, `Acceptance Criteria`, `Test Cases`, `Implementation`, `Done when`), and the
+  `_groomie v… · <mode> breakdown_` stamp are unchanged, so `check-graph.mjs` and the visualizer keep
+  working. This is **decoupled from the conversation language** — Groomie talks to the human in
+  whatever language they use, but writes the output in this configured language. **Absent ⇒ English.**
 - **Repo → discipline** — when research places a task's work in a repo **named in the map**, use the
   mapped discipline for its `[Discipline]` prefix (authoritative — don't re-infer), and keep the
   standing rule that a different repo is its own task. A repo **not in the map** falls back to
