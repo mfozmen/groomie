@@ -270,11 +270,12 @@ as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing br
 **targeted edit** instead of re-grooming. Do NOT run steps 1–5; run this:
 
 1. **Resolve the target + change.** Get the issue key and the natural-language change. Locate the
-   breakdown in the per-issue folder `<KEY>/<KEY>-groomed.{md,json}`; if it's not there, fall back to
-   the legacy flat `<KEY>-groomed.{md,json}` in the working directory (pre-folder outputs). Whichever
-   you find is the breakdown's location — read and re-emit at that same location (don't migrate a
-   legacy layout). If neither the `.md` **nor** the `.json` is found in either place, **stop** and tell
-   the user to run `/groomie <KEY>` first — never silently groom a fresh breakdown here.
+   breakdown: prefer the per-issue folder `<KEY>/<KEY>-groomed.{md,json}`, else fall back to the
+   legacy flat `<KEY>-groomed.{md,json}` in the working directory (pre-folder outputs). Both the
+   `.md` **and** the `.json` must be present together at one of those locations; if that pair isn't
+   found in either place, **stop** and tell the user to run `/groomie <KEY>` first — never silently
+   groom a fresh breakdown here. Read from, and re-emit at, whichever location you resolved — **don't
+   migrate a legacy-flat breakdown into the folder layout.**
 2. **Load the current state.** Read the resolved `<KEY>-groomed.md` and `<KEY>-groomed.json`; treat them as one
    model (the JSON is the structured graph, the MD the rich prose). The mode is the JSON `mode` field
    / the version-stamp word — keep it.
@@ -297,10 +298,12 @@ as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing br
    - **Targeted, not a re-groom.** Touch only what the change implies plus its unavoidable key/edge
      consequences. Do **not** reshuffle or re-word untouched nodes — that preserves determinism for
      everything the user didn't ask to change.
-6. **Re-emit all three files** exactly as step 5's output does: rewrite `<KEY>-groomed.md`, rewrite
-   `<KEY>-groomed.json` (and its mermaid `## Diagram`), and **regenerate `<KEY>-groomed.html` with the
-   same shell concat** — the HTML is a pure derivative of the JSON and can only be rebuilt, never
-   patched. Keep the version stamp (current version, unchanged mode word).
+6. **Re-emit all three files** into the location step 1 resolved (the folder or the legacy-flat path —
+   **not** unconditionally the folder), with the same content shape step 5's output uses: rewrite the
+   resolved `<KEY>-groomed.md`, rewrite the resolved `<KEY>-groomed.json` (and its mermaid
+   `## Diagram`), and **regenerate the resolved `<KEY>-groomed.html` with the same shell concat** — the
+   HTML is a pure derivative of the JSON and can only be rebuilt, never patched. Keep the version stamp
+   (current version, unchanged mode word).
 7. **Self-verify, then report the delta.** Best-effort, `node`-optional (like the `.html` step): if
    `node` is available, run `node "$SKILL/scripts/check-graph.mjs"` on the resolved `<KEY>-groomed.json`
    and `<KEY>-groomed.md` (the folder paths, or the legacy flat paths — whichever step 1 found;

@@ -31,8 +31,8 @@ can review and file.
 The whole breakdown is saved to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — each groom lands in its own
 per-issue folder named for the key, so repeated runs don't pile up loose in one directory — and
 printed for you. The markdown ends with a **mermaid diagram** of the blocker graph (renders on GitHub,
-VS Code, and other markdown viewers). Two more files are written next to it: a machine-readable
-**`<ISSUE-KEY>-groomed.json`** graph, and a standalone **`<ISSUE-KEY>-groomed.html`** — the interactive visualizer (below) with
+VS Code, and other markdown viewers). Two more files are written into the same per-issue folder: a
+machine-readable **`<ISSUE-KEY>-groomed.json`** graph, and a standalone **`<ISSUE-KEY>-groomed.html`** — the interactive visualizer (below) with
 your breakdown baked in: epics as containers, stories/tasks/bugs nested, blockers as arrows.
 **Offline, double-click to open, no server or install.**
 
