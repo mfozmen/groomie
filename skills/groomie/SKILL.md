@@ -221,8 +221,8 @@ rules. Omit the `## Diagram` when there are no nodes.
 
 **Save it to a file AND print it.** Write the document to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — a
 per-issue folder named for the key in the current working directory, so repeated grooms don't pile up
-loose in one directory. Create the folder first (`mkdir -p <ISSUE-KEY>`, e.g.
-`PROJ-123/PROJ-123-groomed.md`), tell the user the path, then also print it inline so they can read it
+loose in one directory. Create the folder first (`mkdir -p <ISSUE-KEY>`, e.g. `mkdir -p PROJ-123`,
+giving `PROJ-123/PROJ-123-groomed.md`), tell the user the path, then also print it inline so they can read it
 without opening the file. Do **not** write to Jira.
 
 **Also emit a JSON graph** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` next to the markdown — the same
