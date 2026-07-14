@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Graph-invariant check for a Groomie breakdown.
-//   node check-graph.mjs <KEY-groomed.json> [KEY-groomed.md]
+//   node check-graph.mjs <path/to/KEY-groomed.json> [path/to/KEY-groomed.md]
+//   (e.g. KEY/KEY-groomed.json — the per-issue folder — or a legacy flat KEY-groomed.json)
 //   node check-graph.mjs --self-test
 // Exits non-zero and prints the first violation, else prints "OK".
 // Used by the revise end-to-end test and as a self-verify the skill can run

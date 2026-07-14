@@ -28,10 +28,11 @@ can review and file.
   detailed plan, wired to what they **block** / are **blocked by** (Jira link terms).
 - **Bugs** and **open questions** — surfaced, never silently invented.
 
-The whole breakdown is saved to `<ISSUE-KEY>-groomed.md` and printed for you. The markdown ends
-with a **mermaid diagram** of the blocker graph (renders on GitHub, VS Code, and other markdown
-viewers). Two more files are written next to it: a machine-readable **`<ISSUE-KEY>-groomed.json`**
-graph, and a standalone **`<ISSUE-KEY>-groomed.html`** — the interactive visualizer (below) with
+The whole breakdown is saved to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — each groom lands in its own
+per-issue folder named for the key, so repeated runs don't pile up loose in one directory — and
+printed for you. The markdown ends with a **mermaid diagram** of the blocker graph (renders on GitHub,
+VS Code, and other markdown viewers). Two more files are written into the same per-issue folder: a
+machine-readable **`<ISSUE-KEY>-groomed.json`** graph, and a standalone **`<ISSUE-KEY>-groomed.html`** — the interactive visualizer (below) with
 your breakdown baked in: epics as containers, stories/tasks/bugs nested, blockers as arrows.
 **Offline, double-click to open, no server or install.**
 
@@ -113,7 +114,8 @@ no re-groom, no reshuffle:
 /groomie:revise PROJ-123 the epic's business value is wrong — it's X
 ```
 
-Revise reads your existing `PROJ-123-groomed.{md,json}`, applies just that change under the same
+Revise reads your existing `PROJ-123/PROJ-123-groomed.{md,json}` (or the legacy flat
+`PROJ-123-groomed.{md,json}`, for breakdowns groomed before the per-issue folder), applies just that change under the same
 rules (existing `S#`/`T#` keys stay stable, blockers stay consistent), and re-writes all three
 files — the markdown, the JSON graph, and the `.html`. Groom the issue first if you haven't yet.
 
@@ -161,7 +163,8 @@ files — the markdown, the JSON graph, and the `.html`. Groom the issue first i
    actual code so tasks are grounded in reality.
 3. **Groom** it into the epic / stories / tasks breakdown.
 4. **Save & print** the markdown (with a mermaid diagram), and write the JSON graph plus a
-   standalone interactive `<ISSUE-KEY>-groomed.html` (offline, double-clickable) next to it.
+   standalone interactive `<ISSUE-KEY>-groomed.html` (offline, double-clickable) next to it — all
+   under a per-issue `<ISSUE-KEY>/` folder.
 
 ---
 

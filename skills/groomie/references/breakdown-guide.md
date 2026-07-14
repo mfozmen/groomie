@@ -450,7 +450,8 @@ flowchart TD
 
 ## JSON graph output
 
-Alongside the markdown, write `<ISSUE-KEY>-groomed.json` — the **same graph, machine-readable**
+Alongside the markdown (in the same per-issue `<ISSUE-KEY>/` folder), write
+`<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` — the **same graph, machine-readable**
 (the visualizer's input). One flat `nodes[]` array (epics are first-class `kind:"epic"` nodes)
 plus a directed `edges[]` array. Epics get JSON-only ids `E1`, `E2`, … (the markdown `# Epic:`
 heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.

@@ -219,16 +219,18 @@ solid arrows for blocking (`T# --> S#`), dashed for a bug's `affects` (`B# -.-> 
 by kind. See the guide's *Diagram (mermaid)* section for the exact shape and label-sanitization
 rules. Omit the `## Diagram` when there are no nodes.
 
-**Save it to a file AND print it.** Write the document to `<ISSUE-KEY>-groomed.md` in the
-current working directory (e.g. `PROJ-123-groomed.md`), tell the user the path, then also
-print it inline so they can read it without opening the file. Do **not** write to Jira.
+**Save it to a file AND print it.** Write the document to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — a
+per-issue folder named for the key in the current working directory, so repeated grooms don't pile up
+loose in one directory. Create the folder first (`mkdir -p <ISSUE-KEY>`, e.g. `mkdir -p PROJ-123`,
+giving `PROJ-123/PROJ-123-groomed.md`), tell the user the path, then also print it inline so they can read it
+without opening the file. Do **not** write to Jira.
 
-**Also emit a JSON graph** `<ISSUE-KEY>-groomed.json` next to the markdown — the same
+**Also emit a JSON graph** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` next to the markdown — the same
 epic/story/task/bug nodes and `blocks`/`affects` edges as a machine-readable graph (the
 input for the visualizer). See the guide's *JSON graph output* section for the schema. Tell
 the user this path too.
 
-**Also emit a standalone interactive HTML** `<ISSUE-KEY>-groomed.html` — the graph visualizer
+**Also emit a standalone interactive HTML** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.html` — the graph visualizer
 with this breakdown baked in: offline, double-clickable, no server. **No Node/npm needed** — you
 concatenate the two shipped template halves around the graph with plain shell. This skill ships
 `assets/visualizer-head.html` and `assets/visualizer-tail.html`; use **this skill's own directory**
@@ -238,10 +240,10 @@ concatenate the two shipped template halves around the graph with plain shell. T
 ```bash
 if [ -s "$SKILL/assets/visualizer-head.html" ] && [ -s "$SKILL/assets/visualizer-tail.html" ]; then
   TMP=$(mktemp)
-  sed 's/</\\u003c/g' <ISSUE-KEY>-groomed.json > "$TMP"
+  sed 's/</\\u003c/g' <ISSUE-KEY>/<ISSUE-KEY>-groomed.json > "$TMP"
   { cat "$SKILL/assets/visualizer-head.html"; \
     printf '<script>globalThis.__GROOMIE_GRAPH__='; cat "$TMP"; printf '</script>'; \
-    cat "$SKILL/assets/visualizer-tail.html"; } > <ISSUE-KEY>-groomed.html
+    cat "$SKILL/assets/visualizer-tail.html"; } > <ISSUE-KEY>/<ISSUE-KEY>-groomed.html
   rm -f "$TMP"
 fi
 ```
@@ -267,10 +269,14 @@ user instead wants to **change what a previous run produced** — "split T3 into
 as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing breakdown, do a
 **targeted edit** instead of re-grooming. Do NOT run steps 1–5; run this:
 
-1. **Resolve the target + change.** Get the issue key and the natural-language change. If
-   `<KEY>-groomed.md` **or** `<KEY>-groomed.json` is not in the working directory, **stop** and tell
-   the user to run `/groomie <KEY>` first — never silently groom a fresh breakdown here.
-2. **Load the current state.** Read `<KEY>-groomed.md` and `<KEY>-groomed.json`; treat them as one
+1. **Resolve the target + change.** Get the issue key and the natural-language change. Locate the
+   breakdown: prefer the per-issue folder `<KEY>/<KEY>-groomed.{md,json}`, else fall back to the
+   legacy flat `<KEY>-groomed.{md,json}` in the working directory (pre-folder outputs). Both the
+   `.md` **and** the `.json` must be present together at one of those locations; if that pair isn't
+   found in either place, **stop** and tell the user to run `/groomie <KEY>` first — never silently
+   groom a fresh breakdown here. Read from, and re-emit at, whichever location you resolved — **don't
+   migrate a legacy-flat breakdown into the folder layout.**
+2. **Load the current state.** Read the resolved `<KEY>-groomed.md` and `<KEY>-groomed.json`; treat them as one
    model (the JSON is the structured graph, the MD the rich prose). The mode is the JSON `mode` field
    / the version-stamp word — keep it.
 3. **Apply the change under the same contract.** The `references/breakdown-guide.md` +
@@ -292,13 +298,16 @@ as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing br
    - **Targeted, not a re-groom.** Touch only what the change implies plus its unavoidable key/edge
      consequences. Do **not** reshuffle or re-word untouched nodes — that preserves determinism for
      everything the user didn't ask to change.
-6. **Re-emit all three files** exactly as step 5's output does: rewrite `<KEY>-groomed.md`, rewrite
-   `<KEY>-groomed.json` (and its mermaid `## Diagram`), and **regenerate `<KEY>-groomed.html` with the
-   same shell concat** — the HTML is a pure derivative of the JSON and can only be rebuilt, never
-   patched. Keep the version stamp (current version, unchanged mode word).
+6. **Re-emit all three files** into the location step 1 resolved (the folder or the legacy-flat path —
+   **not** unconditionally the folder), with the same content shape step 5's output uses: rewrite the
+   resolved `<KEY>-groomed.md`, rewrite the resolved `<KEY>-groomed.json` (and its mermaid
+   `## Diagram`), and **regenerate the resolved `<KEY>-groomed.html` with the same shell concat** — the
+   HTML is a pure derivative of the JSON and can only be rebuilt, never patched. Keep the version stamp
+   (current version, unchanged mode word).
 7. **Self-verify, then report the delta.** Best-effort, `node`-optional (like the `.html` step): if
-   `node` is available, run `node "$SKILL/scripts/check-graph.mjs" <KEY>-groomed.json
-   <KEY>-groomed.md` (substitute this skill's base path for `$SKILL`) and fix any violation it prints
+   `node` is available, run `node "$SKILL/scripts/check-graph.mjs"` on the resolved `<KEY>-groomed.json`
+   and `<KEY>-groomed.md` (the folder paths, or the legacy flat paths — whichever step 1 found;
+   substitute this skill's base path for `$SKILL`) and fix any violation it prints
    before presenting; if `node` can't run, just eyeball the same invariants (every edge/`epicId`
    resolves, keys unique, MD blockers match the JSON edges) — never block the revise on the checker.
    Then print a short change summary (added / removed / edited / re-wired, by key) followed by the

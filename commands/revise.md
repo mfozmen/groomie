@@ -13,9 +13,11 @@ From `$ARGUMENTS`, take the issue key and the natural-language change (e.g.
 `/groomie:revise PROJ-123 split T3 into two tasks`, `remove S2`, `add a [Frontend] task for the
 empty-state`, `the epic's business value is wrong — it's X`).
 
-- The breakdown must already exist: `<ISSUE-KEY>-groomed.md` **and** `<ISSUE-KEY>-groomed.json` in the
-  working directory. If either is missing, tell the user to run `/groomie <ISSUE-KEY>` first — do
-  **not** silently groom a fresh one.
+- The breakdown must already exist as a pair — `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` **and**
+  `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` together under the per-issue folder (or the legacy flat
+  `<ISSUE-KEY>-groomed.{md,json}` in the working directory, for pre-folder outputs). If that pair
+  isn't found in either location, tell the user to run `/groomie <ISSUE-KEY>` first — do **not**
+  silently groom a fresh one.
 - Apply the change under the same breakdown rules, keep existing keys stable (retire removed ones,
   never renumber), keep the MD `Blocks:` / `Is blocked by:` lines and the JSON edges in agreement,
   and touch only what the change implies.
