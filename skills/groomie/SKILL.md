@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task). Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Does NOT write anything back to Jira.
+description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), and customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it). Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Does NOT write anything back to Jira.
 ---
 
 # Groomie
@@ -84,12 +84,14 @@ Look for, in rough order of usefulness:
 Say one line about what you found and the depth you'll use. If nothing beyond the Jira
 issue is available, say so and groom from the issue text alone — that is a valid mode.
 
-**Also read the per-project config, if any.** Look for a `groomie.config.md` in the working
-directory (and, when the cwd is inside a git repo, at the repo root). It is a team's optional,
-company-wide grooming conventions — a repo→discipline map, the disciplines they use, an out-of-repo
-documentation policy, and a granularity preference. **It is entirely optional and every section
-independently so:** if the file is missing (or a section is), groom exactly as you do today. When
-you load one, say one line naming what it set. Apply it in step 4 per the guide's *Per-project config
+**Also read the config, if any.** Load the **merged** effective config: the global
+`~/.groomie/config.md` with the per-project `groomie.config.md` (working directory, and — when the cwd
+is inside a git repo — the repo root) layered on top, **merged by section** (a section present
+per-project wins; else the global file; else default). It is a team's optional, company-wide grooming
+conventions — an **output language**, a repo→discipline map, the disciplines they use, an out-of-repo
+documentation policy, and a granularity preference. **Both files and every section are independently
+optional:** if a file is missing (or a section is), groom exactly as you do today. When you load
+anything, say one line naming what it set. Apply it in step 4 per the guide's *Per-project config
 (`groomie.config.md`)* section — never let it introduce a hard dependency or block the groom.
 
 ### 3. Research the feature
@@ -165,8 +167,11 @@ Core rules (full detail in the guide):
   decision — which table, whose approval, which endpoint — is an **open question**, not a task.
 - **Bugs** only when the source issue reports broken existing behavior; technical or not,
   they are QA-tested like stories.
-- **Honor `groomie.config.md` when step 2 loaded one** — each setting optional, each falling back to
-  the defaults above when absent: use its **repo→discipline map** for the `[Discipline]` prefix on
+- **Honor the config when step 2 loaded one** — each setting optional, each falling back to
+  the defaults above when absent: write the output **content in its `## Output language`** (only
+  human-readable content — epic/story/task/bug prose and node labels; the skeleton stays fixed:
+  keys, `[Discipline]` prefixes, `Blocks:`/`Is blocked by:`, the fixed headings, the version stamp;
+  absent ⇒ English); use its **repo→discipline map** for the `[Discipline]` prefix on
   work landing in a named repo (a repo not in the map ⇒ infer as usual, never block); its
   **disciplines** as the `[Discipline]` vocabulary; its **documentation policy** to decide when the
   out-of-repo-docs exception yields a separate docs task; and its **granularity** preference to bias
@@ -224,6 +229,14 @@ per-issue folder named for the key in the current working directory, so repeated
 loose in one directory. Create the folder first (`mkdir -p <ISSUE-KEY>`, e.g. `mkdir -p PROJ-123`,
 giving `PROJ-123/PROJ-123-groomed.md`), tell the user the path, then also print it inline so they can read it
 without opening the file. Do **not** write to Jira.
+
+**Output language vs. conversation language.** Talk to the user in whatever language *they* are
+using, but write the groomed **output content** in the config's `## Output language` (step 2 /
+step 4) — default **English** when unset. The two are independent: a Turkish conversation about an
+English ticket still produces English output unless the config says otherwise, and vice-versa. Only
+human-readable content is translated — the contract skeleton (keys, `[Discipline]`, `Blocks:` /
+`Is blocked by:`, the fixed headings, the version stamp) stays fixed so `check-graph.mjs` and the
+visualizer keep working.
 
 **Also emit a JSON graph** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` next to the markdown — the same
 epic/story/task/bug nodes and `blocks`/`affects` edges as a machine-readable graph (the
@@ -283,8 +296,10 @@ as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing br
    `references/examples.md` rules that govern generation govern edits too: a new story still needs a
    real-user `As a …, I want …, so that ….` role + Acceptance Criteria + Test Cases; a split or added
    task obeys the task-granularity rules (no separate test/docs tasks, don't over-split, split on
-   repo/discipline); the allowed-section set and omit-empty rules still hold. If a `groomie.config.md`
-   is present, a task you add or re-discipline honors its repo→discipline map / vocabulary too.
+   repo/discipline); the allowed-section set and omit-empty rules still hold. If the merged config is
+   present, a task you add or re-discipline honors its repo→discipline map / vocabulary, and any new or
+   re-worded content stays in its `## Output language` (default English) — the revised breakdown keeps
+   one consistent language.
 4. **Research only when the change needs new content** it can't derive locally — e.g. "add tasks to
    implement X" — using step 3's research sources (read the code/Jira, read-only). Pure structural or
    prose edits (remove, rename, re-word, re-wire) stay **local**, no Jira/network round-trip. An
@@ -312,6 +327,37 @@ as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing br
    resolves, keys unique, MD blockers match the JSON edges) — never block the revise on the checker.
    Then print a short change summary (added / removed / edited / re-wired, by key) followed by the
    updated markdown.
+
+## Configure by conversation
+
+Groomie's per-project customization (`references/breakdown-guide.md` → *Per-project config*) is a
+config file — but the user should **never hand-edit it**. When the user wants to set or change a
+preference — invoked as `/groomie:config <what they want>` or just phrased as a customization request
+("groom in Turkish", "the panel repo is Frontend", "API specs go to Confluence as their own task",
+"prefer bigger tasks") — **you write the config for them.** No Jira key is needed; this touches only
+local config files, never Jira. Run this:
+
+1. **Read the current effective config.** Load the **merged** config: the global `~/.groomie/config.md`
+   with the per-project `groomie.config.md` (cwd or its git repo root) layered on top, merged by
+   section (per-project section wins; else global; else default). Apply the change on top of what's
+   already there — never clobber sections the user didn't mention.
+2. **Interpret the request** into one or more settings from the documented schema: **output language**,
+   **repo → discipline** entry, **disciplines** vocabulary, **documentation policy**, **granularity**.
+   If it maps to none of these, or is ambiguous, ask **one** clarifying question — never write a
+   guessed or empty config.
+3. **Route each setting to the right file (and say which).** Default scope by nature:
+   - **Global** (`~/.groomie/config.md`): **output language**, **granularity**, **documentation
+     policy** — cross-project preferences.
+   - **Per-project** (`groomie.config.md` in cwd / git root): **repo → discipline** map, **disciplines**
+     vocabulary — specific to this repo set.
+   - The user can **override** in words: "just for this project" ⇒ per-project; "for all projects" /
+     "everywhere" ⇒ global.
+4. **Write the target file for the user.** Create `~/.groomie/` and the file if missing; **preserve
+   every other section** already in that file; emit valid config markdown in the schema the guide
+   documents (a `# Groomie config` H1 + the relevant `##` sections). Keep example/other values intact.
+5. **Confirm in one line** what was set and where — e.g.
+   `Set Output language = Turkish (global) · mapped panel → Frontend (this project).` The user never
+   opens the file. Do **not** groom here; configuring and grooming are separate acts.
 
 ## Boundaries
 

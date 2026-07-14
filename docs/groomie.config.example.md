@@ -1,11 +1,18 @@
 # Groomie config
 
 <!--
-  Copy this file to `groomie.config.md` at your repo root and edit it for your team.
-  Everything here is OPTIONAL — delete any section you don't need and Groomie keeps its
-  default behavior for it. Deleting the whole file is fine too: Groomie grooms as normal.
-  All names below are placeholders — replace them with your own.
+  You normally never touch this file by hand — run `/groomie:config <what you want>` and Groomie
+  writes it for you (e.g. `/groomie:config outputs in Turkish`). This copy just shows the format.
+  Config lives in two places, merged by section: a GLOBAL `~/.groomie/config.md` (all projects) and a
+  per-project `groomie.config.md` at your repo root (which overrides the global file section by
+  section). Everything is OPTIONAL — delete any section (or the whole file) and Groomie keeps its
+  default behavior. All names below are placeholders — replace them with your own.
 -->
+
+## Output language
+<!-- The language of the groomed OUTPUT (the breakdown content). Groomie still talks to you in your
+     own language; only the output files use this. Optional — defaults to English. -->
+- English
 
 ## Repo → discipline
 <!-- When a task's work lands in one of these repos, Groomie tags it with the mapped

@@ -51,13 +51,33 @@ your breakdown baked in: epics as containers, stories/tasks/bugs nested, blocker
 
 ## Configuration (optional)
 
-Groomie works with zero configuration. If your team has **company-wide conventions**, drop an
-optional **`groomie.config.md`** at your repo root and Groomie reads it while grooming. Everything in
-it is optional — leave the file out (or any section out) and Groomie behaves exactly as it does by
-default.
+Groomie works with zero configuration. To customize it, **just talk to it** — run
+**`/groomie:config <what you want>`** and Groomie writes the config for you; you never hand-edit a
+file:
+
+```
+/groomie:config outputs in Turkish
+/groomie:config the panel repo is Frontend
+/groomie:config API specs go to Confluence as a separate task
+/groomie:config prefer fewer, larger tasks
+```
+
+**Output language** pins the language of the groomed breakdown — **default English**. It's decoupled
+from the conversation: Groomie keeps talking to you in your own language and only writes the *output*
+in the configured one (the structure — keys, `[Discipline]`, blockers, headings — stays fixed).
+
+Config lives in two places, merged by section: a **global** `~/.groomie/config.md` (applies to every
+project — a natural home for output language) and a per-project **`groomie.config.md`** at your repo
+root that overrides it. Everything is optional — set nothing and Groomie behaves exactly as it does by
+default. The full set of settings (output language, repo→discipline map, disciplines, documentation
+policy, granularity) is what `/groomie:config` writes for you; the format is documented in
+[`docs/groomie.config.example.md`](docs/groomie.config.example.md) if you ever want to hand-edit:
 
 ```markdown
 # Groomie config
+
+## Output language
+- English
 
 ## Repo → discipline
 - api-service → Backend
@@ -79,9 +99,8 @@ default.
 ```
 
 With this, a task whose work lands in a mapped repo gets the right `[Discipline]` from the map instead
-of a guess, and your docs/granularity conventions are honored. A repo you don't list still gets an
-inferred discipline — nothing breaks. Copy [`docs/groomie.config.example.md`](docs/groomie.config.example.md)
-to get started.
+of a guess, your docs/granularity conventions are honored, and output is written in your language. A
+repo you don't list still gets an inferred discipline — nothing breaks.
 
 ## Install
 
