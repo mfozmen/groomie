@@ -3,10 +3,12 @@
 <!--
   You normally never touch this file by hand — run `/groomie:config <what you want>` and Groomie
   writes it for you (e.g. `/groomie:config outputs in Turkish`). This copy just shows the format.
-  Config lives in two places, merged by section: a GLOBAL `~/.groomie/config.md` (all projects) and a
-  per-project `groomie.config.md` at your repo root (which overrides the global file section by
-  section). Everything is OPTIONAL — delete any section (or the whole file) and Groomie keeps its
-  default behavior. All names below are placeholders — replace them with your own.
+  Config lives in two places, layered so nothing is lost: a GLOBAL `~/.groomie/config.md` (all
+  projects) and a per-project `groomie.config.md` at your repo root on top. Per-project wins for
+  single-value settings (output language, granularity, docs policy); for list settings (repo→discipline,
+  disciplines) it overrides only the matching entry, keeping the rest of the global list. Everything is
+  OPTIONAL — delete any section (or the whole file) and Groomie keeps its default behavior. All names
+  below are placeholders — replace them with your own.
 -->
 
 ## Output language

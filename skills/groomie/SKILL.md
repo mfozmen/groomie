@@ -358,9 +358,11 @@ local config files, never Jira. Run this:
    ⇒ global. **Then correct for shadowing** using what step 1 found: because a per-project **scalar**
    value always wins the merge, if the setting already lives per-project, writing it to the global
    file would have **no effect** — so write it where it actually takes effect (per-project), rather
-   than writing global and falsely reporting success. If the user *explicitly* forces a scope that the
-   other file shadows, do the write **and warn** which value is still in effect until the shadowing one
-   is removed.
+   than writing global and falsely reporting success. The **same holds per entry** for list settings:
+   a global write of a repo→discipline entry whose key already has a per-project override is shadowed
+   by that per-project entry, so write the entry where it takes effect. If the user *explicitly* forces
+   a scope that the other file shadows, do the write **and warn** which value is still in effect until
+   the shadowing one is removed.
 4. **Write the target file for the user.** Create `~/.groomie/` and the file if missing; **preserve
    every other section** already in that file, and emit valid config markdown in the schema the guide
    documents (a `# Groomie config` H1 + the relevant `##` sections). For a **scalar** setting, set that

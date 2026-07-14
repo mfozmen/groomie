@@ -14,13 +14,17 @@ separate task`, `prefer fewer, larger tasks`).
 
 - Read the current **effective** config (the global `~/.groomie/config.md` merged with the
   per-project `groomie.config.md`) so the change lands on top of existing settings.
-- Apply the request to the right file, **routed by nature**: output language / granularity /
+- Apply the request to the right file per the skill's routing: output language / granularity /
   documentation policy default to the **global** file; the repo→discipline map and disciplines
-  vocabulary default to the **per-project** file. The user can override scope in words
-  ("just for this project" / "for all projects").
+  vocabulary default to the **per-project** file; the user can override scope in words
+  ("just for this project" / "for all projects"). Follow the skill's *Configure by conversation*
+  section for the exact rules — it writes each setting where it actually takes effect (so a
+  per-project value isn't silently shadowed) and updates a single list entry rather than replacing the
+  whole section.
 - Write the target file for the user (create `~/.groomie/` and the file if missing), preserving every
-  other section, then confirm in one line **what** was set and **where**. The user never opens the
-  file. If the request is unclear, ask one clarifying question rather than writing a wrong config.
+  other section, then confirm in one line **what** was set and **where it took effect**. The user never
+  opens the file. If the request is unclear, ask one clarifying question rather than writing a wrong
+  config.
 
 Read-only against Jira — this only writes local config files. Never write anything back to Jira.
 

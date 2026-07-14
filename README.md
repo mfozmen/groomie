@@ -66,10 +66,12 @@ file:
 from the conversation: Groomie keeps talking to you in your own language and only writes the *output*
 in the configured one (the structure — keys, `[Discipline]`, blockers, headings — stays fixed).
 
-Config lives in two places, merged by section: a **global** `~/.groomie/config.md` (applies to every
-project — a natural home for output language) and a per-project **`groomie.config.md`** at your repo
-root that overrides it. Everything is optional — set nothing and Groomie behaves exactly as it does by
-default. The full set of settings (output language, repo→discipline map, disciplines, documentation
+Config lives in two places: a **global** `~/.groomie/config.md` (applies to every project — a natural
+home for output language) and a per-project **`groomie.config.md`** at your repo root, layered on top.
+Per-project wins for single-value settings (output language, granularity, docs policy), and for the
+list settings (repo→discipline, disciplines) it overrides only the matching entry — so a per-project
+section never erases the rest of your global map. Everything is optional — set nothing and Groomie
+behaves exactly as it does by default. The full set of settings (output language, repo→discipline map, disciplines, documentation
 policy, granularity) is what `/groomie:config` writes for you; the format is documented in
 [`docs/groomie.config.example.md`](docs/groomie.config.example.md) if you ever want to hand-edit:
 
