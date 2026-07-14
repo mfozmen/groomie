@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.0](https://github.com/mfozmen/groomie/compare/v0.9.0...v0.10.0) (2026-07-14)
+
+### Features
+
+* **groomie:** per-issue output folder <KEY>/ ([#39](https://github.com/mfozmen/groomie/issues/39)) ([bb00e85](https://github.com/mfozmen/groomie/commit/bb00e854252ea9674bc90a70aed1b5b3c66c9bb1))
+
 ## [0.9.0](https://github.com/mfozmen/groomie/compare/v0.8.0...v0.9.0) (2026-07-09)
 
 ### Features
