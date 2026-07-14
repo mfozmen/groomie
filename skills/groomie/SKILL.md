@@ -86,8 +86,11 @@ issue is available, say so and groom from the issue text alone — that is a val
 
 **Also read the config, if any.** Load the **merged** effective config: the global
 `~/.groomie/config.md` with the per-project `groomie.config.md` (working directory, and — when the cwd
-is inside a git repo — the repo root) layered on top, **merged by section** (a section present
-per-project wins; else the global file; else default). It is a team's optional, company-wide grooming
+is inside a git repo — the repo root) layered on top. Merge **by kind of setting** so nothing global
+is lost: **scalar** settings (Output language, Granularity, Documentation policy) take the per-project
+value if present, else global, else default; **list** settings (Repo → discipline, Disciplines) are
+the **union** of both, a per-project entry overriding a same-key global entry (see the guide's
+*Per-project config* merge rule). It is a team's optional, company-wide grooming
 conventions — an **output language**, a repo→discipline map, the disciplines they use, an out-of-repo
 documentation policy, and a granularity preference. **Both files and every section are independently
 optional:** if a file is missing (or a section is), groom exactly as you do today. When you load
@@ -170,8 +173,8 @@ Core rules (full detail in the guide):
 - **Honor the config when step 2 loaded one** — each setting optional, each falling back to
   the defaults above when absent: write the output **content in its `## Output language`** (only
   human-readable content — epic/story/task/bug prose and node labels; the skeleton stays fixed:
-  keys, `[Discipline]` prefixes, `Blocks:`/`Is blocked by:`, the fixed headings, the version stamp;
-  absent ⇒ English); use its **repo→discipline map** for the `[Discipline]` prefix on
+  keys, `[Discipline]` prefixes, the link/bug markers `Blocks:` / `Is blocked by:` / `affects:`, the
+  fixed headings, the version stamp; absent ⇒ English); use its **repo→discipline map** for the `[Discipline]` prefix on
   work landing in a named repo (a repo not in the map ⇒ infer as usual, never block); its
   **disciplines** as the `[Discipline]` vocabulary; its **documentation policy** to decide when the
   out-of-repo-docs exception yields a separate docs task; and its **granularity** preference to bias
@@ -234,9 +237,9 @@ without opening the file. Do **not** write to Jira.
 using, but write the groomed **output content** in the config's `## Output language` (step 2 /
 step 4) — default **English** when unset. The two are independent: a Turkish conversation about an
 English ticket still produces English output unless the config says otherwise, and vice-versa. Only
-human-readable content is translated — the contract skeleton (keys, `[Discipline]`, `Blocks:` /
-`Is blocked by:`, the fixed headings, the version stamp) stays fixed so `check-graph.mjs` and the
-visualizer keep working.
+human-readable content is translated — the contract skeleton (keys, `[Discipline]`, the link/bug
+markers `Blocks:` / `Is blocked by:` / `affects:`, the fixed headings, the version stamp) stays fixed
+so `check-graph.mjs` and the visualizer keep working.
 
 **Also emit a JSON graph** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` next to the markdown — the same
 epic/story/task/bug nodes and `blocks`/`affects` edges as a machine-readable graph (the
@@ -337,27 +340,36 @@ preference — invoked as `/groomie:config <what they want>` or just phrased as 
 "prefer bigger tasks") — **you write the config for them.** No Jira key is needed; this touches only
 local config files, never Jira. Run this:
 
-1. **Read the current effective config.** Load the **merged** config: the global `~/.groomie/config.md`
-   with the per-project `groomie.config.md` (cwd or its git repo root) layered on top, merged by
-   section (per-project section wins; else global; else default). Apply the change on top of what's
-   already there — never clobber sections the user didn't mention.
+1. **Read the current effective config, and where each setting lives.** Load the **merged** config:
+   the global `~/.groomie/config.md` with the per-project `groomie.config.md` (cwd or its git repo
+   root) layered on top (scalar settings: per-project wins else global; list settings: union with
+   per-project overriding same-key global — see the guide's merge rule). Note **which file currently
+   holds each setting**, because that determines where a write actually takes effect (step 3). Apply
+   the change on top of what's already there — never clobber sections the user didn't mention.
 2. **Interpret the request** into one or more settings from the documented schema: **output language**,
    **repo → discipline** entry, **disciplines** vocabulary, **documentation policy**, **granularity**.
    If it maps to none of these, or is ambiguous, ask **one** clarifying question — never write a
    guessed or empty config.
-3. **Route each setting to the right file (and say which).** Default scope by nature:
-   - **Global** (`~/.groomie/config.md`): **output language**, **granularity**, **documentation
-     policy** — cross-project preferences.
-   - **Per-project** (`groomie.config.md` in cwd / git root): **repo → discipline** map, **disciplines**
-     vocabulary — specific to this repo set.
-   - The user can **override** in words: "just for this project" ⇒ per-project; "for all projects" /
-     "everywhere" ⇒ global.
+3. **Choose the file so the change actually takes effect (never a silent no-op).** Start from the
+   **default scope by nature**: **global** (`~/.groomie/config.md`) for output language, granularity,
+   documentation policy (cross-project preferences); **per-project** (`groomie.config.md` in cwd / git
+   root) for the repo → discipline map and disciplines vocabulary (specific to this repo set). The user
+   may **override** in words: "just for this project" ⇒ per-project; "for all projects" / "everywhere"
+   ⇒ global. **Then correct for shadowing** using what step 1 found: because a per-project **scalar**
+   value always wins the merge, if the setting already lives per-project, writing it to the global
+   file would have **no effect** — so write it where it actually takes effect (per-project), rather
+   than writing global and falsely reporting success. If the user *explicitly* forces a scope that the
+   other file shadows, do the write **and warn** which value is still in effect until the shadowing one
+   is removed.
 4. **Write the target file for the user.** Create `~/.groomie/` and the file if missing; **preserve
-   every other section** already in that file; emit valid config markdown in the schema the guide
-   documents (a `# Groomie config` H1 + the relevant `##` sections). Keep example/other values intact.
-5. **Confirm in one line** what was set and where — e.g.
-   `Set Output language = Turkish (global) · mapped panel → Frontend (this project).` The user never
-   opens the file. Do **not** groom here; configuring and grooming are separate acts.
+   every other section** already in that file, and emit valid config markdown in the schema the guide
+   documents (a `# Groomie config` H1 + the relevant `##` sections). For a **scalar** setting, set that
+   section's single value; for a **list** setting (repo → discipline, disciplines), **add or update the
+   one entry inside the existing section** — never rewrite the whole list, so other entries survive.
+   Keep example/other values intact.
+5. **Confirm in one line** what was set and the **file it actually took effect in** (plus any shadow
+   warning) — e.g. `Set Output language = Turkish (global) · mapped panel → Frontend (this project).`
+   The user never opens the file. Do **not** groom here; configuring and grooming are separate acts.
 
 ## Boundaries
 

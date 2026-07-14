@@ -192,14 +192,15 @@ Grooming a "publish a new public REST endpoint" feature **with** this config vs.
   mapping never blocks or invents.
 
 The user sets all of this **by conversation**, never by hand. Running `/groomie:config outputs in
-Turkish` while chatting in English makes Groomie write `## Output language: Turkish` to the global
-`~/.groomie/config.md` and reply `Set Output language = Turkish (global).` — it does **not** groom.
-The next `/groomie <KEY>` then produces the breakdown **content in Turkish** (epic/story/task prose,
-node labels) while the conversation stays in English and the skeleton stays fixed: the keys
-(`S1`/`T1`), the `[Discipline]` prefixes, the `Blocks:` / `Is blocked by:` link terms, the
-`Acceptance Criteria` / `Test Cases` / `Implementation` / `Done when` headings, and the version stamp
-are unchanged — so a Turkish breakdown still passes `check-graph.mjs` and renders in the visualizer.
-With no `## Output language` anywhere, output stays English.
+Turkish` while chatting in English makes Groomie add an `## Output language` section with a `- Turkish`
+bullet (the documented schema, not an inline `Heading: value`) to the global `~/.groomie/config.md`
+and reply `Set Output language = Turkish (global).` — it does **not** groom. The next `/groomie <KEY>`
+then produces the breakdown **content in Turkish** (epic/story/task prose, node labels) while the
+conversation stays in English and the skeleton stays fixed: the keys (`S1`/`T1`), the `[Discipline]`
+prefixes, the `Blocks:` / `Is blocked by:` / `affects:` link/bug markers, the `Acceptance Criteria` /
+`Test Cases` / `Implementation` / `Done when` headings, and the version stamp are unchanged — so a
+Turkish breakdown still passes `check-graph.mjs` and renders in the visualizer. With no
+`## Output language` anywhere, output stays English.
 
 ## Diagram
 
