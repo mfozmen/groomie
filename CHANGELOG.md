@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.11.0](https://github.com/mfozmen/groomie/compare/v0.10.0...v0.11.0) (2026-07-14)
+
+### Features
+
+* **groomie:** customize by conversation + output language ([#40](https://github.com/mfozmen/groomie/issues/40)) ([63a03c2](https://github.com/mfozmen/groomie/commit/63a03c2045a54076fd944257eec36039df5cee6c))
+
 ## [0.10.0](https://github.com/mfozmen/groomie/compare/v0.9.0...v0.10.0) (2026-07-14)
 
 ### Features
