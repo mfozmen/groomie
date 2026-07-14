@@ -30,9 +30,10 @@ Do exactly this:
    cannot fan it out to further subagents, do it inline. Step 2 also reads an optional
    `groomie.config.md` per the skill's own lookup rule — honor it (repo→discipline map, disciplines,
    docs policy, granularity) exactly as the skill defines; absent ⇒ default behavior.
-3. Emit exactly the outputs the skill's step 5 defines — `<KEY>-groomed.md` (with the
-   `_groomie v<version> · <mode> breakdown_` stamp), `<KEY>-groomed.json`, and the standalone
-   `<KEY>-groomed.html` — in the shape its **output contract** defines. That contract lives in the
+3. Emit exactly the outputs the skill's step 5 defines — under a per-issue `<KEY>/` folder,
+   `<KEY>-groomed.md` (with the `_groomie v<version> · <mode> breakdown_` stamp),
+   `<KEY>-groomed.json`, and the standalone `<KEY>-groomed.html` — in the shape its **output
+   contract** defines. That contract lives in the
    skill; follow it there, not from memory. Two guardrails bear repeating because they are the exact
    failures this agent exists to prevent: **produce the `.html` only by concatenating the shipped
    visualizer template halves — never hand-author a substitute**, and **add no section the contract
@@ -45,7 +46,8 @@ Do exactly this:
 
 **If your prompt is a revise instruction** (change/add/remove/split an epic/story/task in an
 already-produced breakdown) rather than a fresh groom, follow the skill's **"Revise an existing
-breakdown"** section instead of steps 2–3: load the existing `<KEY>-groomed.md`/`.json`, apply the
+breakdown"** section instead of steps 2–3: load the existing breakdown (`<KEY>/<KEY>-groomed.md`/`.json`,
+or the legacy flat path) per the skill's lookup rule, apply the
 single given change under the same contract (stable keys, consistent edges, targeted edit), re-emit
 all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
 
