@@ -206,18 +206,19 @@ Turkish breakdown still passes `check-graph.mjs` and renders in the visualizer. 
 
 The document ends with a `## Diagram` mermaid block: one `subgraph` per epic (container),
 `S#`/`T#`/`B#` nodes, solid arrows for blocking and dashed for a bug's `affects`, coloured by
-kind. Each label carries the node's **full title**, wrapped at ~34 chars with `<br/>` (the same as
-the HTML visualizer — see the breakdown guide). For the account example:
+kind. Each label carries the node's **full title** verbatim (the same title used in the sections
+above), wrapped at ~34 chars with `<br/>` like the HTML visualizer — see the breakdown guide's
+*Diagram (mermaid)* rule. For the account example:
 
 ```mermaid
 flowchart TD
   subgraph epic1["Epic: Traditional Authentication"]
-    S1["S1: As a user, I want to create an<br/>account using email and password, so<br/>that I have my own access."]
-    S2["S2: As a user, I want to reset my<br/>password via email, so that I can<br/>recover a locked-out account."]
-    S3["S3: As a logged-in user, I want to<br/>change my password, so that I can keep<br/>my account secure."]
-    T1["T1: [Backend] Design and implement the<br/>user schema and database tables"]
-    T2["T2: [Graphic Design] Design the<br/>registration flow mockups"]
-    T3["T3: [Game Dev] Build the registration<br/>screen in Unity"]
+    S1["S1: As a user, I want to create an<br/>account using email and password,<br/>so that I can have my own personal<br/>access to the platform."]
+    S2["S2: As a user, I want to reset my<br/>password via email, so that I can<br/>regain access to a locked-out<br/>account."]
+    S3["S3: As a logged-in user, I want to<br/>change my password, so that I can<br/>keep my account secure."]
+    T1["T1: [Backend] Design and implement user schema<br/>and database tables"]
+    T2["T2: [Graphic Design] Design registration flow UI<br/>mockups"]
+    T3["T3: [Game Dev] Implement registration UI using<br/>Unity"]
   end
   T1 --> S1
   T1 --> S2
