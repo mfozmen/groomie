@@ -445,18 +445,24 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
   stores blocking on both endpoints — dedupe here).
 - **Colour by kind** (Jira defaults) with a `classDef` block: story green, task blue, bug red;
   the epic subgraph gets a purple tint via a `style epic1 …` line.
-- **Labels are the node's full title, wrapped — matching the HTML visualizer.** Use the node's own
-  title (for a story the whole `As a …, I want …, so that ….` sentence; for a task the imperative
-  title; for an epic its name) — **not** a short gist. **Wrap** it with `<br/>` at word boundaries
-  roughly every ~34 characters — the same width the visualizer uses (`wrap(title, 34)`) — so a long
-  title reads as a few short lines instead of one giant line. Keep the `S1: ` / `Epic: ` prefix, a
-  task's `[Discipline]` tag, and (in `--estimate`) a trailing `(5)` on the front. **Sanitize for
-  mermaid** by removing only the characters that break a quoted `["…"]` label — `"`, `#`, `<`, `>`,
-  `|`, and backticks — and replacing `&` with `and`; **keep** commas, periods, parentheses, slashes,
-  apostrophes, colons, and hyphens (all safe inside the quoted label) and collapse runs of whitespace.
-  **Cap a very long title at ~4 wrapped lines (~130 characters of title):** cut at a word boundary and
-  append `…`, so the boxes stay readable — the full text still lives in the node's own `.md` body and
-  in the HTML visualizer. (A long "As a …, so that …." story is the usual case that hits the cap.)
+- **Labels carry the node's full title (like the HTML visualizer), not a short gist.** Build each
+  label **in this order — the order matters**:
+  1. **Take** the node's own title: a story's whole `As a …, I want …, so that ….` sentence, a task's
+     imperative title, an epic's name.
+  2. **Sanitize** it — *before* inserting any markup — by removing the characters that break a quoted
+     `["…"]` label: `"`, `#`, `<`, `>`, `|`, and backticks; replace `&` with `and`; collapse runs of
+     whitespace. **Keep** commas, periods, parentheses, brackets `[` `]`, braces `{` `}`, `%`, slashes,
+     apostrophes, colons, and hyphens — all safe inside the quoted label.
+  3. **Cap** a very long title at ~130 characters: cut at a word boundary and append `…`. This cap is
+     **mermaid-only** (it keeps boxes readable); the full text still lives in the node's `.md` body and
+     the HTML visualizer, which don't cap. (A long "As a …, so that …." story is the usual case.)
+  4. **Wrap** the sanitized, capped text with `<br/>` at word boundaries every ~34 characters — the
+     width the visualizer wraps the bare title at (`wrap(title, 34)`). Insert `<br/>` **only here**,
+     after sanitizing, so the `<`/`>` you just added aren't stripped.
+  5. **Prefix** the front with the `S1: ` / `Epic: ` scaffolding, a task's `[Discipline]` tag, and (in
+     `--estimate`) a trailing `(5)`. The prefix rides inline on the first line — the visualizer puts
+     the id/discipline on a separate row instead — so a node's first line runs a little past ~34, which
+     is expected.
 - **Modes:** `--stories` → no task nodes and no `-->` edges (stories may still have dashed bug
   edges); `--estimate` → append the point to the task label, `T1["T1: [Backend] User schema (5)"]`.
 
