@@ -445,24 +445,32 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
   stores blocking on both endpoints — dedupe here).
 - **Colour by kind** (Jira defaults) with a `classDef` block: story green, task blue, bug red;
   the epic subgraph gets a purple tint via a `style epic1 …` line.
-- **Labels are short, sanitized summaries.** Take a 3–6 word gist (the "I want …" for stories,
-  the imperative minus discipline for tasks; the name for epics). **Sanitize just the gist** to
-  ASCII letters, digits, spaces, and hyphens — drop everything else (`"`, `#`, `<`, `>`, `,`,
-  `|`, backticks), collapse whitespace, cap ~40 chars. **Then wrap it in the scaffolding** the
-  sanitizer doesn't touch: the `S1: ` / `Epic: ` prefix, a task's `[Discipline]` tag, and (in
-  `--estimate`) a trailing `(5)`. This avoids all mermaid escaping — because gists are short,
-  lossy is fine.
+- **Labels are the node's full title, wrapped — matching the HTML visualizer.** Use the node's own
+  title (for a story the whole `As a …, I want …, so that ….` sentence; for a task the imperative
+  title; for an epic its name) — **not** a short gist. **Wrap** it with `<br/>` at word boundaries
+  roughly every ~34 characters — the same width the visualizer uses (`wrap(title, 34)`) — so a long
+  title reads as a few short lines instead of one giant line. Keep the `S1: ` / `Epic: ` prefix, a
+  task's `[Discipline]` tag, and (in `--estimate`) a trailing `(5)` on the front. **Sanitize for
+  mermaid** by removing only the characters that break a quoted `["…"]` label — `"`, `#`, `<`, `>`,
+  `|`, and backticks — and replacing `&` with `and`; **keep** commas, periods, parentheses, slashes,
+  apostrophes, colons, and hyphens (all safe inside the quoted label) and collapse runs of whitespace.
+  **Cap a very long title at ~4 wrapped lines (~130 characters of title):** cut at a word boundary and
+  append `…`, so the boxes stay readable — the full text still lives in the node's own `.md` body and
+  in the HTML visualizer. (A long "As a …, so that …." story is the usual case that hits the cap.)
 - **Modes:** `--stories` → no task nodes and no `-->` edges (stories may still have dashed bug
   edges); `--estimate` → append the point to the task label, `T1["T1: [Backend] User schema (5)"]`.
+
+Each label carries the node's own title, wrapped at ~34 chars with `<br/>` (the `S1: ` / `[Discipline]`
+scaffolding stays on the front):
 
 ```mermaid
 flowchart TD
   subgraph epic1["Epic: Traditional Authentication"]
-    S1["S1: Create account with email"]
-    S2["S2: Reset password via email"]
-    T1["T1: [Backend] User schema"]
-    T2["T2: [Game Dev] Registration UI"]
-    B1["B1: Verification email not sent"]
+    S1["S1: As a user, I want to create an<br/>account using email and password, so<br/>that I have my own access."]
+    S2["S2: As a user, I want to reset my<br/>password via email, so that I can<br/>recover a locked-out account."]
+    T1["T1: [Backend] Design and implement the<br/>user schema and database tables"]
+    T2["T2: [Game Dev] Build the registration<br/>screen in Unity"]
+    B1["B1: Verification email is not sent on<br/>signup"]
   end
   T1 --> S1
   T1 --> S2
