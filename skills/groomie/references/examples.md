@@ -77,8 +77,10 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 ```
 
 (Keyed `S1`; note the comma before *so that* and the period at the end, one responsibility
-(INVEST), and blocking refs carry `<key> — <title>`. "user" here is a real product persona —
-the game's player. Never write a story as the recipient of an outbound artifact.)
+(INVEST), and blocking refs carry `<key> — <title>`. "user" here is the persona rule's honest
+default: no config `## Personas` exists and the ticket names no role, so the generic `user` —
+the game's player — is correct; inventing a title like "gamer persona manager" would be worse,
+not better. Never write a story as the recipient of an outbound artifact.)
 
 **Solution leaks to catch — even when the source ticket contains them.** The ticket's own AC
 often carries placement, field names, or flow ordering; grooming translates those into
@@ -251,6 +253,12 @@ Grooming a "publish a new public REST endpoint" feature **with** this config vs.
   distinct `[Docs] Document the endpoint on Confluence` task appears alongside it. A task landing in a
   repo the map doesn't list (say `search-indexer`) still gets an inferred discipline — the missing
   mapping never blocks or invents.
+
+The same pattern covers story roles: with a `## Personas` section (say `- Marketer` /
+`- Store Admin`), stories use the best-fitting listed persona (`As a marketer, I want …`).
+Without it, the role is a name the source actually uses — the ticket, its docs, or the roles
+the project's already-filed stories use (researched opportunistically) — else the generic
+`user`. Never an invented job title.
 
 The user sets all of this **by conversation**, never by hand. Running `/groomie:config outputs in
 Turkish` while chatting in English makes Groomie add an `## Output language` section with a `- Turkish`

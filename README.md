@@ -20,10 +20,16 @@ can review and file.
 
 ## What you get
 
-- **Epic(s)** — the feature, bounded and closeable, with a `Description` + `Business Value`.
+- **Epic(s)** — the feature, bounded and closeable, with a `Description` + `Business Value`;
+  the title **leads with a verb** (`Add` / `Enable` / `Migrate` …) so it reads as the work to
+  be done, not a label.
 - **User stories** (`S1`, `S2`, …) — user-facing behavior only, written as
   `As a <role>, I want <capability>, so that <benefit>.`, each with **acceptance criteria**
   and **test cases**. (A pure technical migration has no stories — Groomie won't invent them.)
+  Stories never carry solution detail — no menu placements, no technical field names, no
+  prescribed interaction sequences, no source-ticket numbering, no widget names — and the
+  `<role>` is never an invented job title (your configured personas, a role your tickets and
+  existing stories actually use, or plain "user").
 - **Technical tasks** (`T1`, `T2`, …) — `[Discipline]`-tagged implementation work with a
   detailed plan, wired to what they **block** / are **blocked by** (Jira link terms).
 - **Bugs** and **open questions** — surfaced, never silently invented.
@@ -58,6 +64,7 @@ file:
 ```
 /groomie:config outputs in Turkish
 /groomie:config the panel repo is Frontend
+/groomie:config our personas are Marketer and Store Admin
 /groomie:config API specs go to Confluence as a separate task
 /groomie:config prefer fewer, larger tasks
 ```
@@ -69,9 +76,9 @@ in the configured one (the structure — keys, `[Discipline]`, blockers, heading
 Config lives in two places: a **global** `~/.groomie/config.md` (applies to every project — a natural
 home for output language) and a per-project **`groomie.config.md`** at your repo root, layered on top.
 Per-project wins for single-value settings (output language, granularity, docs policy), and for the
-list settings (repo→discipline, disciplines) it overrides only the matching entry — so a per-project
-section never erases the rest of your global map. Everything is optional — set nothing and Groomie
-behaves exactly as it does by default. The full set of settings (output language, repo→discipline map, disciplines, documentation
+list settings (repo→discipline, disciplines, personas) it overrides only the matching entry — so a
+per-project section never erases the rest of your global map. Everything is optional — set nothing and Groomie
+behaves exactly as it does by default. The full set of settings (output language, repo→discipline map, disciplines, personas, documentation
 policy, granularity) is what `/groomie:config` writes for you; the format is documented in
 [`docs/groomie.config.example.md`](docs/groomie.config.example.md) if you ever want to hand-edit:
 
@@ -93,6 +100,10 @@ policy, granularity) is what `/groomie:config` writes for you; the format is doc
 - Mobile
 - Data
 
+## Personas
+- Marketer
+- Store Admin
+
 ## Documentation policy
 - API specs are published to Confluence as a separate task.
 
@@ -101,8 +112,11 @@ policy, granularity) is what `/groomie:config` writes for you; the format is doc
 ```
 
 With this, a task whose work lands in a mapped repo gets the right `[Discipline]` from the map instead
-of a guess, your docs/granularity conventions are honored, and output is written in your language. A
-repo you don't list still gets an inferred discipline — nothing breaks.
+of a guess, story roles come from **your** persona vocabulary, your docs/granularity conventions are
+honored, and output is written in your language. A repo you don't list still gets an inferred
+discipline — nothing breaks. Without a `## Personas` section, story roles are a name your tickets or already-filed stories
+actually use (Groomie checks the project's backlog opportunistically, when its research tools
+allow), or plain "user" — Groomie never guesses a job title.
 
 ## Install
 

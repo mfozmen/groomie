@@ -40,6 +40,9 @@ answering every item below. Collect violations first; then fix them in **one bou
 - [ ] Persona is a **real product user**, never the recipient/consumer of an outbound
       artifact; persona stays **consistent** across stories (role switches only when the
       actor genuinely differs — author vs user).
+- [ ] Role name is **not invented**: it comes from the config's `## Personas`, or a name
+      the source actually uses, or is generic `user` — never a guessed job title.
+      *(guide: "User stories" → the persona priority rule)*
 - [ ] Title is the full sentence `As a <role>, I want <capability>, so that <benefit>.` —
       comma before *so that*, period at the end, within Jira's 255-char summary limit.
 - [ ] Each story = **one** capability (INVEST) — no "edit **or** delete" bundles.

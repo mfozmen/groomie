@@ -6,7 +6,7 @@
   Config lives in two places, layered so nothing is lost: a GLOBAL `~/.groomie/config.md` (all
   projects) and a per-project `groomie.config.md` at your repo root on top. Per-project wins for
   single-value settings (output language, granularity, docs policy); for list settings (repo→discipline,
-  disciplines) it overrides only the matching entry, keeping the rest of the global list. Everything is
+  disciplines, personas) it overrides only the matching entry, keeping the rest of the global list. Everything is
   OPTIONAL — delete any section (or the whole file) and Groomie keeps its default behavior. All names
   below are placeholders — replace them with your own.
 -->
@@ -31,6 +31,14 @@
 - Frontend
 - Mobile
 - Data
+
+## Personas
+<!-- The persona vocabulary for story roles ("As a <persona>, I want …"). Groomie picks the
+     best fit per actor. Without this section it uses a role name the ticket, its docs, or the
+     project's already-filed stories actually use, or the generic "user" — it never invents a
+     job title. -->
+- Marketer
+- Store Admin
 
 ## Documentation policy
 <!-- Out-of-repo docs that should become their own task (the out-of-repo-docs exception).

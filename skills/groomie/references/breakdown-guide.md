@@ -72,14 +72,28 @@ blocker). Bugs are QA-tested whether they are technical or not.
   Each delivers something a user (or operator/admin) can perceive. If a "story" has no
   user-visible outcome, it's probably a task. **QA tests stories** — the Test Cases below
   are the basis QA runs.
-- **Use a real product persona — someone who actually uses what we are building.** The
-  `<role>` must be an actual user of *our* product (e.g. the marketer / campaign editor /
-  admin / operator on the sending side). The **end recipient / consumer of an outbound
-  artifact is not our user** — never write a story from their point of view. Reframe that
-  value from our user's perspective:
+- **The persona is never invented — it follows the same traceability rule as everything
+  else.** Pick the story's `<role>` by this priority:
+  1. **Config `## Personas`** — when the merged config defines the org's persona vocabulary
+     (see *Per-project config* below), use the listed persona that best fits the actor.
+  2. **A role name the source actually uses** — the ticket, its linked product docs, or the
+     **project's existing backlog**: research what `<role>`s already-filed stories in this
+     project use (opportunistically, like all research — fan out to subagents when available,
+     skip silently when not). A role the org already writes in its own stories is traceable
+     vocabulary, not a guess. Once picked, the role is decided for this breakdown — reuse it
+     consistently (and on a revise, keep it) rather than re-probing per story or per run.
+  3. **Generic `user`** — the honest default when neither exists. A made-up job title
+     ("marketer", "campaign editor") *looks* more precise than `user`, but if no source names
+     it, it is invented vocabulary — worse, not better. When the source genuinely
+     distinguishes actors, keep them distinct with generic names ("admin" authors a rule,
+     "user" applies it) — never collapse a real actor distinction into one `user`.
+
+  At every tier the `<role>` must be an actual user of *our* product. The **end recipient /
+  consumer of an outbound artifact is not our user** — never write a story from their point
+  of view. Reframe that value from our user's perspective:
   - ❌ "As an email recipient, I want the email delivered as multipart …"
-  - ✅ "As a campaign editor, I want my email delivered as multipart, so that recipients on
-    any client see a readable version."
+  - ✅ "As a user, I want my email delivered as multipart, so that recipients on any client
+    see a readable version."
 - **The title IS the story sentence:** `As a <role>, I want <capability>, so that <benefit>.`
   — **comma before *so that*, and a period at the end.** Give each story a Jira-style key
   `S1`, `S2`, … (a local placeholder for the Jira key assigned on filing) and put it in the
@@ -131,7 +145,7 @@ blocker). Bugs are QA-tested whether they are technical or not.
     - ❌ "'Price range' appears in the filter dropdown list"
     - ✅ "'Price range' is offered among the available filters"
   - **Keep the persona consistent across the breakdown.** Switch roles between stories only
-    when the actor genuinely differs (e.g. an admin *authors* a rule, a campaign editor *uses*
+    when the actor genuinely differs (e.g. an admin *authors* a rule, a user *applies*
     it) — never drift between synonyms for the same person.
 - **Body carries, in order:**
   - a one-line description of the capability (link PRD / business-analysis / background
@@ -217,7 +231,7 @@ blocker). Bugs are QA-tested whether they are technical or not.
 
   ```
   **Blocks:**
-  - S1 — As a campaign editor, I want to generate a plaintext version, so that …
+  - S1 — As a user, I want to generate a plaintext version, so that …
   **Is blocked by:**
   - T2 — Implement the HTML→plaintext converter
   ```
@@ -244,8 +258,8 @@ Config lives in **two places, merged so settings accumulate:**
   silently lost:
   - **Scalar settings** (Output language, Granularity, Documentation policy) — the per-project value
     wins when present; otherwise the global value; otherwise the default.
-  - **List settings** (Repo → discipline, Disciplines) — the **union** of the global and per-project
-    entries; a per-project entry overrides a global entry on the **same key** (e.g. the same repo).
+  - **List settings** (Repo → discipline, Disciplines, Personas) — the **union** of the global and
+    per-project entries; a per-project entry overrides a global entry on the **same key** (e.g. the same repo).
     A per-project `## Repo → discipline` therefore *adds to / overrides* the global map, it does not
     erase it.
 
@@ -274,6 +288,10 @@ The file is plain markdown; Groomie reads these sections by heading (all optiona
 - Mobile
 - Data
 
+## Personas
+- Marketer
+- Store Admin
+
 ## Documentation policy
 - API specs are published to Confluence as a separate task.
 
@@ -300,6 +318,9 @@ How each section maps onto the rules above:
   because a repo is unmapped.
 - **Disciplines** — the vocabulary this org uses for `[Discipline]` prefixes; prefer these names.
   Outside them, infer per project as usual.
+- **Personas** — the org's canonical persona vocabulary for story `<role>`s (tier 1 of the
+  persona rule in *User stories*): pick the listed persona that best fits the actor. Absent, or
+  none fits, fall back to a role name the source actually uses, else generic `user`.
 - **Documentation policy** — turns the *out-of-repo docs* exception (see Technical tasks) from a
   maybe into an explicit rule: when the epic produces the artifact the policy names (e.g. API specs)
   and the policy says "separate task", emit that out-of-repo docs task. In-repo docs still stay
