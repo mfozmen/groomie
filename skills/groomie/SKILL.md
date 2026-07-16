@@ -387,19 +387,23 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
    folder first, legacy-flat fallback). Read the **JSON as the source of truth** for the push (don't
    re-parse the `.md`). If the pair isn't found, **stop** and tell the user to run `/groomie <KEY>`
    first — never groom here.
-2. **Pick the epic mode (ask once).** Ask the user: **make the source issue `<KEY>` the epic**
-   (update it in place to carry the epic's title/description; stories/tasks become its children) **or
-   create a new epic** (a fresh Jira epic, linked to `<KEY>` with a "relates to" link). Record the
-   choice as `jira.epicMode` (`source-as-epic` | `new-epic`). If the user picks **`source-as-epic`,
-   seed the ledger now**: set `jira.pushed[<epic node id>] = <KEY>` (the source issue key itself) —
-   so step 3 classifies the epic as UPDATE and the source issue is updated in place, never
-   duplicated. The target **project** defaults to the source issue's project; record it as
-   `jira.project`.
+2. **Pick the epic mode — once, on the first push; locked after.** **If `jira.epicMode` is already
+   recorded** (a prior push for this breakdown), **reuse it — do not re-ask and do not re-seed** — and
+   skip to step 3. Switching modes across pushes is **not allowed**: it would strand the epic a prior
+   push already created; if a user truly needs to switch, they resolve that epic in Jira by hand
+   first. **Only on the first push** (no `jira.epicMode` yet) ask the user: **make the source issue
+   `<KEY>` the epic** (update it in place to carry the epic's title/description; stories/tasks become
+   its children) **or create a new epic** (a fresh Jira epic, linked to `<KEY>` with a "relates to"
+   link). Record the choice as `jira.epicMode` (`source-as-epic` | `new-epic`) and the target
+   `jira.project` (default: the source issue's project). If the choice is **`source-as-epic`, seed the
+   ledger now**: set `jira.pushed[<epic node id>] = <KEY>` (the source issue key itself) — so step 3
+   classifies the epic as UPDATE and the source issue is updated in place, never duplicated.
 3. **Classify every node against the ledger** (`jira.pushed`, empty/absent on a first push **except**
    the `source-as-epic` seed from step 2): a node **in** the ledger ⇒ **UPDATE** its Jira key; a node
    **absent** ⇒ **CREATE**. So the epic classifies as **UPDATE `<KEY>`** under `source-as-epic` (via
    the seed) and as **CREATE** under `new-epic`. Any ledger entry whose node id is **no longer in the
-   breakdown** ⇒ **`[deleted]`** (skip if that issue's summary already starts with `[deleted] `).
+   breakdown** — **and not already listed in `jira.tombstoned`** — ⇒ **`[deleted]`** (this local check
+   means a re-push skips an already-tombstoned issue without a live read and never doubles the prefix).
    Collect the `blocks`/`affects` edges as **LINKS**.
 4. **Render the dry-run plan and STOP — write nothing yet.** Print it grouped, with the **fixed
    English keywords** and destructive actions flagged, e.g.:
@@ -414,7 +418,9 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
 6. **Execute in dependency order** via the MCP: **epic(s) → stories → tasks/bugs → links**. Per node,
    create or update **only** summary + description per the guide's field mapping, and set the
    epic-child link on create; create any missing `blocks`(→"Blocks")/`affects`(→"Relates") links;
-   prepend `[deleted] ` to each orphan's summary. **Never** touch status/assignee/sprint/other fields.
+   prepend `[deleted] ` to each orphan's summary **and add its node id to `jira.tombstoned`** (the
+   local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
+   status/assignee/sprint/other fields.
    After **each successful create**, write its returned key into `jira.pushed` **and save
    `<KEY>-groomed.json` to disk immediately** — a real file write after every create, not an
    in-memory update flushed only at the end — so a mid-run failure resumes as UPDATE, never a
