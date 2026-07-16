@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/mfozmen/groomie/compare/v0.14.0...v0.15.0) (2026-07-16)
+
+### Features
+
+* **groomie:** hard story-boundary rules — five solution leaks named as NEVERs ([#47](https://github.com/mfozmen/groomie/issues/47)) ([4c0bf6b](https://github.com/mfozmen/groomie/commit/4c0bf6b518269ab8ab9ce2d03421d10327d2dad8))
+* **groomie:** self-review pass after every groom + standalone /groomie:review ([#48](https://github.com/mfozmen/groomie/issues/48)) ([cd90f6b](https://github.com/mfozmen/groomie/commit/cd90f6bb48ab27048751349d9d79c58f3cb31826))
+
 ## [0.14.0](https://github.com/mfozmen/groomie/compare/v0.13.0...v0.14.0) (2026-07-16)
 
 ### Features
