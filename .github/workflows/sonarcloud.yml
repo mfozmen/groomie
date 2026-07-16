@@ -36,7 +36,7 @@ jobs:
           # Sonar needs full history for accurate blame / new-code detection.
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
@@ -51,5 +51,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v7
         with:
           projectBaseDir: visualizer
+          # Verify the scanner CLI's GPG signature instead of skipping it (the action's default).
+          skipSignatureVerification: false
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
