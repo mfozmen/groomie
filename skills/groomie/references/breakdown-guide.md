@@ -538,3 +538,52 @@ Rules:
   blocker→blocked edge, so dedup them. `affects` runs bug→story.
 - **Modes:** `--stories` → no `task` nodes and no `blocks` edges (bug `affects` stays);
   `--estimate` → each task node has `estimate`. The `nodes`/`edges` arrays always exist.
+- An optional top-level **`jira`** key may be present — the write-back ledger (see *Jira write-back*
+  below). It is data only: `check-graph.mjs` and the visualizer read solely `nodes`/`edges` and
+  ignore it.
+
+## Jira write-back (`/groomie:push`)
+
+`/groomie:push <ISSUE-KEY>` writes a finalized breakdown into Jira via the Atlassian MCP —
+**opt-in, idempotent, and only after an approved preview** (see SKILL.md's *Push to Jira* flow). This
+section defines the data contract; the flow defines the behavior.
+
+**The ledger.** The JSON gains a top-level `jira` object recording every issue groomie owns for this
+breakdown:
+
+```json
+"jira": {
+  "project": "PROJ",
+  "epicMode": "source-as-epic",
+  "pushed": { "E1": "PROJ-450", "S1": "PROJ-457", "T1": "PROJ-460" }
+}
+```
+
+- `pushed` maps a groomie node id → the Jira key groomie created/owns for it. **Entries are never
+  removed** — a node later dropped from the breakdown keeps its entry so its now-orphan Jira issue can
+  still be found and tombstoned. Each key is written **immediately** after a successful create, so a
+  mid-run failure resumes as an UPDATE, never a duplicate CREATE.
+- `epicMode ∈ source-as-epic | new-epic` (chosen per run, see the flow); `project` is the target Jira
+  project (default: the source issue's project).
+
+**Mapping.** (Names marked *verify on demo Jira* are assumptions to confirm on a real instance — never
+against production during development.)
+
+- **Kind → issue type:** `epic`→Epic, `story`→Story, `task`→Task, `bug`→Bug. A story/task/bug is a
+  **child of its epic** via the epic-link / parent field (*verify on demo Jira*).
+- **Edge → link:** `blocks`→Jira **"Blocks"**; `affects`→**"Relates"** unless the instance has a
+  closer type (*verify on demo Jira*). Skip a link that already exists between the two keys.
+- **Fields:** **summary** = the node title (a story's full `As a …` sentence; trim to Jira's summary
+  limit and carry the overflow into the description). **description** = the node body — a story's
+  description + Acceptance Criteria + Test Cases, a task's Implementation + Done when, a bug's
+  repro/expected/actual. Description format (ADF vs wiki markup) is an MCP detail (*verify on demo
+  Jira*).
+
+**Upsert scope.** An UPDATE overwrites **only** the groomie-owned fields — **summary, description, and
+the blocks/affects links groomie created** — and **never** touches status, assignee, sprint, priority,
+comments, or any other field, so a re-push refreshes content without destroying workflow state.
+
+**Removed nodes (`[deleted]`).** A `pushed` entry whose node id is no longer in the current breakdown
+is an orphan. Groomie **does not delete or transition it** — it prepends `[deleted] ` to the issue's
+summary (once; skip if already prefixed) as a reversible tombstone and keeps the ledger entry. The
+`[deleted] ` prefix is a **fixed English marker**, independent of `## Output language`.

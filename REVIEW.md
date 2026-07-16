@@ -45,6 +45,24 @@ Everything illustrative must be **synthetic and generic** — invented repo name
 examples). The user's personal calibration project (`SAP`) is the one allowed non-generic reference,
 and it is a personal hobby project, not company data. When in doubt, genericize.
 
+## 1c. Jira write-back safety (`/groomie:push`) — blocking
+
+`/groomie:push` is Groomie's only write to Jira. The prose must preserve these invariants; weakening
+any is a **blocking** finding:
+
+- **No write before an approved preview.** The flow must render the full plan (CREATE / UPDATE /
+  `[deleted]` / LINKS) and get explicit user approval *before* any MCP write. No auto-apply path.
+- **Idempotent, no duplicates.** Classification must go through the JSON `jira.pushed` ledger
+  (present ⇒ UPDATE, absent ⇒ CREATE, record the new key immediately). Never a title/summary search
+  that could create a second issue.
+- **Soft delete only.** A removed node's issue gets a `[deleted] ` summary prefix — **never** a hard
+  delete or a status transition.
+- **Scoped fields.** UPDATE touches only summary + description + Groomie's links — never
+  status/assignee/sprint/priority/comments.
+- **No hardcoded instance.** The prose must never bake in a real Jira instance, project, or key —
+  examples stay synthetic (`PROJ-123`), and instance-specific assumptions (issue types, link types,
+  epic-child field, description format) are surfaced as *verify-on-demo-Jira*, never silently assumed.
+
 ## 2. Grooming-model integrity
 
 - **Stories are behavior/needs only** — never prescribe a solution (no API/UI/design
