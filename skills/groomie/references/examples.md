@@ -205,8 +205,9 @@ Turkish breakdown still passes `check-graph.mjs` and renders in the visualizer. 
 ## Pushing to Jira
 
 `/groomie:push` writes the breakdown to Jira only after an approved preview, and stays idempotent via
-the JSON `jira` ledger (see the breakdown guide's *Jira write-back* section). Worked run on the auth
-breakdown (all keys synthetic).
+the JSON `jira` ledger (see the breakdown guide's *Jira write-back* section). Worked run on a **small
+slice** of the auth breakdown — epic `E1`, story `S1`, task `T1`, bug `B1` — for brevity; all keys
+synthetic.
 
 **First push** — the ledger is empty, so everything is a CREATE. Groomie asks the epic mode (say
 "new epic") and prints the plan, then waits:
@@ -222,18 +223,22 @@ On approval it creates the issues in order and records each key, leaving this le
 
 ```json
 "jira": { "project": "PROJ", "epicMode": "new-epic",
-          "pushed": { "E1": "PROJ-450", "S1": "PROJ-457", "T1": "PROJ-460", "B1": "PROJ-461" } }
+          "pushed": { "E1": "PROJ-450", "S1": "PROJ-457", "T1": "PROJ-460", "B1": "PROJ-461" },
+          "tombstoned": [] }
 ```
 
-**Re-push after `/groomie:revise PROJ-123 remove S2`** (imagine S2 → PROJ-458 had been pushed
-earlier): S1/T1/B1 are in the ledger ⇒ UPDATE; S2 is gone from the breakdown but still in the ledger
-⇒ tombstone. No duplicates are created:
+**Re-push after `/groomie:revise PROJ-123 remove B1`**: E1/S1/T1 are in the ledger ⇒ UPDATE; B1 is
+gone from the breakdown but still in the ledger ⇒ tombstone. No duplicates are created:
 
 ```
 Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
-  UPDATE    E1 → PROJ-450, S1 → PROJ-457, T1 → PROJ-460, B1 → PROJ-461   (summary + description + links)
-  [deleted] S2 → PROJ-458  (removed from the breakdown)   ⚠ destructive
+  UPDATE    E1 → PROJ-450, S1 → PROJ-457, T1 → PROJ-460   (summary + description + links)
+  [deleted] B1 → PROJ-461  (removed from the breakdown)   ⚠ destructive
 ```
+
+After approval, `B1`'s summary becomes `[deleted] Verification email not sent`, and the ledger keeps
+its entry while recording the tombstone: `"tombstoned": ["B1"]` — so a further re-push leaves `B1`
+alone.
 
 PROJ-458's summary becomes `[deleted] As a user, I want to reset my password …`; its status, assignee,
 and everything else are untouched.

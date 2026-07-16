@@ -592,5 +592,6 @@ comments, or any other field, so a re-push refreshes content without destroying 
 
 **Removed nodes (`[deleted]`).** A `pushed` entry whose node id is no longer in the current breakdown
 is an orphan. Groomie **does not delete or transition it** — it prepends `[deleted] ` to the issue's
-summary (once; skip if already prefixed) as a reversible tombstone and keeps the ledger entry. The
-`[deleted] ` prefix is a **fixed English marker**, independent of `## Output language`.
+summary (once — the node id is added to `jira.tombstoned` and skipped on later pushes by that local
+check, no live read) as a reversible tombstone, and keeps the ledger entry. The `[deleted] ` prefix is
+a **fixed English marker**, independent of `## Output language`.

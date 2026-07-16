@@ -415,16 +415,19 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
      LINKS     T1 blocks S1, B1 affects S1
    ```
 5. **Await explicit approval.** If the user declines, make **no** Jira call and stop.
-6. **Execute in dependency order** via the MCP: **epic(s) → stories → tasks/bugs → links**. Per node,
-   create or update **only** summary + description per the guide's field mapping, and set the
-   epic-child link on create; create any missing `blocks`(→"Blocks")/`affects`(→"Relates") links;
-   prepend `[deleted] ` to each orphan's summary **and add its node id to `jira.tombstoned`** (the
-   local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
-   status/assignee/sprint/other fields.
-   After **each successful create**, write its returned key into `jira.pushed` **and save
-   `<KEY>-groomed.json` to disk immediately** — a real file write after every create, not an
-   in-memory update flushed only at the end — so a mid-run failure resumes as UPDATE, never a
-   duplicate CREATE.
+6. **Execute in dependency order** via the MCP: **epic(s) → stories → tasks/bugs → links**.
+   - **First, save `<KEY>-groomed.json` to disk with the step-2 ledger fields** (`jira.epicMode`,
+     `jira.project`, and any `source-as-epic` seed) **before the first Jira write** — so the locked
+     mode is durable even if a later create fails and the run is retried.
+   - Per node, create or update **only** summary + description per the guide's field mapping, and set
+     the epic-child link on create; create any missing `blocks`(→"Blocks")/`affects`(→"Relates")
+     links; prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
+     local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
+     status/assignee/sprint/other fields.
+   - **After *every* Jira write that changes the ledger** — a created key added to `jira.pushed`, or
+     an orphan's id added to `jira.tombstoned` — **save `<KEY>-groomed.json` to disk immediately**,
+     before the next Jira call. Never batch these in memory to flush at the end: a mid-run failure
+     must resume with the locked mode, already-created issues as UPDATE, and tombstones not repeated.
 7. **Persist + report.** Do the final save of `<KEY>-groomed.json` (the ledger has been written
    incrementally in step 6; this reconciles the last state), **regenerate
    `<KEY>-groomed.html`** with the same shell concat (the `jira` key is data the visualizer ignores),
