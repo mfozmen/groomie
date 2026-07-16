@@ -175,7 +175,7 @@ Core rules (full detail in the guide):
 - **Honor the config when step 2 loaded one** — each setting optional, each falling back to
   the defaults above when absent: write the output **content in its `## Output language`** (only
   human-readable content — epic/story/task/bug prose and node labels; the skeleton stays fixed:
-  keys, `[Discipline]` prefixes, the link/bug markers `Blocks:` / `Is blocked by:` / `affects:`, the
+  keys, `[Discipline]` prefixes, the link markers `Blocks:` / `Is blocked by:`, the
   fixed headings, the version stamp; absent ⇒ English); use its **repo→discipline map** for the `[Discipline]` prefix on
   work landing in a named repo (a repo not in the map ⇒ infer as usual, never block); its
   **disciplines** as the `[Discipline]` vocabulary; its **documentation policy** to decide when the
@@ -225,7 +225,7 @@ read, stamp `_groomie (version unknown) · <mode> breakdown_` rather than omitti
 
 End with a **`## Diagram`** section — one fenced ```mermaid `flowchart TD` that renders the
 breakdown as a graph: one `subgraph` per epic (container) holding its story/task/bug nodes,
-solid arrows for blocking (`T# --> S#`), dashed for a bug's `affects` (`B# -.-> S#`), colored
+solid arrows for blocking (`T# --> S#`); bugs are standalone nodes (no edge), colored
 by kind, each node labelled with its **full title wrapped at ~34 chars** (`<br/>`) like the HTML
 visualizer. See the guide's *Diagram (mermaid)* section for the exact shape, label, and sanitization
 rules. Omit the `## Diagram` when there are no nodes.
@@ -241,11 +241,11 @@ using, but write the groomed **output content** in the config's `## Output langu
 step 4) — default **English** when unset. The two are independent: a Turkish conversation about an
 English ticket still produces English output unless the config says otherwise, and vice-versa. Only
 human-readable content is translated — the contract skeleton (keys, `[Discipline]`, the link/bug
-markers `Blocks:` / `Is blocked by:` / `affects:`, the fixed headings, the version stamp) stays fixed
+markers `Blocks:` / `Is blocked by:`, the fixed headings, the version stamp) stays fixed
 so `check-graph.mjs` and the visualizer keep working.
 
 **Also emit a JSON graph** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` next to the markdown — the same
-epic/story/task/bug nodes and `blocks`/`affects` edges as a machine-readable graph (the
+epic/story/task/bug nodes and `blocks` edges as a machine-readable graph (the
 input for the visualizer). See the guide's *JSON graph output* section for the schema. Tell
 the user this path too.
 
@@ -404,7 +404,7 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
    the seed) and as **CREATE** under `new-epic`. Any ledger entry whose node id is **no longer in the
    breakdown** — **and not already listed in `jira.tombstoned`** — ⇒ **`[deleted]`** (this local check
    means a re-push skips an already-tombstoned issue without a live read and never doubles the prefix).
-   Collect the `blocks`/`affects` edges as **LINKS**.
+   Collect the `blocks` edges as **LINKS** (bugs have no edges — they're epic children only).
 4. **Render the dry-run plan and STOP — write nothing yet.** Print it grouped, with the **fixed
    English keywords** and destructive actions flagged, e.g.:
    ```
@@ -412,7 +412,7 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
      CREATE    epic E1, S4 (Story), T3 (Task)
      UPDATE    S1 → PROJ-457, T1 → PROJ-460      (summary + description + links)
      [deleted] T9 → PROJ-462  (removed from the breakdown)   ⚠ destructive
-     LINKS     T1 blocks S1, B1 affects S1
+     LINKS     T1 blocks S1
    ```
 5. **Await explicit approval.** If the user declines, make **no** Jira call and stop.
 6. **Execute in dependency order** via the MCP: **epic(s) → stories → tasks/bugs → links**.
@@ -420,8 +420,8 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
      `jira.project`, and any `source-as-epic` seed) **before the first Jira write** — so the locked
      mode is durable even if a later create fails and the run is retried.
    - Per node, create or update **only** summary + description per the guide's field mapping, and set
-     the epic-child link on create; create any missing `blocks`(→"Blocks")/`affects`(→"Relates")
-     links; prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
+     the epic-child link on create; create any missing `blocks`(→"Blocks") links (bugs get no
+     bug→story link); prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
      local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
      status/assignee/sprint/other fields.
    - **After *every* Jira write that changes the ledger** — a created key added to `jira.pushed`, or
