@@ -226,7 +226,8 @@ and reply `Set Output language = Turkish (global).` — it does **not** groom. T
 then produces the breakdown **content in Turkish** (epic/story/task prose, node labels) while the
 conversation stays in English and the skeleton stays fixed: the keys (`S1`/`T1`), the `[Discipline]`
 prefixes, the `Blocks:` / `Is blocked by:` link markers, the `Acceptance Criteria` /
-`Test Cases` / `Implementation` / `Done when` headings, and the version stamp are unchanged — so a
+`Test Cases` / `Implementation` / `Done when` / `Reproduce Steps` / `Expected Behaviour` /
+`Actual Behaviour` / `Notes` headings, and the version stamp are unchanged — so a
 Turkish breakdown still passes `check-graph.mjs` and renders in the visualizer. With no
 `## Output language` anywhere, output stays English.
 

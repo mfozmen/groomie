@@ -245,7 +245,8 @@ How each section maps onto the rules above:
   derived `.html`. **Only human-readable content is translated — the contract skeleton stays fixed:**
   node keys (`E#`/`S#`/`T#`/`B#`), `[Discipline]` prefixes, the Jira link / bug markers
   (`Blocks:` / `Is blocked by:`), the fixed section/field headings (`## Tasks`, `## Open questions`,
-  `## Diagram`, `Acceptance Criteria`, `Test Cases`, `Implementation`, `Done when`), and the
+  `## Diagram`, `Acceptance Criteria`, `Test Cases`, `Implementation`, `Done when`,
+  `Reproduce Steps`, `Expected Behaviour`, `Actual Behaviour`, `Notes`), and the
   `_groomie v… · <mode> breakdown_` stamp are unchanged, so `check-graph.mjs` and the visualizer keep
   working. This is **decoupled from the conversation language** — Groomie talks to the human in
   whatever language they use, but writes the output in this configured language. **Absent ⇒ English.**
