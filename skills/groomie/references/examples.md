@@ -80,6 +80,36 @@ and clear success/error feedback. (Link the PRD / business-analysis pages when t
 (INVEST), and blocking refs carry `<key> — <title>`. "user" here is a real product persona —
 the game's player. Never write a story as the recipient of an outbound artifact.)
 
+**Solution leaks to catch — even when the source ticket contains them.** The ticket's own AC
+often carries placement, field names, or flow ordering; grooming translates those into
+behavior, it never copies them into a story:
+
+- Menu / navigation placement is design's decision — name the capability, not where it lives:
+  - ❌ `As a shopper, I want to manage saved search filters under Account → Preferences → Saved Filters, so that …`
+  - ✅ `As a shopper, I want to manage my saved search filters, so that I can reuse them across visits.`
+- Technical field / parameter names never enter an AC — state the capability they grant:
+  - ❌ "Saving a filter set requires setting `sort_key` (+ asc/desc) and `max_items`"
+  - ✅ "The shopper controls the order of saved sets and caps how many are kept"
+- Interaction sequence is design's call — state the outcome constraint:
+  - ❌ "The shopper selects, in order: a set, a filter, a value"
+  - ✅ "The set cannot be applied until a set, a filter, and a value are all chosen"
+- The source ticket's internal numbering never appears — the breakdown is self-contained:
+  - ❌ "Adds saved filters to the search bar (AC2)."
+  - ✅ "Adds saved filters to the search bar."
+- The persona stays consistent — switch roles only when the actor genuinely differs:
+  - ❌ S1 "As a shopper …", S2 "As a customer …" (same person, drifting synonyms)
+  - ✅ S1 "As a store admin, I want to define the filter set …" and S2 "As a shopper, I want
+    to apply a filter set …" (two real, different actors: one authors, one uses)
+
+- Existing surfaces are referenced by product concept, never by widget type — the AC must
+  survive a redesign:
+  - ❌ "'Price range' appears in the filter dropdown list"
+  - ✅ "'Price range' is offered among the available filters"
+
+Referencing an *existing* surface being extended ("the search filters", "the campaign settings
+page") is fine — that's context. Naming its widget, or introducing / placing something new, is
+the line that belongs to design.
+
 ## Technical tasks
 
 Tasks carry the HOW. Each is keyed (`T1`, `T2`, …), the title is an **imperative** action

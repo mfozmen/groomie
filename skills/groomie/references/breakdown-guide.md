@@ -96,6 +96,43 @@ blocker). Bugs are QA-tested whether they are technical or not.
     required fields are valid", "The user sees clear feedback when registration fails"
   - The HOW (REST API, drawer, Unity screen, mockups) lives in **tasks**, owned by the
     producing teams.
+  - Four leaks slip through even when the ticket itself contains them — grooming means
+    **translating** the ticket into behavior, not copying it. In a story's title, description,
+    or AC:
+    - **NEVER fix a screen or menu location / navigation path.** Where a capability lives
+      (`under Settings → Data → Saved Views`, an internal admin path like
+      `Internal Tools → Feature Flags → <feature>`) is an information-architecture decision owned by
+      design. The story names the capability; if the ticket dictates a placement, treat it
+      as unconfirmed design input — carry it as an open question or leave it to the task,
+      never bake it into the story.
+      - ❌ "I want to create saved views **under Settings → Data → Saved Views**"
+      - ✅ "I want to create reusable saved views, so that I can define them once and reuse them"
+    - **NEVER let technical field / parameter / API names into a story or its AC**
+      (`sort_key`, `max_items`, a raw request-parameter name). Rewrite each as
+      the user-level capability it grants.
+      - ❌ "Creating a view requires setting `sort_key` (+ asc/desc) and `max_items`"
+      - ✅ "The user controls the order of the results and caps how many are shown"
+    - **NEVER prescribe the interaction sequence** ("the user selects, in order: X, then Y,
+      then Z") — the flow is design's call. State the outcome constraint instead.
+      - ❌ "The user selects, in order: a view, a column, a format"
+      - ✅ "The content cannot be added until a view, a column, and a format are all chosen"
+    - **NEVER reference the source ticket's internal numbering** ("(AC2)", "covers AC3", "per
+      requirement 4"). The breakdown is self-contained: once filed in Jira, nobody reading the
+      story can see the source ticket's AC list, so the reference is dead weight. Each story's
+      own Acceptance Criteria restate what it covers; traceability back to the source lives in
+      the epic's link to the groomed issue, not in per-story annotations.
+      - ❌ "Adds saved filters to the search bar (AC2)."
+      - ✅ "Adds saved filters to the search bar."
+  - **Reference existing surfaces by product concept, never by widget type.** Naming the
+    surface being extended ("the campaign settings page", "the search filters") is context and
+    fine. Naming its *widget* ("the dropdown list", "the modal", "the drawer") is not — even
+    when that widget exists today, the behavior must survive a redesign. Phrase the AC so it
+    stays true if design swaps the control:
+    - ❌ "'Price range' appears in the filter dropdown list"
+    - ✅ "'Price range' is offered among the available filters"
+  - **Keep the persona consistent across the breakdown.** Switch roles between stories only
+    when the actor genuinely differs (e.g. an admin *authors* a rule, a campaign editor *uses*
+    it) — never drift between synonyms for the same person.
 - **Body carries, in order:**
   - a one-line description of the capability (link PRD / business-analysis / background
     docs when they exist);
