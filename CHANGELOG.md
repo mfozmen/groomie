@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/mfozmen/groomie/compare/v0.12.0...v0.13.0) (2026-07-16)
+
+### Features
+
+* **groomie:** /groomie:push — idempotent Jira write-back ([#42](https://github.com/mfozmen/groomie/issues/42)) ([e42b66c](https://github.com/mfozmen/groomie/commit/e42b66cc9f514e3862b049c6393b7503387d06a1))
+* **groomie:** richer bug format (### B#) + remove the affects model ([#44](https://github.com/mfozmen/groomie/issues/44)) ([d74e229](https://github.com/mfozmen/groomie/commit/d74e22932fd31278dd0032267e8c902e46f510a6))
+
 ## [0.12.0](https://github.com/mfozmen/groomie/compare/v0.11.0...v0.12.0) (2026-07-16)
 
 ### Features
