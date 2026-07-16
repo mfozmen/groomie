@@ -224,7 +224,8 @@ read, stamp `_groomie (version unknown) · <mode> breakdown_` rather than omitti
 End with a **`## Diagram`** section — one fenced ```mermaid `flowchart TD` that renders the
 breakdown as a graph: one `subgraph` per epic (container) holding its story/task/bug nodes,
 solid arrows for blocking (`T# --> S#`), dashed for a bug's `affects` (`B# -.-> S#`), colored
-by kind. See the guide's *Diagram (mermaid)* section for the exact shape and label-sanitization
+by kind, each node labelled with its **full title wrapped at ~34 chars** (`<br/>`) like the HTML
+visualizer. See the guide's *Diagram (mermaid)* section for the exact shape, label, and sanitization
 rules. Omit the `## Diagram` when there are no nodes.
 
 **Save it to a file AND print it.** Write the document to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — a

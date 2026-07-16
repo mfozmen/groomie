@@ -445,34 +445,46 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
   stores blocking on both endpoints — dedupe here).
 - **Colour by kind** (Jira defaults) with a `classDef` block: story green, task blue, bug red;
   the epic subgraph gets a purple tint via a `style epic1 …` line.
-- **Labels are short, sanitized summaries.** Take a 3–6 word gist (the "I want …" for stories,
-  the imperative minus discipline for tasks; the name for epics). **Sanitize just the gist** to
-  ASCII letters, digits, spaces, and hyphens — drop everything else (`"`, `#`, `<`, `>`, `,`,
-  `|`, backticks), collapse whitespace, cap ~40 chars. **Then wrap it in the scaffolding** the
-  sanitizer doesn't touch: the `S1: ` / `Epic: ` prefix, a task's `[Discipline]` tag, and (in
-  `--estimate`) a trailing `(5)`. This avoids all mermaid escaping — because gists are short,
-  lossy is fine.
+- **Labels carry the node's full title (like the HTML visualizer), not a short gist.** Build each
+  label **in this order — the order matters**:
+  1. **Take** the node's own title: a story's whole `As a …, I want …, so that ….` sentence, a task's
+     imperative title, an epic's name.
+  2. **Sanitize** it — *before* inserting any markup — by removing the characters that break a quoted
+     `["…"]` label: `"`, `#`, `<`, `>`, `|`, and backticks; replace `&` with `and`; collapse runs of
+     whitespace. **Keep** commas, periods, parentheses, brackets `[` `]`, braces `{` `}`, `%`, slashes,
+     apostrophes, colons, and hyphens — all safe inside the quoted label.
+  3. **Cap** a very long title at ~130 characters: cut at a word boundary and append `…`. This cap is
+     **mermaid-only** (it keeps boxes readable); the full text still lives in the node's `.md` body and
+     the HTML visualizer, which don't cap. (A long "As a …, so that …." story is the usual case.)
+  4. **Wrap** the sanitized, capped text with `<br/>` at word boundaries — **every ~34 characters for
+     story / task / bug nodes, and ~80 for the epic subgraph title** (matching the visualizer's
+     `wrap(title, 34)` for items and `wrap(epic.title, 80)` for epics). Insert `<br/>` **only here**,
+     after sanitizing, so the `<`/`>` you just added aren't stripped.
+  5. **Prefix** the front with the `S1: ` / `Epic: ` scaffolding, a task's `[Discipline]` tag, and (in
+     `--estimate`) a trailing `(5)`. The prefix rides inline on the first line — the visualizer puts
+     the id/discipline on a separate row instead — so a node's first line runs a little past ~34, which
+     is expected.
 - **Modes:** `--stories` → no task nodes and no `-->` edges (stories may still have dashed bug
-  edges); `--estimate` → append the point to the task label, `T1["T1: [Backend] User schema (5)"]`.
+  edges); `--estimate` → append the point to the task label after the wrapped title,
+  `T1["T1: [Backend] Design and implement user schema<br/>and database tables (5)"]`.
+
+This mirrors the *JSON graph output* example below node-for-node — each label is that node's own title
+run through steps 1–5 above (the `S1: ` / `[Discipline]` scaffolding on the front):
 
 ```mermaid
 flowchart TD
   subgraph epic1["Epic: Traditional Authentication"]
-    S1["S1: Create account with email"]
-    S2["S2: Reset password via email"]
-    T1["T1: [Backend] User schema"]
-    T2["T2: [Game Dev] Registration UI"]
+    S1["S1: As a user, I want to create an<br/>account …, so that …."]
+    T1["T1: [Backend] Design and implement user schema<br/>and database tables"]
     B1["B1: Verification email not sent"]
   end
   T1 --> S1
-  T1 --> S2
-  T2 --> S1
   B1 -.-> S1
   classDef story fill:#dcfce7,stroke:#22c55e,color:#14532d;
   classDef task  fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
   classDef bug   fill:#fee2e2,stroke:#ef4444,color:#7f1d1d;
-  class S1,S2 story;
-  class T1,T2 task;
+  class S1 story;
+  class T1 task;
   class B1 bug;
   style epic1 fill:#f5f3ff,stroke:#8b5cf6,color:#6d28d9;
 ```

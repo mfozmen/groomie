@@ -206,17 +206,20 @@ Turkish breakdown still passes `check-graph.mjs` and renders in the visualizer. 
 
 The document ends with a `## Diagram` mermaid block: one `subgraph` per epic (container),
 `S#`/`T#`/`B#` nodes, solid arrows for blocking and dashed for a bug's `affects`, coloured by
-kind. Labels are short sanitized gists (see the breakdown guide). For the account example:
+kind. Each label carries the node's title **verbatim** — the same wording this file uses above:
+S1's full `### S1` sentence, T1–T3 from S1's blocked-by refs, and S2/S3 exactly as they appear
+(abbreviated with `…`) in T1's blocked-by refs — wrapped at ~34 chars with `<br/>` like the HTML
+visualizer (see the breakdown guide's *Diagram (mermaid)* rule). For the account example:
 
 ```mermaid
 flowchart TD
   subgraph epic1["Epic: Traditional Authentication"]
-    S1["S1: Create account with email"]
-    S2["S2: Reset password via email"]
-    S3["S3: Change my password"]
-    T1["T1: [Backend] User schema and tables"]
-    T2["T2: [Graphic Design] Registration mockups"]
-    T3["T3: [Game Dev] Registration UI in Unity"]
+    S1["S1: As a user, I want to create an<br/>account using email and password,<br/>so that I can have my own personal<br/>access to the platform."]
+    S2["S2: As a user, I want to reset my<br/>password via email …"]
+    S3["S3: As a logged-in user, I want to<br/>change my password …"]
+    T1["T1: [Backend] Design and implement user schema<br/>and database tables"]
+    T2["T2: [Graphic Design] Design registration flow UI<br/>mockups"]
+    T3["T3: [Game Dev] Implement registration UI using<br/>Unity"]
   end
   T1 --> S1
   T1 --> S2
