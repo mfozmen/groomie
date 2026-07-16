@@ -21,7 +21,6 @@ describe('graphviz renderer (real WASM)', () => {
         { source: 'T1', target: 'T2', kind: 'blocks' },
         { source: 'T1', target: 'S1', kind: 'blocks' },
         { source: 'T2', target: 'S1', kind: 'blocks' },
-        { source: 'B1', target: 'S1', kind: 'affects' },
       ],
     }
     const render = await graphvizRenderer()
@@ -30,7 +29,6 @@ describe('graphviz renderer (real WASM)', () => {
     expect(svg).toContain('<svg')
     for (const id of ['E1', 'T1', 'T2', 'S1', 'B1']) expect(svg).toContain(`id="${id}"`)
     expect(svg).toContain('blocks')
-    expect(svg).toContain('affects')
     // the epic title must appear (HTML-like label survived) — the arrow is HTML-escaped by Graphviz
     expect(svg).toContain('Epic: The Feature')
   })

@@ -2,7 +2,7 @@
 // breakdown-guide.md ("JSON graph output"). Keys are unique across the whole document.
 
 export type NodeKind = 'epic' | 'story' | 'task' | 'bug'
-export type EdgeKind = 'blocks' | 'affects'
+export type EdgeKind = 'blocks'
 
 export interface EpicGroomNode {
   id: string
