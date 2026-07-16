@@ -288,7 +288,7 @@ files are written, run the checklist in **`references/review-checklist.md`** ove
 read the finished `.md` (and `.json`) top to bottom in *checking* mode and answer every item
 (the leak scan on each story, epic/task/bug shape, sections, diagram, self-containment).
 
-- **Clean** → report `Self-review: clean` in one line and finish.
+- **Clean** → report it in one line (`Self-review: clean — N stories, M tasks checked`) and finish.
 - **Violations** → fix them in the **one bounded pass** the checklist defines (md + json
   together, keys stable, ledger untouched), regenerate the `.html`, re-run
   `scripts/check-graph.mjs`, re-print the corrected markdown, and list what was fixed by key.
@@ -304,7 +304,8 @@ Groom is one-shot: a plain `/groomie <KEY>` grooms fresh and **overwrites** the 
 user instead wants to **change what a previous run produced** — "split T3 into two", "remove S2",
 "add a `[Frontend]` task for the empty-state", "the epic's business value is wrong, it's X" — invoked
 as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing breakdown, do a
-**targeted edit** instead of re-grooming. Do NOT run steps 1–5; run this:
+**targeted edit** instead of re-grooming. Do NOT run steps 1–6 (step 7 below carries the
+self-review layer for a revise); run this:
 
 1. **Resolve the target + change.** Get the issue key and the natural-language change. Locate the
    breakdown: prefer the per-issue folder `<KEY>/<KEY>-groomed.{md,json}`, else fall back to the
