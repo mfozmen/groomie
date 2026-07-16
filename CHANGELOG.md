@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.14.0](https://github.com/mfozmen/groomie/compare/v0.13.0...v0.14.0) (2026-07-16)
+
+### Features
+
+* **groomie:** epic titles lead with a verb, in Title Case ([#46](https://github.com/mfozmen/groomie/issues/46)) ([473e822](https://github.com/mfozmen/groomie/commit/473e8222d4064c1fc3f5e85990a38ba960c9e542))
+
 ## [0.13.0](https://github.com/mfozmen/groomie/compare/v0.12.0...v0.13.0) (2026-07-16)
 
 ### Features
