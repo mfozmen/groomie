@@ -100,7 +100,17 @@ Lets a shopper pick a previously saved set and apply all its filters at once.
 
 ## Bugs
 
-- **B1 — Saved-filters list does not refresh after a save** — repro: save a new filter set, then reopen the saved list without reloading the page; expected: the newly saved set appears immediately; actual: the list still shows the pre-save sets until a full page reload · affects: S1
+### B1 — Saved-filters list does not refresh after a save
+
+**Reproduce Steps**
+1. Save a new filter set.
+2. Reopen the saved list without reloading the page.
+
+**Expected Behaviour**
+The newly saved set appears in the list immediately.
+
+**Actual Behaviour**
+The list still shows the pre-save sets until a full page reload.
 
 ## Diagram
 
@@ -118,7 +128,6 @@ flowchart TD
   T1 --> S2
   T2 --> S1
   T3 --> S2
-  B1 -.-> S1
   classDef story fill:#dcfce7,stroke:#22c55e,color:#14532d;
   classDef task  fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
   classDef bug   fill:#fee2e2,stroke:#ef4444,color:#7f1d1d;

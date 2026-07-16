@@ -12,7 +12,7 @@ Epic  (the feature — usually one)
  ├─ Task T1    — technical · not QA-tested   ──blocks──▶  S1
  ├─ Task T2    — technical · not QA-tested   ──blocks──▶  S1 + S2
  ├─ Task T3    — technical · not QA-tested   ──blocks──▶  S2
- └─ Bug B1     — technical or non-technical · QA-tested   (affects a story)
+ └─ Bug B1     — technical or non-technical · QA-tested   (epic child; QA decides in Jira if it blocks a story)
 ```
 
 **Stories and tasks are siblings under the epic — a task is never a *subtask* of a
@@ -244,8 +244,9 @@ How each section maps onto the rules above:
   task/bug bodies and descriptions), the node labels in the `.json` and mermaid `## Diagram`, and the
   derived `.html`. **Only human-readable content is translated — the contract skeleton stays fixed:**
   node keys (`E#`/`S#`/`T#`/`B#`), `[Discipline]` prefixes, the Jira link / bug markers
-  (`Blocks:` / `Is blocked by:` / `affects:`), the fixed section/field headings (`## Tasks`, `## Open questions`,
-  `## Diagram`, `Acceptance Criteria`, `Test Cases`, `Implementation`, `Done when`), and the
+  (`Blocks:` / `Is blocked by:`), the fixed section/field headings (`## Tasks`, `## Open questions`,
+  `## Diagram`, `Acceptance Criteria`, `Test Cases`, `Implementation`, `Done when`,
+  `Reproduce Steps`, `Expected Behaviour`, `Actual Behaviour`, `Notes`), and the
   `_groomie v… · <mode> breakdown_` stamp are unchanged, so `check-graph.mjs` and the visualizer keep
   working. This is **decoupled from the conversation language** — Groomie talks to the human in
   whatever language they use, but writes the output in this configured language. **Absent ⇒ English.**
@@ -289,10 +290,15 @@ task points) is a planned later addition. Do not surface this mode to end users 
 - Only when the source issue actually reports existing behavior that is broken.
 - A missing feature is a story/task, not a bug.
 - A bug may be **technical or non-technical** — either way it is **QA-tested** (like a
-  story), so it does not matter which; give steps to reproduce, expected vs actual (the
-  repro + expected/actual is the bug's QA basis — its equivalent of a story's Test Cases).
-- **Give each bug a key `B1`, `B2`, …** (like `S#`/`T#`) and link it to the story it affects
-  with `affects: S1`, so it's traceable in the diagram (`B# -.-> S#`).
+  story); give **Reproduce Steps**, **Expected Behaviour**, and **Actual Behaviour** (this is the
+  bug's QA basis — its equivalent of a story's Test Cases).
+- **Give each bug a key `B1`, `B2`, …** (like `S#`/`T#`) and write it as a structured `### B#`
+  section (see *Output shape* / the *Bugs* example) — `**Reproduce Steps**` (numbered),
+  `**Expected Behaviour**`, `**Actual Behaviour**`, and an optional `**Notes**`.
+- **A bug is a child of its epic and carries no story link.** Groomie does **not** assert whether a
+  bug blocks a story — that is a **QA decision made later in Jira** (a `Blocks` link): QA may pass a
+  story and leave a bug open, or open a bug that blocks a story. So a bug has **no `affects`/edge** in
+  the breakdown; it's just a standalone node under the epic.
 
 ## Open questions
 
@@ -377,7 +383,20 @@ _groomie v<version> · <mode> breakdown_   <!-- version from .claude-plugin/plug
 
 ## Bugs   <!-- omit this section if there are none -->
 
-- **B1 — <title>** — repro / expected / actual · affects: S1
+### B1 — <title>
+
+**Reproduce Steps**
+1. <step>
+2. <step>
+
+**Expected Behaviour**
+<what should happen>
+
+**Actual Behaviour**
+<what happens instead>
+
+**Notes**   <!-- optional; omit the whole heading when there's nothing -->
+<extra context>
 
 ## Open questions
 
@@ -438,10 +457,10 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
 - **One `subgraph epicN["Epic: <name>"]` per epic** (the container); the epic's story / task /
   bug nodes nest inside it. Ids `epic1`, `epic2`, … by order.
 - **Nodes** use the existing keys: `S1["S1: <summary>"]`, `T1["T1: [Discipline] <summary>"]`.
-  Bugs get diagram ids `B1`, `B2`, … by order.
+  Bugs get diagram ids `B1`, `B2`, … by order, and are **standalone nodes** — a bug has no edge.
 - **Edges:** blocking is a solid directed edge from blocker to blocked — `T1 --> S1`
   (task→story) and `T2 --> T4` wherever one task must precede another (task→task sequencing,
-  in any epic); a bug's `affects` is dashed, `B1 -.-> S1`. Emit each edge **once** (the markdown
+  in any epic). Bugs have no edges. Emit each edge **once** (the markdown
   stores blocking on both endpoints — dedupe here).
 - **Colour by kind** (Jira defaults) with a `classDef` block: story green, task blue, bug red;
   the epic subgraph gets a purple tint via a `style epic1 …` line.
@@ -464,8 +483,8 @@ that renders the breakdown as a graph. Emit it only when there is at least one n
      `--estimate`) a trailing `(5)`. The prefix rides inline on the first line — the visualizer puts
      the id/discipline on a separate row instead — so a node's first line runs a little past ~34, which
      is expected.
-- **Modes:** `--stories` → no task nodes and no `-->` edges (stories may still have dashed bug
-  edges); `--estimate` → append the point to the task label after the wrapped title,
+- **Modes:** `--stories` → no task nodes and no `-->` edges (bugs, if any, are still standalone
+  nodes); `--estimate` → append the point to the task label after the wrapped title,
   `T1["T1: [Backend] Design and implement user schema<br/>and database tables (5)"]`.
 
 This mirrors the *JSON graph output* example below node-for-node — each label is that node's own title
@@ -479,7 +498,6 @@ flowchart TD
     B1["B1: Verification email not sent"]
   end
   T1 --> S1
-  B1 -.-> S1
   classDef story fill:#dcfce7,stroke:#22c55e,color:#14532d;
   classDef task  fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a;
   classDef bug   fill:#fee2e2,stroke:#ef4444,color:#7f1d1d;
@@ -515,8 +533,7 @@ heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
       "repro": "...", "expected": "...", "actual": "..." }
   ],
   "edges": [
-    { "source": "T1", "target": "S1", "kind": "blocks" },
-    { "source": "B1", "target": "S1", "kind": "affects" }
+    { "source": "T1", "target": "S1", "kind": "blocks" }
   ]
 }
 ```
@@ -528,16 +545,17 @@ Rules:
   `acceptanceCriteria[]`, `testCases[]` (the markdown bullets, split).
 - **Task:** `discipline` (from the `[Discipline]` prefix), `implementation[]`, `doneWhen[]`,
   and `estimate` **only in `--estimate`**.
-- **Bug:** `repro`, `expected`, `actual`.
-- **Edges** are directed **blocker → blocked**, `kind ∈ blocks | affects`, **deduped**. Derive
+- **Bug:** `repro` (the joined reproduction steps), `expected`, `actual`. A bug has **no edge** — it's
+  a standalone node under its `epicId` (the optional `Notes` is markdown-only, not a JSON field).
+- **Edges** are directed **blocker → blocked**, `kind` is only `blocks`, **deduped**. Derive
   `blocks` edges from **both** a task's `Blocks:` and any `Is blocked by:` (the two directions of
   the same link): task→story wherever a task builds a story, **and task→task wherever one task
   must precede another** (sequencing — in any epic, not only story-less ones). From an
   `Is blocked by:` list the **listed** node is the `source` (blocker) and the owning node is the
   `target`; from a `Blocks:` list the owning node is the `source` — both yield the same
-  blocker→blocked edge, so dedup them. `affects` runs bug→story.
-- **Modes:** `--stories` → no `task` nodes and no `blocks` edges (bug `affects` stays);
-  `--estimate` → each task node has `estimate`. The `nodes`/`edges` arrays always exist.
+  blocker→blocked edge, so dedup them.
+- **Modes:** `--stories` → no `task` nodes and no `blocks` edges; `--estimate` → each task node has
+  `estimate`. The `nodes`/`edges` arrays always exist.
 - An optional top-level **`jira`** key may be present — the write-back ledger (see *Jira write-back*
   below). It is data only: `check-graph.mjs` and the visualizer read solely `nodes`/`edges` and
   ignore it.
@@ -577,9 +595,10 @@ breakdown:
 against production during development.)
 
 - **Kind → issue type:** `epic`→Epic, `story`→Story, `task`→Task, `bug`→Bug. A story/task/bug is a
-  **child of its epic** via the epic-link / parent field (*verify on demo Jira*).
-- **Edge → link:** `blocks`→Jira **"Blocks"**; `affects`→**"Relates"** unless the instance has a
-  closer type (*verify on demo Jira*). Skip a link that already exists between the two keys.
+  **child of its epic** via the epic-link / parent field (*verify on demo Jira*). A bug is created as
+  an epic child only — Groomie never links a bug to a story (that's a QA decision made in Jira later).
+- **Edge → link:** `blocks`→Jira **"Blocks"** (*verify on demo Jira*). Skip a link that already exists
+  between the two keys.
 - **Fields:** **summary** = the node title (a story's full `As a …` sentence; trim to Jira's summary
   limit and carry the overflow into the description). **description** = the node body — a story's
   description + Acceptance Criteria + Test Cases, a task's Implementation + Done when, a bug's
@@ -587,7 +606,7 @@ against production during development.)
   Jira*).
 
 **Upsert scope.** An UPDATE overwrites **only** the groomie-owned fields — **summary, description, and
-the blocks/affects links groomie created** — and **never** touches status, assignee, sprint, priority,
+the blocks links groomie created** — and **never** touches status, assignee, sprint, priority,
 comments, or any other field, so a re-push refreshes content without destroying workflow state.
 
 **Removed nodes (`[deleted]`).** A `pushed` entry whose node id is no longer in the current breakdown

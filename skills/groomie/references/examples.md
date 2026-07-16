@@ -123,6 +123,34 @@ story — it's a foundational piece that `Blocks:` every account-related story i
 It carries `Done when` (not Test Cases) because tasks are not QA-tested; the stories it
 blocks are the ones QA verifies.
 
+## Bugs
+
+Only when the source issue reports **broken existing behavior**. A bug is a structured `### B#`
+section — `**Reproduce Steps**` (numbered), `**Expected Behaviour**`, `**Actual Behaviour**`, and an
+optional `**Notes**` — the QA equivalent of a story's Test Cases. It is a **standalone node under the
+epic**: Groomie writes **no** story link, because whether the bug blocks a story is a QA call made
+later in Jira.
+
+```markdown
+### B1 — Verification email is never delivered on signup
+
+**Reproduce Steps**
+1. Register a new account with a valid email and a strong password.
+2. Wait for the verification email.
+
+**Expected Behaviour**
+A verification email arrives within a minute and its link marks the account verified.
+
+**Actual Behaviour**
+No email arrives; the account stays unverified with no way to proceed.
+
+**Notes**
+Only reproduces for addresses on custom domains; Gmail/Outlook are unaffected.
+```
+
+(No `affects:` / no story-link block, and no diagram edge — the bug is just a red node inside its
+epic subgraph.)
+
 ## Anti-patterns (what a groomed doc must never do)
 
 Calibration on a **backfill/migration** issue — one that copies existing data into a new store and
@@ -197,8 +225,9 @@ bullet (the documented schema, not an inline `Heading: value`) to the global `~/
 and reply `Set Output language = Turkish (global).` — it does **not** groom. The next `/groomie <KEY>`
 then produces the breakdown **content in Turkish** (epic/story/task prose, node labels) while the
 conversation stays in English and the skeleton stays fixed: the keys (`S1`/`T1`), the `[Discipline]`
-prefixes, the `Blocks:` / `Is blocked by:` / `affects:` link/bug markers, the `Acceptance Criteria` /
-`Test Cases` / `Implementation` / `Done when` headings, and the version stamp are unchanged — so a
+prefixes, the `Blocks:` / `Is blocked by:` link markers, the `Acceptance Criteria` /
+`Test Cases` / `Implementation` / `Done when` / `Reproduce Steps` / `Expected Behaviour` /
+`Actual Behaviour` / `Notes` headings, and the version stamp are unchanged — so a
 Turkish breakdown still passes `check-graph.mjs` and renders in the visualizer. With no
 `## Output language` anywhere, output stays English.
 
@@ -215,7 +244,7 @@ synthetic.
 ```
 Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
   CREATE    epic E1, S1 (Story), T1 (Task), B1 (Bug)
-  LINKS     T1 blocks S1, B1 affects S1
+  LINKS     T1 blocks S1
 Approve? (nothing is written until you confirm)
 ```
 
@@ -243,7 +272,7 @@ alone. `B1`'s status, assignee, and everything else stay untouched.
 ## Diagram
 
 The document ends with a `## Diagram` mermaid block: one `subgraph` per epic (container),
-`S#`/`T#`/`B#` nodes, solid arrows for blocking and dashed for a bug's `affects`, coloured by
+`S#`/`T#`/`B#` nodes, solid arrows for blocking (bugs are standalone nodes — no edge), coloured by
 kind. Each label carries the node's title **verbatim** — the same wording this file uses above:
 S1's full `### S1` sentence, T1–T3 from S1's blocked-by refs, and S2/S3 exactly as they appear
 (abbreviated with `…`) in T1's blocked-by refs — wrapped at ~34 chars with `<br/>` like the HTML
