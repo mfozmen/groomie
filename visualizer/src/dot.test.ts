@@ -13,7 +13,6 @@ const graph: GroomedGraph = {
   ],
   edges: [
     { source: 'T1', target: 'S1', kind: 'blocks' },
-    { source: 'B1', target: 'S1', kind: 'affects' },
     { source: 'T1', target: 'MISSING', kind: 'blocks' },
   ],
 }
@@ -63,9 +62,21 @@ describe('buildDot', () => {
     expect(rootPart).not.toContain('subgraph')
   })
 
-  it('draws blocks solid and affects dashed red, labelled with the relationship', () => {
+  it('draws blocks edges labelled with the relationship', () => {
     expect(dot).toContain('"T1" -> "S1" [label=" blocks "];')
-    expect(dot).toContain('"B1" -> "S1" [label=" affects ", style=dashed, color="#ef4444", fontcolor="#b91c1c"];')
+  })
+
+  it('still renders a legacy affects edge (pre-0.13 JSON) plainly rather than dropping it', () => {
+    const legacy = buildDot({
+      nodes: [
+        { id: 'E1', kind: 'epic', title: 'e' },
+        { id: 'B1', kind: 'bug', epicId: 'E1', title: 'b' },
+        { id: 'S1', kind: 'story', epicId: 'E1', title: 's' },
+      ],
+      edges: [{ source: 'B1', target: 'S1', kind: 'affects' } as never],
+    })
+    expect(legacy).toContain('"B1" -> "S1" [label=" affects "];')
+    expect(legacy).not.toContain('style=dashed')
   })
 
   it('skips edges whose endpoints are not real nodes (Graphviz would invent blank nodes)', () => {

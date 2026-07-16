@@ -59,7 +59,7 @@ const nodeLabel = (n: ItemNode): string => {
 }
 
 // Build the DOT program for the groomed graph: one cluster per epic (title sized to fit — wide
-// titles stay on one line up to ~80 chars), generous spacing, dashed red `affects` edges.
+// titles stay on one line up to ~80 chars), generous spacing, solid `blocks` edges.
 export function buildDot(graph: GroomedGraph): string {
   const epics = graph.nodes.filter((n) => n.kind === 'epic')
   const items = graph.nodes.filter((n): n is ItemNode => n.kind !== 'epic')
@@ -100,8 +100,9 @@ export function buildDot(graph: GroomedGraph): string {
   // Edges with endpoints that aren't real nodes are skipped so Graphviz doesn't invent blank nodes.
   for (const e of graph.edges) {
     if (!ids.has(e.source) || !ids.has(e.target)) continue
-    const affects = e.kind === 'affects'
-    dot += `  "${dotId(e.source)}" -> "${dotId(e.target)}" [label=" ${esc(e.kind)} "${affects ? ', style=dashed, color="#ef4444", fontcolor="#b91c1c"' : ''}];\n`
+    // esc(e.kind), not a hard-coded "blocks": a pre-0.13 groomed.json may still carry an
+    // `affects` edge, and it should still render (plain, labelled) rather than vanish.
+    dot += `  "${dotId(e.source)}" -> "${dotId(e.target)}" [label=" ${esc(e.kind)} "];\n`
   }
   dot += '}\n'
   return dot

@@ -4,9 +4,9 @@ An interactive graph view of a Groomie breakdown. It loads a `<ISSUE-KEY>-groome
 (emitted by the `/groomie` skill) and draws it with [Graphviz](https://graphviz.org) — the
 `dot` engine, compiled to WebAssembly via
 [`@hpcc-js/wasm-graphviz`](https://github.com/hpcc-systems/hpcc-js-wasm). Graphviz does the whole
-drawing job: layer nodes by blocker order, place them, and route the `blocks` / `affects` edges as
-smooth splines. **Epics are containers**, tasks / stories / bugs sit inside, a bug's `affects` edge
-is dashed red, and clicking any node (or an epic) shows its details in the side panel.
+drawing job: layer nodes by blocker order, place them, and route the `blocks` edges as
+smooth splines. **Epics are containers**, tasks / stories / bugs sit inside, and clicking any node
+(or an epic) shows its details in the side panel.
 
 > This is a **companion app** — not part of the plugin. The plugin stays prompt-only; this
 > `visualizer/` has its own `package.json` and dependencies. Our code only translates the groomed
@@ -49,4 +49,4 @@ emits the `.json`; this repo turns it into a shareable `.html`.
 
 The JSON contract is documented in the plugin's `skills/groomie/references/breakdown-guide.md`
 ("JSON graph output"): a flat `nodes[]` (epics are `kind:"epic"` with ids `E#`; stories/tasks/
-bugs carry `epicId`) plus directed, deduped `edges[]` of `kind` `blocks` | `affects`.
+bugs carry `epicId`) plus directed, deduped `edges[]` of `kind` `blocks`.
