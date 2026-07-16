@@ -35,11 +35,17 @@ blocker). Bugs are QA-tested whether they are technical or not.
 - **Bounded & closeable.** An epic's scope must be finite — a coherent chunk of work
   that can realistically be completed in a defined timeframe (a few sprints, not
   "forever"). If it can never be marked "done", it's a theme, not an epic — split it.
-- **The title must make that bounded scope self-evident.** Reading the title alone
-  should tell you what is in scope and when it is finished. Prefer a *qualified*
-  capability over an open-ended umbrella:
-  - ✅ "Traditional Authentication", "SSO Integration", "Book Discovery System"
-  - ❌ "Authentication", "Books", "User System", "Platform" (never close)
+- **Lead the title with a verb, and make the bounded scope self-evident.** An epic is a
+  body of work, not a label — so name it by the work. Start with a verb that says what gets
+  delivered (imperative preferred), chosen to fit the epic's nature: a new capability →
+  **Add / Support / Enable**, a change to existing behavior → **Change / Migrate**, a removal
+  → **Remove**. Write it in **Title Case**, standard rules — lowercase the minor words
+  (*a / of / in / and / the / to …*), e.g. "Add Filters to the Saved Search List". Reading the
+  title alone should still tell you what is in scope and when it is finished — so keep the
+  *qualified* capability, just fronted by the verb:
+  - ✅ "Enable Traditional Authentication", "Add SSO Login", "Support Book Discovery Search"
+  - ❌ "Traditional Authentication", "Book Discovery System" (bounded, but a label — front it with a verb)
+  - ❌ "Authentication", "Books", "User System", "Platform" (bare *and* open-ended — never close)
 - **Body:** two required lines — `**Description:**` (what it implements, one sentence)
   and `**Business Value:**` (why it matters, one sentence) — plus an optional
   `**Design:**` line linking the Figma / mockups **when research surfaces them** (omit the
@@ -309,7 +315,7 @@ the work is filed.
 ## Output shape
 
 ```markdown
-# Epic: <bounded capability name>
+# Epic: <verb-led bounded scope — e.g. "Add …" / "Enable …" / "Migrate …">
 
 _groomie v<version> · <mode> breakdown_   <!-- version from .claude-plugin/plugin.json; mode = full|stories|estimate; see SKILL.md step 5 -->
 
@@ -492,7 +498,7 @@ run through steps 1–5 above (the `S1: ` / `[Discipline]` scaffolding on the fr
 
 ```mermaid
 flowchart TD
-  subgraph epic1["Epic: Traditional Authentication"]
+  subgraph epic1["Epic: Enable Traditional Authentication"]
     S1["S1: As a user, I want to create an<br/>account …, so that …."]
     T1["T1: [Backend] Design and implement user schema<br/>and database tables"]
     B1["B1: Verification email not sent"]
@@ -520,7 +526,7 @@ heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
   "issueKey": "PROJ-123",
   "mode": "estimate",
   "nodes": [
-    { "id": "E1", "kind": "epic", "title": "Traditional Authentication",
+    { "id": "E1", "kind": "epic", "title": "Enable Traditional Authentication",
       "description": "...", "businessValue": "...", "design": null },
     { "id": "S1", "kind": "story", "epicId": "E1",
       "title": "As a user, I want to create an account …, so that ….",

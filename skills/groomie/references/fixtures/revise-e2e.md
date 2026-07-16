@@ -1,4 +1,4 @@
-# Epic: Saved Search Filters
+# Epic: Add Saved Search Filters
 
 _groomie v0.0.0 · full breakdown_
 
@@ -116,7 +116,7 @@ The list still shows the pre-save sets until a full page reload.
 
 ```mermaid
 flowchart TD
-  subgraph epic1["Epic: Saved Search Filters"]
+  subgraph epic1["Epic: Add Saved Search Filters"]
     S1["S1: Save current search filters"]
     S2["S2: Apply a saved filter set"]
     T1["T1: [Backend] Saved-filters storage and API"]
