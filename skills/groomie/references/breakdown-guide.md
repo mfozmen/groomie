@@ -555,7 +555,7 @@ breakdown:
 "jira": {
   "project": "PROJ",
   "epicMode": "source-as-epic",
-  "pushed": { "E1": "PROJ-450", "S1": "PROJ-457", "T1": "PROJ-460" }
+  "pushed": { "E1": "PROJ-123", "S1": "PROJ-457", "T1": "PROJ-460" }
 }
 ```
 
@@ -563,6 +563,9 @@ breakdown:
   removed** — a node later dropped from the breakdown keeps its entry so its now-orphan Jira issue can
   still be found and tombstoned. Each key is written **immediately** after a successful create, so a
   mid-run failure resumes as an UPDATE, never a duplicate CREATE.
+- Under **`source-as-epic`** the epic node maps to the **source issue key itself** (`E1` → `PROJ-123`
+  above — the source `<KEY>`, seeded before the first push, updated in place, never re-created). Under
+  **`new-epic`** the epic gets a fresh created key like the stories/tasks.
 - `epicMode ∈ source-as-epic | new-epic` (chosen per run, see the flow); `project` is the target Jira
   project (default: the source issue's project).
 

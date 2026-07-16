@@ -8,8 +8,10 @@ description: Use when the user asks to groom, break down, or refine a Jira issue
 Turn one messy, single-feature Jira issue into a clean, groomed breakdown:
 **one epic, its user stories, the technical tasks that block those stories, and bugs
 where relevant**,
-delivered as a markdown document. You never write to Jira — you produce markdown the
-user reviews and files themselves.
+delivered as a markdown document. Grooming, revising, and configuring are **read-only against
+Jira** — you produce markdown the user reviews. The one exception is the opt-in `/groomie:push`
+(see *Push to Jira*), which writes the breakdown into Jira, and only after the user approves a
+plan preview.
 
 **Groomie's job is to remove ambiguity:** turn vague, messy intent into unambiguous,
 testable behavior — clear acceptance criteria and concrete test cases. Where behavior
@@ -388,12 +390,17 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
 2. **Pick the epic mode (ask once).** Ask the user: **make the source issue `<KEY>` the epic**
    (update it in place to carry the epic's title/description; stories/tasks become its children) **or
    create a new epic** (a fresh Jira epic, linked to `<KEY>` with a "relates to" link). Record the
-   choice as `jira.epicMode` (`source-as-epic` | `new-epic`). The target **project** defaults to the
-   source issue's project; record it as `jira.project`.
-3. **Classify every node against the ledger** (`jira.pushed`, may be empty/absent on a first push):
-   a node **in** the ledger ⇒ **UPDATE** its Jira key; a node **absent** ⇒ **CREATE**. Any ledger
-   entry whose node id is **no longer in the breakdown** ⇒ **`[deleted]`** (skip if that issue's
-   summary already starts with `[deleted] `). Collect the `blocks`/`affects` edges as **LINKS**.
+   choice as `jira.epicMode` (`source-as-epic` | `new-epic`). If the user picks **`source-as-epic`,
+   seed the ledger now**: set `jira.pushed[<epic node id>] = <KEY>` (the source issue key itself) —
+   so step 3 classifies the epic as UPDATE and the source issue is updated in place, never
+   duplicated. The target **project** defaults to the source issue's project; record it as
+   `jira.project`.
+3. **Classify every node against the ledger** (`jira.pushed`, empty/absent on a first push **except**
+   the `source-as-epic` seed from step 2): a node **in** the ledger ⇒ **UPDATE** its Jira key; a node
+   **absent** ⇒ **CREATE**. So the epic classifies as **UPDATE `<KEY>`** under `source-as-epic` (via
+   the seed) and as **CREATE** under `new-epic`. Any ledger entry whose node id is **no longer in the
+   breakdown** ⇒ **`[deleted]`** (skip if that issue's summary already starts with `[deleted] `).
+   Collect the `blocks`/`affects` edges as **LINKS**.
 4. **Render the dry-run plan and STOP — write nothing yet.** Print it grouped, with the **fixed
    English keywords** and destructive actions flagged, e.g.:
    ```
@@ -408,9 +415,12 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
    create or update **only** summary + description per the guide's field mapping, and set the
    epic-child link on create; create any missing `blocks`(→"Blocks")/`affects`(→"Relates") links;
    prepend `[deleted] ` to each orphan's summary. **Never** touch status/assignee/sprint/other fields.
-   After **each successful create**, write its returned key into `jira.pushed` in the JSON
-   **immediately** (so a mid-run failure resumes as UPDATE, not a duplicate).
-7. **Persist + report.** Write the updated `jira` ledger back into `<KEY>-groomed.json`, **regenerate
+   After **each successful create**, write its returned key into `jira.pushed` **and save
+   `<KEY>-groomed.json` to disk immediately** — a real file write after every create, not an
+   in-memory update flushed only at the end — so a mid-run failure resumes as UPDATE, never a
+   duplicate CREATE.
+7. **Persist + report.** Do the final save of `<KEY>-groomed.json` (the ledger has been written
+   incrementally in step 6; this reconciles the last state), **regenerate
    `<KEY>-groomed.html`** with the same shell concat (the `jira` key is data the visualizer ignores),
    and print a short summary (created / updated / `[deleted]` keys). Call out any assumption you had
    to make that needs confirming on the real instance (issue types, epic-child field, link types,
