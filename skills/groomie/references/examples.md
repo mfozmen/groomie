@@ -238,10 +238,7 @@ Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
 
 After approval, `B1`'s summary becomes `[deleted] Verification email not sent`, and the ledger keeps
 its entry while recording the tombstone: `"tombstoned": ["B1"]` — so a further re-push leaves `B1`
-alone.
-
-PROJ-458's summary becomes `[deleted] As a user, I want to reset my password …`; its status, assignee,
-and everything else are untouched.
+alone. `B1`'s status, assignee, and everything else stay untouched.
 
 ## Diagram
 
