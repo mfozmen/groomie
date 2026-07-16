@@ -2,7 +2,7 @@
   "issueKey": "DEMO-1",
   "mode": "full",
   "nodes": [
-    { "id": "E1", "kind": "epic", "title": "Saved Search Filters",
+    { "id": "E1", "kind": "epic", "title": "Add Saved Search Filters",
       "description": "Let shoppers save a set of search filters and re-apply it later.",
       "businessValue": "Shoppers who refine long filter lists can return to them without re-entering, increasing repeat search use.",
       "design": null },

@@ -195,7 +195,8 @@ add a Fibonacci `Estimate:` to each task.
 
 **Output contract — emit these sections and NOTHING else.** In this exact order:
 
-1. `# Epic: <name>` — the heading, then the version stamp line (see below), then
+1. `# Epic: <verb-led name>` — the heading (title leads with a verb, Title Case: *Add /
+   Enable / Migrate …*, see the guide's epic rules), then the version stamp line (see below), then
    Description + Business Value [+ Design].
 2. `## Stories` — **only** if the feature changes user-facing behavior; omit entirely otherwise.
 3. `## Tasks` — omitted entirely in `--stories` mode.

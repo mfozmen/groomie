@@ -13,12 +13,14 @@ for that level.
 ## Epic
 
 A good epic is bounded, closeable in a defined timeframe, and its scope is obvious from
-the title alone. Body is two required lines — `Description` + `Business Value` — plus an
+the title alone — and the title **leads with a verb** in **Title Case** (imperative
+preferred: `Add` / `Enable` / `Support` / `Change` / `Migrate` / `Remove`) so it reads as the
+work to be done, not a label. Body is two required lines — `Description` + `Business Value` — plus an
 optional `Design:` line linking the Figma / mockups when research surfaces them. No
 acceptance criteria (stories carry those).
 
 ```markdown
-# Epic: Traditional Authentication
+# Epic: Enable Traditional Authentication
 
 _groomie v<version> · full breakdown_
 
@@ -29,7 +31,7 @@ traditional login.
 ```
 
 ```markdown
-# Epic: SSO Integration
+# Epic: Add SSO Login
 
 _groomie v<version> · full breakdown_
 
@@ -38,9 +40,10 @@ _groomie v<version> · full breakdown_
 **Business Value:** Simplify the login process and increase user adoption.
 ```
 
-Both titles pass the "is it bounded?" test — you can tell what's in scope and when it's
-done just by reading them. Contrast with an un-scoped umbrella like "Authentication",
-which never closes.
+Both titles lead with a verb *and* pass the "is it bounded?" test — you can tell what work
+gets done and when it's finished just by reading them. Contrast with a bare label like
+"Traditional Authentication" (bounded, but not fronted by the work) or an un-scoped umbrella
+like "Authentication" (which never closes).
 
 ## User stories
 
@@ -280,7 +283,7 @@ visualizer (see the breakdown guide's *Diagram (mermaid)* rule). For the account
 
 ```mermaid
 flowchart TD
-  subgraph epic1["Epic: Traditional Authentication"]
+  subgraph epic1["Epic: Enable Traditional Authentication"]
     S1["S1: As a user, I want to create an<br/>account using email and password,<br/>so that I can have my own personal<br/>access to the platform."]
     S2["S2: As a user, I want to reset my<br/>password via email …"]
     S3["S3: As a logged-in user, I want to<br/>change my password …"]
