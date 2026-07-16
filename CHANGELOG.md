@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.12.0](https://github.com/mfozmen/groomie/compare/v0.11.0...v0.12.0) (2026-07-16)
+
+### Features
+
+* **groomie:** mermaid diagram labels use full wrapped titles ([#41](https://github.com/mfozmen/groomie/issues/41)) ([49fe290](https://github.com/mfozmen/groomie/commit/49fe2903c997db085e39b17d620e175bef6d1d9e))
+
 ## [0.11.0](https://github.com/mfozmen/groomie/compare/v0.10.0...v0.11.0) (2026-07-14)
 
 ### Features
