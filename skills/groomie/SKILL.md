@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
+description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ISSUE-KEY>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
 ---
 
 # Groomie
@@ -281,13 +281,31 @@ shell), **skip the `.html` entirely and say so** — do **not** substitute a bes
 hand-written HTML. A hand-rolled card-list page is *not* the visualizer: it has no graph, misleads
 the user into thinking they got the real output, and hides that the template step failed.
 
+### 6. Self-review (required — every groom ends with this)
+
+Generation drops rules under load; verification catches what writing missed. After the three
+files are written, run the checklist in **`references/review-checklist.md`** over the output —
+read the finished `.md` (and `.json`) top to bottom in *checking* mode and answer every item
+(the leak scan on each story, epic/task/bug shape, sections, diagram, self-containment).
+
+- **Clean** → report it in one line (`Self-review: clean — N stories, M tasks checked`) and finish.
+- **Violations** → fix them in the **one bounded pass** the checklist defines (md + json
+  together, keys stable, ledger untouched), regenerate the `.html`, re-run
+  `scripts/check-graph.mjs`, re-print the corrected markdown, and list what was fixed by key.
+  Anything needing new research or an unanswered judgment call is reported (or added to
+  `## Open questions` if it is a genuine ambiguity) — never a second sweep.
+
+The same pass is available standalone as `/groomie:review <KEY>` (the `review` skill) for
+breakdowns produced earlier. Never skip this step, and never present unreviewed output as final.
+
 ## Revise an existing breakdown
 
 Groom is one-shot: a plain `/groomie <KEY>` grooms fresh and **overwrites** the three files. When the
 user instead wants to **change what a previous run produced** — "split T3 into two", "remove S2",
 "add a `[Frontend]` task for the empty-state", "the epic's business value is wrong, it's X" — invoked
 as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing breakdown, do a
-**targeted edit** instead of re-grooming. Do NOT run steps 1–5; run this:
+**targeted edit** instead of re-grooming. Do NOT run steps 1–6 (step 7 below carries the
+self-review layer for a revise); run this:
 
 1. **Resolve the target + change.** Get the issue key and the natural-language change. Locate the
    breakdown: prefer the per-issue folder `<KEY>/<KEY>-groomed.{md,json}`, else fall back to the
@@ -326,12 +344,17 @@ as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing br
    `## Diagram`), and **regenerate the resolved `<KEY>-groomed.html` with the same shell concat** — the
    HTML is a pure derivative of the JSON and can only be rebuilt, never patched. Keep the version stamp
    (current version, unchanged mode word).
-7. **Self-verify, then report the delta.** Best-effort, `node`-optional (like the `.html` step): if
-   `node` is available, run `node "$SKILL/scripts/check-graph.mjs"` on the resolved `<KEY>-groomed.json`
-   and `<KEY>-groomed.md` (the folder paths, or the legacy flat paths — whichever step 1 found;
-   substitute this skill's base path for `$SKILL`) and fix any violation it prints
-   before presenting; if `node` can't run, just eyeball the same invariants (every edge/`epicId`
-   resolves, keys unique, MD blockers match the JSON edges) — never block the revise on the checker.
+7. **Self-verify, then report the delta.** Two layers, same as a fresh groom:
+   - **Graph invariants** — best-effort, `node`-optional (like the `.html` step): if `node` is
+     available, run `node "$SKILL/scripts/check-graph.mjs"` on the resolved `<KEY>-groomed.json`
+     and `<KEY>-groomed.md` (the folder paths, or the legacy flat paths — whichever step 1 found;
+     substitute this skill's base path for `$SKILL`) and fix any violation it prints
+     before presenting; if `node` can't run, just eyeball the same invariants (every edge/`epicId`
+     resolves, keys unique, MD blockers match the JSON edges) — never block the revise on the checker.
+   - **Prose contract** — run `references/review-checklist.md` over the **parts the revise
+     touched** (edited/added nodes and any section it rewrote — an untouched story doesn't need
+     re-scanning), with the same one-bounded-fix-pass rule as step 6 of a fresh groom.
+
    Then print a short change summary (added / removed / edited / re-wired, by key) followed by the
    updated markdown.
 
