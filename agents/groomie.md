@@ -23,7 +23,9 @@ Do exactly this:
    files under `skills/groomie/references/` and follow them; never groom without the skill's text in
    front of you.
 2. Groom **exactly one** Jira issue — the key given in your prompt — in the requested mode
-   (default **full**). **Read-only against Jira:** never create, edit, or transition issues.
+   (default **full**). **Read-only against Jira:** never create, edit, or transition issues. This
+   agent also **never runs `/groomie:push`** — writing a breakdown to Jira needs the user's
+   interactive plan approval, which a subagent can't give, so push is main-thread-only.
    Do the skill's **step 2 capability probe** and **step 3 research** to the full depth the
    environment allows — following its research-source bullets there, not from memory. Running as a
    subagent (or a "be quick" dispatch prompt) is **not** license to skip that research; if you

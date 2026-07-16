@@ -140,6 +140,22 @@ Revise reads your existing `PROJ-123/PROJ-123-groomed.{md,json}` (or the legacy 
 rules (existing `S#`/`T#` keys stay stable, blockers stay consistent), and re-writes all three
 files — the markdown, the JSON graph, and the `.html`. Groom the issue first if you haven't yet.
 
+### Pushing to Jira (optional)
+
+When the breakdown is final, push it into Jira:
+
+```
+/groomie:push PROJ-123
+```
+
+This is Groomie's **one write action** — everything else is read-only. It always shows a **plan
+preview** (what it will `CREATE` / `UPDATE` / mark `[deleted]`, plus the links) and **waits for your
+approval** before writing anything. It's **idempotent**: re-pushing updates the same issues in place —
+Groomie remembers what it created (a ledger inside the `.json`), so it **never makes duplicates**. A
+node you removed from the breakdown gets a soft **`[deleted]`** prefix on its Jira title — Groomie
+**never hard-deletes or transitions** an issue, and never touches status, assignee, or sprint. It asks
+once whether to turn the source issue into the epic or create a fresh one.
+
 ## What the output looks like
 
 ```markdown

@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), and customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it). Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Does NOT write anything back to Jira.
+description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
 ---
 
 # Groomie
@@ -8,8 +8,10 @@ description: Use when the user asks to groom, break down, or refine a Jira issue
 Turn one messy, single-feature Jira issue into a clean, groomed breakdown:
 **one epic, its user stories, the technical tasks that block those stories, and bugs
 where relevant**,
-delivered as a markdown document. You never write to Jira — you produce markdown the
-user reviews and files themselves.
+delivered as a markdown document. Grooming, revising, and configuring are **read-only against
+Jira** — you produce markdown the user reviews. The one exception is the opt-in `/groomie:push`
+(see *Push to Jira*), which writes the breakdown into Jira, and only after the user approves a
+plan preview.
 
 **Groomie's job is to remove ambiguity:** turn vague, messy intent into unambiguous,
 testable behavior — clear acceptance criteria and concrete test cases. Where behavior
@@ -374,9 +376,75 @@ local config files, never Jira. Run this:
    warning) — e.g. `Set Output language = Turkish (global) · mapped panel → Frontend (this project).`
    The user never opens the file. Do **not** groom here; configuring and grooming are separate acts.
 
+## Push to Jira
+
+`/groomie:push <KEY>` writes a **finalized** breakdown into Jira via the Atlassian MCP — Groomie's
+**one write action**. It is **opt-in, idempotent, and never writes before the user approves a plan
+preview**. Run it **in the main thread** (it needs interactive approval); never delegate it. See the
+guide's *Jira write-back* section for the ledger + mapping contract. Run this:
+
+1. **Resolve the breakdown.** Locate `<KEY>/<KEY>-groomed.{md,json}` (same resolution as revise —
+   folder first, legacy-flat fallback). Read the **JSON as the source of truth** for the push (don't
+   re-parse the `.md`). If the pair isn't found, **stop** and tell the user to run `/groomie <KEY>`
+   first — never groom here.
+2. **Pick the epic mode — once, on the first push; locked after.** **If `jira.epicMode` is already
+   recorded** (a prior push for this breakdown), **reuse it — do not re-ask and do not re-seed** — and
+   skip to step 3. Switching modes across pushes is **not allowed**: it would strand the epic a prior
+   push already created; if a user truly needs to switch, they resolve that epic in Jira by hand
+   first. **Only on the first push** (no `jira.epicMode` yet) ask the user: **make the source issue
+   `<KEY>` the epic** (update it in place to carry the epic's title/description; stories/tasks become
+   its children) **or create a new epic** (a fresh Jira epic, linked to `<KEY>` with a "relates to"
+   link). Record the choice as `jira.epicMode` (`source-as-epic` | `new-epic`) and the target
+   `jira.project` (default: the source issue's project). If the choice is **`source-as-epic`, seed the
+   ledger now**: set `jira.pushed[<epic node id>] = <KEY>` (the source issue key itself) — so step 3
+   classifies the epic as UPDATE and the source issue is updated in place, never duplicated.
+3. **Classify every node against the ledger** (`jira.pushed`, empty/absent on a first push **except**
+   the `source-as-epic` seed from step 2): a node **in** the ledger ⇒ **UPDATE** its Jira key; a node
+   **absent** ⇒ **CREATE**. So the epic classifies as **UPDATE `<KEY>`** under `source-as-epic` (via
+   the seed) and as **CREATE** under `new-epic`. Any ledger entry whose node id is **no longer in the
+   breakdown** — **and not already listed in `jira.tombstoned`** — ⇒ **`[deleted]`** (this local check
+   means a re-push skips an already-tombstoned issue without a live read and never doubles the prefix).
+   Collect the `blocks`/`affects` edges as **LINKS**.
+4. **Render the dry-run plan and STOP — write nothing yet.** Print it grouped, with the **fixed
+   English keywords** and destructive actions flagged, e.g.:
+   ```
+   Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
+     CREATE    epic E1, S4 (Story), T3 (Task)
+     UPDATE    S1 → PROJ-457, T1 → PROJ-460      (summary + description + links)
+     [deleted] T9 → PROJ-462  (removed from the breakdown)   ⚠ destructive
+     LINKS     T1 blocks S1, B1 affects S1
+   ```
+5. **Await explicit approval.** If the user declines, make **no** Jira call and stop.
+6. **Execute in dependency order** via the MCP: **epic(s) → stories → tasks/bugs → links**.
+   - **First, save `<KEY>-groomed.json` to disk with the step-2 ledger fields** (`jira.epicMode`,
+     `jira.project`, and any `source-as-epic` seed) **before the first Jira write** — so the locked
+     mode is durable even if a later create fails and the run is retried.
+   - Per node, create or update **only** summary + description per the guide's field mapping, and set
+     the epic-child link on create; create any missing `blocks`(→"Blocks")/`affects`(→"Relates")
+     links; prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
+     local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
+     status/assignee/sprint/other fields.
+   - **After *every* Jira write that changes the ledger** — a created key added to `jira.pushed`, or
+     an orphan's id added to `jira.tombstoned` — **save `<KEY>-groomed.json` to disk immediately**,
+     before the next Jira call. Never batch these in memory to flush at the end: a mid-run failure
+     must resume with the locked mode, already-created issues as UPDATE, and tombstones not repeated.
+7. **Persist + report.** Do the final save of `<KEY>-groomed.json` (the ledger has been written
+   incrementally in step 6; this reconciles the last state), **regenerate
+   `<KEY>-groomed.html`** with the same shell concat (the `jira` key is data the visualizer ignores),
+   and print a short summary (created / updated / `[deleted]` keys). Call out any assumption you had
+   to make that needs confirming on the real instance (issue types, epic-child field, link types,
+   description format) — these are **verify-on-demo-Jira** items, not silent guesses.
+
+If a required issue type or link type doesn't resolve on the instance, **stop and report it** rather
+than inventing one — surface it as a blocker the user resolves on their Jira, never a fabricated write.
+
 ## Boundaries
 
-- Read-only against Jira. Never create, edit, or transition issues.
+- Read-only against Jira **except** the explicit, opt-in `/groomie:push`, which writes the
+  epic/stories/tasks/bugs (and links) of a breakdown you produced — and only **after the user
+  approves a plan preview**. It never hard-deletes or transitions an issue (a removed node gets a
+  soft `[deleted] ` title), and never touches non-Groomie fields (status/assignee/sprint/…). Grooming,
+  revising, and configuring stay fully read-only against Jira.
 - One feature per run.
 - No invented requirements — unknowns become open questions.
 - **Run this skill in the main thread** (invoked directly / via `/groomie`). Do **not** delegate the
