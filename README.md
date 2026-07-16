@@ -140,6 +140,21 @@ Revise reads your existing `PROJ-123/PROJ-123-groomed.{md,json}` (or the legacy 
 rules (existing `S#`/`T#` keys stay stable, blockers stay consistent), and re-writes all three
 files — the markdown, the JSON graph, and the `.html`. Groom the issue first if you haven't yet.
 
+### Reviewing a breakdown
+
+Every groom (and revise) **ends with an automatic self-review**: Groomie re-reads its own
+output against the grooming contract — the story leak scan (no menu placements, no technical
+field names, no interaction sequences, no ticket numbering, no widget names), epic/task/bug
+shape, sections, and the diagram — and fixes what it finds in one bounded pass before
+presenting. You can also run that same pass standalone, e.g. on a breakdown produced earlier:
+
+```
+/groomie:review PROJ-123
+```
+
+It reports what it fixed (or that the breakdown is clean), never pushes to Jira, and warns
+you if a previously pushed breakdown now differs from Jira.
+
 ### Pushing to Jira (optional)
 
 When the breakdown is final, push it into Jira:
@@ -159,7 +174,7 @@ once whether to turn the source issue into the epic or create a fresh one.
 ## What the output looks like
 
 ```markdown
-# Epic: Dark Mode
+# Epic: Add Dark Mode
 
 **Description:** Let users switch the app between light and dark themes.
 **Business Value:** Reduces eye strain and matches OS preference, a top-requested setting.
@@ -169,7 +184,7 @@ once whether to turn the source issue into the epic or create a fresh one.
 ### S1 — As a user, I want to switch between light and dark themes, so that the app matches my preference.
 
 **Acceptance Criteria**
-- A theme toggle is available in settings.
+- The theme can be switched from settings.
 - The chosen theme persists across sessions.
 
 **Test Cases**

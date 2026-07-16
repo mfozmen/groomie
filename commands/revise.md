@@ -22,7 +22,9 @@ empty-state`, `the epic's business value is wrong — it's X`).
   never renumber), keep the MD `Blocks:` / `Is blocked by:` lines and the JSON edges in agreement,
   and touch only what the change implies.
 - Re-emit all three files (`.md`, `.json`, and the regenerated `.html`), self-verify with
-  `scripts/check-graph.mjs`, then print a short change summary and the updated markdown.
+  `scripts/check-graph.mjs` **and** the prose checklist
+  (`skills/groomie/references/review-checklist.md`) over the touched parts, then print a short
+  change summary and the updated markdown.
 
 Read-only against Jira — research the code/ticket only if the change adds genuinely new technical
 content. Never write anything back to Jira.

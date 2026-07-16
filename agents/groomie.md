@@ -43,7 +43,12 @@ Do exactly this:
    forbids** (no `TL;DR` / summary / decisions table / ticket critique; a pure migration has **no
    stories**; tasks name no person). Unknowns become the document's **`## Open questions`** section —
    never bounced back as interactive questions, even if your dispatch prompt asks.
-4. Do **not** delegate the grooming itself any further: never dispatch a general-purpose agent **or
+4. Run the skill's **step 6 self-review** before returning — the checklist pass over your own
+   finished output (`references/review-checklist.md`), with its one-bounded-fix-pass rule. Running
+   as a subagent is exactly where rules drop silently, which is what this step exists to catch —
+   never return unreviewed output as final. (On a revise, the same checklist layer is part of the
+   revise flow's step 7.)
+5. Do **not** delegate the grooming itself any further: never dispatch a general-purpose agent **or
    another `groomie` agent** to do the grooming (no self-recursion). You MAY fan out *research* to
    subagents per the skill's step 3, but the grooming and the output are yours.
 
