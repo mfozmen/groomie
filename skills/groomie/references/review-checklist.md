@@ -83,7 +83,10 @@ answering every item below. Collect violations first; then fix them in **one bou
 
 Fix violations directly in the `.md` **and** `.json` (keys stable, minimal edits, the
 `jira` ledger untouched), regenerate the `.html` with the template concat, then re-run
-`scripts/check-graph.mjs`. **One pass only** — if a fix would require new research, a
+`scripts/check-graph.mjs`. Both re-runs are **best-effort, like everywhere else in the
+skill**: if `node` can't run, eyeball the graph invariants instead; if the template assets
+can't be found, skip the `.html` and say so — never block the review on either.
+**One pass only** — if a fix would require new research, a
 judgment call the ticket doesn't answer, or a second sweep, report it to the user instead
 of iterating. The same bound covers the checker: if `check-graph.mjs` still fails after
 the one pass, report the remaining violation — do not keep iterating until it passes. If the JSON's `jira.pushed` ledger is non-empty, warn that fixes create

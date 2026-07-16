@@ -27,9 +27,14 @@ review from memory.
    item. Collect all violations before fixing anything.
 4. **Fix — one bounded pass** (the checklist's "Fixing" section governs): minimal edits in
    the `.md` and `.json` together, keys stable, `jira` ledger untouched; regenerate the
-   `.html` by the template concat from the main skill's *Output markdown* step (assets in
-   `../groomie/assets/`); re-run `node ../groomie/scripts/check-graph.mjs <json> <md>`
-   (best-effort — if `node` is unavailable, eyeball the graph invariants instead). Anything
+   `.html` by the template concat from the main skill's *Output markdown* step, and re-run
+   check-graph — resolving both against **this skill's base path** (the harness gives it to
+   you; substitute it for `$SKILL` below, and note the sibling hop: assets at
+   `$SKILL/../groomie/assets/`, checker at
+   `node "$SKILL/../groomie/scripts/check-graph.mjs" <json> <md>`). Never use bare relative
+   paths — they resolve against the shell's working directory, not this skill. Both are
+   best-effort like everywhere else: if `node` can't run, eyeball the graph invariants; if
+   the assets can't be found, skip the `.html` and say so. Anything
    needing new research or a judgment call the ticket doesn't answer is **reported, not
    fixed** — never iterate a second pass, never invent content.
 5. **Report.** One line if clean (`Self-review: clean — N stories, M tasks checked`);
