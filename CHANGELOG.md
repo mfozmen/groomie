@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.17.0](https://github.com/mfozmen/groomie/compare/v0.16.0...v0.17.0) (2026-07-17)
+
+### Features
+
+* **groomie:** file paths move to a closing block at the end of the message ([#50](https://github.com/mfozmen/groomie/issues/50)) ([6cde8ca](https://github.com/mfozmen/groomie/commit/6cde8ca423167670ab76048472c50fc28b03413a))
+
 ## [0.16.0](https://github.com/mfozmen/groomie/compare/v0.15.0...v0.16.0) (2026-07-17)
 
 ### Features
