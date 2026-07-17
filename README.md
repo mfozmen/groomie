@@ -15,8 +15,30 @@ allows, and hands back a structured **epic → user stories → technical tasks*
 can review and file.
 
 > [!NOTE]
-> Groomie is **read-only against Jira** — it never creates or edits issues. It produces
-> markdown you stay in control of.
+> Groomie is **read-only against Jira by default** — grooming, revising, reviewing, and
+> configuring never create or edit issues; they produce markdown you stay in control of. The
+> **one exception is the opt-in [`/groomie:push`](#pushing-to-jira-optional)**, which files the
+> finished breakdown into Jira — and only after you approve a plan preview.
+
+## Why
+
+Most teams run a whole feature out of **one Jira issue**. It starts as a rough idea, then
+accumulates comments, links, screenshots, and scope changes — and everything happens *inside*
+that single ticket. Nobody can tell where its boundaries are: what exactly is in scope, what
+"done" means, which parts block which, what QA is supposed to test. **Neither humans nor AI
+agents can work with that** — a developer estimates by gut feeling, QA tests whatever it can
+guess at, and an agent pointed at the ticket to "implement it" just inherits every ambiguity.
+
+The known cure is proper grooming — a bounded epic, stories that carry acceptance criteria and
+test cases, tasks with explicit blockers — but done by hand it's laborious enough that it
+rarely happens. Groomie automates exactly that: it recovers the real feature from the messy
+issue, researches it, and splits it into **bounded, testable, explicitly-wired pieces**.
+Ambiguities aren't papered over; they surface as open questions for a human to answer.
+
+The result is readable by people *and* consumable by machines: the markdown for your team, the
+JSON graph for tooling and agents. A well-groomed breakdown is what makes agent-driven
+development actually workable — each task becomes a bounded work item an agent (or a person)
+can pick up, with its scope, its done-criteria, and its edges spelled out.
 
 ## What you get
 
@@ -32,7 +54,12 @@ can review and file.
   existing stories actually use, or plain "user").
 - **Technical tasks** (`T1`, `T2`, …) — `[Discipline]`-tagged implementation work with a
   detailed plan, wired to what they **block** / are **blocked by** (Jira link terms).
-- **Bugs** and **open questions** — surfaced, never silently invented.
+- **Bugs** — structured `### B#` sections (reproduce steps / expected / actual), filed as epic
+  children; whether one blocks a story is left to QA in Jira.
+- **Open questions** — anything the ticket leaves ambiguous or contradictory (scope ownership,
+  unconfirmed placements, ticket-vs-code mismatches) becomes an explicit question at the end of
+  the breakdown for you to resolve before filing — Groomie never papers over a gap with an
+  invented requirement.
 
 The whole breakdown is saved to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — each groom lands in its own
 per-issue folder named for the key, so repeated runs don't pile up loose in one directory — and
@@ -49,8 +76,8 @@ your breakdown baked in: epics as containers, stories/tasks/bugs nested, blocker
 ## Requirements
 
 - **Claude Code.**
-- **Atlassian MCP** connected to your Jira — the one hard dependency; Groomie reads the issue
-  through it.
+- **Atlassian MCP** connected to your Jira — the one hard dependency; all Jira access goes
+  through it (reading the issue, and the opt-in `/groomie:push` writes).
 - *Optional:* any research capability in your session (a code/knowledge-base MCP, web search,
   subagents). Groomie detects what's available and digs accordingly — none of it is required,
   and nothing is company-specific.
@@ -231,6 +258,9 @@ once whether to turn the source issue into the epic or create a fresh one.
 4. **Save & print** the markdown (with a mermaid diagram), and write the JSON graph plus a
    standalone interactive `<ISSUE-KEY>-groomed.html` (offline, double-clickable) next to it — all
    under a per-issue `<ISSUE-KEY>/` folder.
+5. **Self-review** the finished output against the grooming contract (the leak scan, shapes,
+   sections, diagram), fix violations in one bounded pass, and close the message with the saved
+   file paths.
 
 ---
 
