@@ -15,8 +15,10 @@ allows, and hands back a structured **epic → user stories → technical tasks*
 can review and file.
 
 > [!NOTE]
-> Groomie is **read-only against Jira** — it never creates or edits issues. It produces
-> markdown you stay in control of.
+> Groomie is **read-only against Jira by default** — grooming, revising, reviewing, and
+> configuring never create or edit issues; they produce markdown you stay in control of. The
+> **one exception is the opt-in [`/groomie:push`](#pushing-to-jira-optional)**, which files the
+> finished breakdown into Jira — and only after you approve a plan preview.
 
 ## What you get
 
@@ -54,8 +56,8 @@ your breakdown baked in: epics as containers, stories/tasks/bugs nested, blocker
 ## Requirements
 
 - **Claude Code.**
-- **Atlassian MCP** connected to your Jira — the one hard dependency; Groomie reads the issue
-  through it.
+- **Atlassian MCP** connected to your Jira — the one hard dependency; all Jira access goes
+  through it (reading the issue, and the opt-in `/groomie:push` writes).
 - *Optional:* any research capability in your session (a code/knowledge-base MCP, web search,
   subagents). Groomie detects what's available and digs accordingly — none of it is required,
   and nothing is company-specific.
