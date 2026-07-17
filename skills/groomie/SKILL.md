@@ -90,11 +90,12 @@ issue is available, say so and groom from the issue text alone — that is a val
 `~/.groomie/config.md` with the per-project `groomie.config.md` (working directory, and — when the cwd
 is inside a git repo — the repo root) layered on top. Merge **by kind of setting** so nothing global
 is lost: **scalar** settings (Output language, Granularity, Documentation policy) take the per-project
-value if present, else global, else default; **list** settings (Repo → discipline, Disciplines) are
+value if present, else global, else default; **list** settings (Repo → discipline, Disciplines,
+Personas) are
 the **union** of both, a per-project entry overriding a same-key global entry (see the guide's
 *Per-project config* merge rule). It is a team's optional, company-wide grooming
-conventions — an **output language**, a repo→discipline map, the disciplines they use, an out-of-repo
-documentation policy, and a granularity preference. **Both files and every section are independently
+conventions — an **output language**, a repo→discipline map, the disciplines they use, a personas
+vocabulary for story roles, an out-of-repo documentation policy, and a granularity preference. **Both files and every section are independently
 optional:** if a file is missing (or a section is), groom exactly as you do today. When you load
 anything, say one line naming what it set. Apply it in step 4 per the guide's *Per-project config
 (`groomie.config.md`)* section — never let it introduce a hard dependency or block the groom.
@@ -141,7 +142,10 @@ Core rules (full detail in the guide):
   (Jira-style). Title is the full `As a <role>, I want <capability>, so that <benefit>.`
   sentence — **comma before *so that*, period at the end** — and the `<role>` must be a
   **real user of our product** (never the end recipient / consumer of an outbound artifact;
-  reframe that from our user's view). **One responsibility per story (INVEST) — split a
+  reframe that from our user's view). **Never invent the role name**: take it from the
+  config's `## Personas` when defined, else a name the source actually uses (the ticket, its
+  docs, or roles found in the project's already-filed stories — research opportunistically),
+  else generic `user` (the guide's persona rule). **One responsibility per story (INVEST) — split a
   compound story (e.g. "edit or delete") into separate stories whenever each part stays
   independently valuable and testable.** Body carries required **Acceptance Criteria** and **Test Cases**, plus **`Is blocked
   by:`** the tasks that build it (one per line as `- <key> — <title>`). QA tests stories. **Only write
@@ -178,7 +182,9 @@ Core rules (full detail in the guide):
   keys, `[Discipline]` prefixes, the link markers `Blocks:` / `Is blocked by:`, the
   fixed headings, the version stamp; absent ⇒ English); use its **repo→discipline map** for the `[Discipline]` prefix on
   work landing in a named repo (a repo not in the map ⇒ infer as usual, never block); its
-  **disciplines** as the `[Discipline]` vocabulary; its **documentation policy** to decide when the
+  **disciplines** as the `[Discipline]` vocabulary; its **personas** as the story `<role>`
+  vocabulary (best fit per actor; absent ⇒ a role name the source uses, else `user`); its
+  **documentation policy** to decide when the
   out-of-repo-docs exception yields a separate docs task; and its **granularity** preference to bias
   task consolidation. Full schema in the guide's *Per-project config (`groomie.config.md`)* section.
 - Flag ambiguities as open questions instead of guessing.
@@ -374,13 +380,15 @@ local config files, never Jira. Run this:
    holds each setting**, because that determines where a write actually takes effect (step 3). Apply
    the change on top of what's already there — never clobber sections the user didn't mention.
 2. **Interpret the request** into one or more settings from the documented schema: **output language**,
-   **repo → discipline** entry, **disciplines** vocabulary, **documentation policy**, **granularity**.
+   **repo → discipline** entry, **disciplines** vocabulary, **personas** vocabulary,
+   **documentation policy**, **granularity**.
    If it maps to none of these, or is ambiguous, ask **one** clarifying question — never write a
    guessed or empty config.
 3. **Choose the file so the change actually takes effect (never a silent no-op).** Start from the
    **default scope by nature**: **global** (`~/.groomie/config.md`) for output language, granularity,
    documentation policy (cross-project preferences); **per-project** (`groomie.config.md` in cwd / git
-   root) for the repo → discipline map and disciplines vocabulary (specific to this repo set). The user
+   root) for the repo → discipline map, disciplines vocabulary, and personas vocabulary (specific
+   to this repo set / product). The user
    may **override** in words: "just for this project" ⇒ per-project; "for all projects" / "everywhere"
    ⇒ global. **Then correct for shadowing** using what step 1 found: because a per-project **scalar**
    value always wins the merge, if the setting already lives per-project, writing it to the global
@@ -393,7 +401,7 @@ local config files, never Jira. Run this:
 4. **Write the target file for the user.** Create `~/.groomie/` and the file if missing; **preserve
    every other section** already in that file, and emit valid config markdown in the schema the guide
    documents (a `# Groomie config` H1 + the relevant `##` sections). For a **scalar** setting, set that
-   section's single value; for a **list** setting (repo → discipline, disciplines), **add or update the
+   section's single value; for a **list** setting (repo → discipline, disciplines, personas), **add or update the
    one entry inside the existing section** — never rewrite the whole list, so other entries survive.
    Keep example/other values intact.
 5. **Confirm in one line** what was set and the **file it actually took effect in** (plus any shadow

@@ -1,5 +1,5 @@
 ---
-description: "Customize Groomie by conversation — set the output language, repo→discipline map, disciplines, docs policy, or granularity without hand-editing a file. Usage: /groomie:config <what you want>"
+description: "Customize Groomie by conversation — set the output language, repo→discipline map, disciplines, personas, docs policy, or granularity without hand-editing a file. Usage: /groomie:config <what you want>"
 ---
 
 Configure Groomie by conversation. Arguments: `$ARGUMENTS`
