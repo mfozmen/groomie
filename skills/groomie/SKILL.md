@@ -311,10 +311,12 @@ files are written, run the checklist in **`references/review-checklist.md`** ove
 read the finished `.md` (and `.json`) top to bottom in *checking* mode and answer every item
 (the leak scan on each story, epic/task/bug shape, sections, diagram, self-containment).
 
-- **Clean** → report it in one line (`Self-review: clean — N stories, M tasks checked`) and finish.
+- **Clean** → report it in one line (`Self-review: clean — N stories, M tasks checked`), then
+  finish with the **closing block** (step 5): the file paths, last.
 - **Violations** → fix them in the **one bounded pass** the checklist defines (md + json
   together, keys stable, ledger untouched), regenerate the `.html`, re-run
-  `scripts/check-graph.mjs`, re-print the corrected markdown, and list what was fixed by key.
+  `scripts/check-graph.mjs`, re-print the corrected markdown, list what was fixed by key, and
+  finish with the **closing block** (step 5): the file paths, last.
   Anything needing new research or an unanswered judgment call is reported (or added to
   `## Open questions` if it is a genuine ambiguity) — never a second sweep.
 
