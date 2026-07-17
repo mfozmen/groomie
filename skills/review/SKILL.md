@@ -40,7 +40,9 @@ review from memory.
 5. **Report.** One line if clean (`Self-review: clean — N stories, M tasks checked`);
    otherwise the fixed items and the reported-but-not-fixed items, by key. If the JSON's
    `jira.pushed` ledger is non-empty, add the drift warning: the Jira issues now lag these
-   fixes until the user runs `/groomie:push <KEY>` again.
+   fixes until the user runs `/groomie:push <KEY>` again. When files were rewritten, **end
+   the message with the main skill's closing block** (step 5 of a fresh groom): the file
+   paths last, plus the nothing-written-to-Jira note.
 
 ## Boundaries
 

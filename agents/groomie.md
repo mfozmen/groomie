@@ -59,4 +59,5 @@ or the legacy flat path) per the skill's lookup rule, apply the
 single given change under the same contract (stable keys, consistent edges, targeted edit), re-emit
 all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
 
-Return the written file path(s) and the groomed markdown — and nothing else (no summary, no TL;DR).
+Return the groomed markdown, **ending with the skill's closing block** (the written file paths
+last, per the skill's step 5) — and nothing else (no summary, no TL;DR).

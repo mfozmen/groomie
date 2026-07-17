@@ -240,8 +240,10 @@ rules. Omit the `## Diagram` when there are no nodes.
 **Save it to a file AND print it.** Write the document to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — a
 per-issue folder named for the key in the current working directory, so repeated grooms don't pile up
 loose in one directory. Create the folder first (`mkdir -p <ISSUE-KEY>`, e.g. `mkdir -p PROJ-123`,
-giving `PROJ-123/PROJ-123-groomed.md`), tell the user the path, then also print it inline so they can read it
-without opening the file. Do **not** write to Jira.
+giving `PROJ-123/PROJ-123-groomed.md`), then print it inline so they can read it
+without opening the file. Do **not** write to Jira. Do **not** announce file paths here — paths
+go in the **closing block** at the very end of the message (below), so they are the last thing
+the user sees rather than buried above the breakdown.
 
 **Output language vs. conversation language.** Talk to the user in whatever language *they* are
 using, but write the groomed **output content** in the config's `## Output language` (step 2 /
@@ -253,8 +255,8 @@ so `check-graph.mjs` and the visualizer keep working.
 
 **Also emit a JSON graph** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` next to the markdown — the same
 epic/story/task/bug nodes and `blocks` edges as a machine-readable graph (the
-input for the visualizer). See the guide's *JSON graph output* section for the schema. Tell
-the user this path too.
+input for the visualizer). See the guide's *JSON graph output* section for the schema. Its path
+is reported in the closing block, not here.
 
 **Also emit a standalone interactive HTML** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.html` — the graph visualizer
 with this breakdown baked in: offline, double-clickable, no server. **No Node/npm needed** — you
@@ -275,10 +277,25 @@ fi
 ```
 
 The guard means that if the two template assets can't be found (e.g. `$SKILL` wasn't resolved to
-this skill's real base path), you skip the HTML rather than write a truncated, broken file. Tell the
-user the `.html` path when it's produced. If the assets are missing or `sed`/`cat` are unavailable,
+this skill's real base path), you skip the HTML rather than write a truncated, broken file. Its
+path (when produced) goes in the closing block. If the assets are missing or `sed`/`cat` are unavailable,
 skip the HTML — the `.md` (with its mermaid diagram, which renders in any markdown viewer) and the
 `.json` are the primary outputs and always ship.
+
+**Close the final message with the file paths.** The message ends — after the printed breakdown
+and the self-review line (step 6) — with a short closing block: the per-issue folder and the files
+actually written (`.md`, `.json`, and the `.html` when produced — omit a line for a skipped file
+and say why it was skipped), plus the note that nothing was written to Jira. Paths appear **only**
+here, last, so the user never scrolls back up to find them:
+
+```
+Files saved under <cwd>/<ISSUE-KEY>/:
+- <ISSUE-KEY>-groomed.md — the breakdown above
+- <ISSUE-KEY>-groomed.json — machine-readable graph
+- <ISSUE-KEY>-groomed.html — standalone interactive visualizer (double-click to open)
+
+Nothing was written to Jira.
+```
 
 **Never hand-author the `.html` yourself.** It is produced *only* by concatenating the two shipped
 template halves around the graph, as above — that file IS the interactive visualizer (a
@@ -294,10 +311,12 @@ files are written, run the checklist in **`references/review-checklist.md`** ove
 read the finished `.md` (and `.json`) top to bottom in *checking* mode and answer every item
 (the leak scan on each story, epic/task/bug shape, sections, diagram, self-containment).
 
-- **Clean** → report it in one line (`Self-review: clean — N stories, M tasks checked`) and finish.
+- **Clean** → report it in one line (`Self-review: clean — N stories, M tasks checked`), then
+  finish with the **closing block** (step 5): the file paths, last.
 - **Violations** → fix them in the **one bounded pass** the checklist defines (md + json
   together, keys stable, ledger untouched), regenerate the `.html`, re-run
-  `scripts/check-graph.mjs`, re-print the corrected markdown, and list what was fixed by key.
+  `scripts/check-graph.mjs`, re-print the corrected markdown, list what was fixed by key, and
+  finish with the **closing block** (step 5): the file paths, last.
   Anything needing new research or an unanswered judgment call is reported (or added to
   `## Open questions` if it is a genuine ambiguity) — never a second sweep.
 
@@ -362,7 +381,8 @@ self-review layer for a revise); run this:
      re-scanning), with the same one-bounded-fix-pass rule as step 6 of a fresh groom.
 
    Then print a short change summary (added / removed / edited / re-wired, by key) followed by the
-   updated markdown.
+   updated markdown, and **end the message with the same closing block a fresh groom uses** (step
+   5): the resolved location's file paths last, plus the nothing-written-to-Jira note.
 
 ## Configure by conversation
 
