@@ -401,7 +401,7 @@ local config files, never Jira. Run this:
 4. **Write the target file for the user.** Create `~/.groomie/` and the file if missing; **preserve
    every other section** already in that file, and emit valid config markdown in the schema the guide
    documents (a `# Groomie config` H1 + the relevant `##` sections). For a **scalar** setting, set that
-   section's single value; for a **list** setting (repo → discipline, disciplines), **add or update the
+   section's single value; for a **list** setting (repo → discipline, disciplines, personas), **add or update the
    one entry inside the existing section** — never rewrite the whole list, so other entries survive.
    Keep example/other values intact.
 5. **Confirm in one line** what was set and the **file it actually took effect in** (plus any shadow

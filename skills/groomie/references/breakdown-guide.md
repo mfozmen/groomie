@@ -83,8 +83,8 @@ blocker). Bugs are QA-tested whether they are technical or not.
      vocabulary, not a guess. Once picked, the role is decided for this breakdown — reuse it
      consistently (and on a revise, keep it) rather than re-probing per story or per run.
   3. **Generic `user`** — the honest default when neither exists. A made-up job title
-     ("marketer", "campaign editor") *looks* more precise than `user`, but if no source names
-     it, it is invented vocabulary — worse, not better. When the source genuinely
+     ("campaign supervisor", "content owner") *looks* more precise than `user`, but if no
+     source names it, it is invented vocabulary — worse, not better. When the source genuinely
      distinguishes actors, keep them distinct with generic names ("admin" authors a rule,
      "user" applies it) — never collapse a real actor distinction into one `user`.
 
