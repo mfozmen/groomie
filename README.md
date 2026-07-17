@@ -32,7 +32,12 @@ can review and file.
   existing stories actually use, or plain "user").
 - **Technical tasks** (`T1`, `T2`, …) — `[Discipline]`-tagged implementation work with a
   detailed plan, wired to what they **block** / are **blocked by** (Jira link terms).
-- **Bugs** and **open questions** — surfaced, never silently invented.
+- **Bugs** — structured `### B#` sections (reproduce steps / expected / actual), filed as epic
+  children; whether one blocks a story is left to QA in Jira.
+- **Open questions** — anything the ticket leaves ambiguous or contradictory (scope ownership,
+  unconfirmed placements, ticket-vs-code mismatches) becomes an explicit question at the end of
+  the breakdown for you to resolve before filing — Groomie never papers over a gap with an
+  invented requirement.
 
 The whole breakdown is saved to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — each groom lands in its own
 per-issue folder named for the key, so repeated runs don't pile up loose in one directory — and
@@ -231,6 +236,9 @@ once whether to turn the source issue into the epic or create a fresh one.
 4. **Save & print** the markdown (with a mermaid diagram), and write the JSON graph plus a
    standalone interactive `<ISSUE-KEY>-groomed.html` (offline, double-clickable) next to it — all
    under a per-issue `<ISSUE-KEY>/` folder.
+5. **Self-review** the finished output against the grooming contract (the leak scan, shapes,
+   sections, diagram), fix violations in one bounded pass, and close the message with the saved
+   file paths.
 
 ---
 
