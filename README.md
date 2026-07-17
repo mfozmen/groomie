@@ -20,6 +20,26 @@ can review and file.
 > **one exception is the opt-in [`/groomie:push`](#pushing-to-jira-optional)**, which files the
 > finished breakdown into Jira — and only after you approve a plan preview.
 
+## Why
+
+Most teams run a whole feature out of **one Jira issue**. It starts as a rough idea, then
+accumulates comments, links, screenshots, and scope changes — and everything happens *inside*
+that single ticket. Nobody can tell where its boundaries are: what exactly is in scope, what
+"done" means, which parts block which, what QA is supposed to test. **Neither humans nor AI
+agents can work with that** — a developer estimates by gut feeling, QA tests whatever it can
+guess at, and an agent pointed at the ticket to "implement it" just inherits every ambiguity.
+
+The known cure is proper grooming — a bounded epic, stories that carry acceptance criteria and
+test cases, tasks with explicit blockers — but done by hand it's laborious enough that it
+rarely happens. Groomie automates exactly that: it recovers the real feature from the messy
+issue, researches it, and splits it into **bounded, testable, explicitly-wired pieces**.
+Ambiguities aren't papered over; they surface as open questions for a human to answer.
+
+The result is readable by people *and* consumable by machines: the markdown for your team, the
+JSON graph for tooling and agents. A well-groomed breakdown is what makes agent-driven
+development actually workable — each task becomes a bounded work item an agent (or a person)
+can pick up, with its scope, its done-criteria, and its edges spelled out.
+
 ## What you get
 
 - **Epic(s)** — the feature, bounded and closeable, with a `Description` + `Business Value`;
