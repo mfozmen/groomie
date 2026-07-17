@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.16.0](https://github.com/mfozmen/groomie/compare/v0.15.0...v0.16.0) (2026-07-17)
+
+### Features
+
+* **groomie:** persona vocabulary — config ## Personas, source-traceable roles, "user" default ([#49](https://github.com/mfozmen/groomie/issues/49)) ([9f32524](https://github.com/mfozmen/groomie/commit/9f32524292a678f675a9f4e0ef8fa20601d6e1ec)), closes [#47](https://github.com/mfozmen/groomie/issues/47)
+
 ## [0.15.0](https://github.com/mfozmen/groomie/compare/v0.14.0...v0.15.0) (2026-07-16)
 
 ### Features
