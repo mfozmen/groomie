@@ -126,8 +126,8 @@ down honestly. When these inputs exist, using them is **not optional**:
   questions.
 - Prefer delegating heavy searching to subagents; keep only the conclusions.
 
-**Then verify, before you groom.** Run this loop — the rules behind it live in the guide's
-*[Verifying the ticket's claims](references/breakdown-guide.md)* section:
+**Then verify, before you groom.** Run this loop; the full rule text lives in the guide's
+*Verifying the ticket's claims* section:
 
 1. **List the ticket's load-bearing claims** — the assertions the breakdown would silently
    inherit: named systems / services / repos / tables / endpoints / fields; "X already exists /
@@ -135,11 +135,10 @@ down honestly. When these inputs exist, using them is **not optional**:
    a stated dependency or ordering; a stated description of how the product behaves today. A
    claim is **load-bearing only if a story, a task, or the epic's scope would change were it
    false** — don't audit trivia.
-2. **Verify each against the best source available**, in this order: the **code** (when
-   reachable) → the **linked** issues / PRD / design docs → the issue's own **comments and
-   changelog** (a later comment overrides a stale description) → the **web** for external or
-   standards claims. **The ticket's own prose never verifies itself**, and neither does a
-   restatement of it in another ticket.
+2. **Verify each against the best source available**, in the guide's order — **code** (when
+   reachable) → **links** (PRD / design docs / sibling issues) → the issue's own **comments and
+   changelog** → the **web** for external or standards claims. **The ticket's own prose never
+   verifies itself**, and neither does a restatement of it in another ticket.
 3. **Classify each claim: confirmed / contradicted / unverifiable.**
 4. **Act on the verdict.**
    - **Confirmed** → use it.
@@ -160,11 +159,12 @@ down honestly. When these inputs exist, using them is **not optional**:
    those. **When the session can't ask** — dispatched as the `groomie` agent, or otherwise
    non-interactive — do **not** deadlock: groom under the verified reading and make that
    contradiction the **first** `## Open questions` entry, marked as premise-level.
-6. **Fan verification out to subagents when step 2 found them** — one subagent per claim (or
-   per tight cluster of related claims), each returning only its verdict, the evidence, and the
-   source it checked. Keep the verdict ledger here; the classification and the step-4 judgment
-   stay yours. Optional like every research capability: **no subagents ⇒ verify inline**, same
-   rules — never a hard dependency.
+6. **Fan verification out to subagents when step 2 found them** — but **bounded**: only claims
+   that need a real search are worth a subagent, and related claims travel together, so a ticket
+   with a dozen claims is **~3–5 subagents, not a dozen**. Each returns only its verdict, the
+   evidence, and the source it checked. Keep the verdict ledger here; the classification and the
+   step-4 judgment stay yours. Optional like every research capability: **no subagents ⇒ verify
+   inline**, same rules — never a hard dependency.
 7. **Report one line** when the loop finishes, before the breakdown:
    `Verification: N claims checked — A confirmed, B contradicted, C unverifiable.` followed by
    a half-line per contradicted claim. This is **conversation, not document** — the breakdown's

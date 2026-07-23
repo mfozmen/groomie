@@ -65,4 +65,7 @@ single given change under the same contract (stable keys, consistent edges, targ
 all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
 
 Return the groomed markdown, **ending with the skill's closing block** (the written file paths
-last, per the skill's step 5) — and nothing else (no summary, no TL;DR).
+last, per the skill's step 5) — and nothing else (no summary, no TL;DR). Exactly two process
+lines are allowed alongside it, both one-liners the skill defines: step 3's
+`Verification: N claims checked — …` before the breakdown, and step 6's `Self-review: …` after
+it. Neither is ever a section inside the `.md`.

@@ -82,12 +82,14 @@ answering every item below. Collect violations first; then fix them in **one bou
       headings, the stamp) stays fixed.
 - [ ] Nothing invented: every claim traces to the ticket, its links, or the research;
       ambiguities live in `## Open questions`, not in silently-invented requirements.
-- [ ] **Nothing unverified stated as fact:** a load-bearing ticket claim in a task, AC, or the
-      epic is either verified against a source or carried in `## Open questions`.
+- [ ] **Nothing unverified stated as fact:** no task, AC, or epic line asserts a specific
+      system / table / endpoint / field, or an "already works" claim, that isn't traceable to
+      the ticket, its links, the research, or `## Open questions`.
       *(guide: "Verifying the ticket's claims")*
-- [ ] **Contradictions follow the verified reading:** where the ticket and a source disagree, the
-      breakdown grooms what the source shows — the ticket's wrong claim isn't copied through —
-      and the disagreement is an open question naming both readings.
+- [ ] **Contradictions read as both-sided open questions** — a ticket-vs-source disagreement
+      appears under `## Open questions` naming both readings, and the body grooms the source's
+      reading. *(guide: same section. Standalone `/groomie:review` has no sources — check the
+      shape of what's there; never re-verify or research.)*
 
 ## Fixing (bounded — ONE pass)
 
