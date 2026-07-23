@@ -89,9 +89,6 @@ answering every item below. Collect violations first; then fix them in **one bou
       appears under `## Open questions` naming both readings, and the body grooms the source's
       reading. *(guide: same section.)*
 
-Both items above are **shape checks**: standalone `/groomie:review` has no ticket and no research
-sources, so it judges what the files say — it never re-verifies a claim or opens new research.
-
 ## Fixing (bounded — ONE pass)
 
 Fix violations directly in the `.md` **and** `.json` (keys stable, minimal edits, the

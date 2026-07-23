@@ -140,7 +140,10 @@ guide's *Verifying the ticket's claims* section; read it, then run this loop:
    derive from the ticket as the code bullet above says, but carry those assumptions as open
    questions and say so in one line.
 5. **A premise-breaking contradiction stops the groom and asks** — before you write anything, on
-   the guide's narrow bar only. Everything narrower is **groom-and-flag**. **When you can't ask**
+   the guide's narrow bar only, and **only when a source directly evidences the break**. If you
+   are *inferring* it (nothing found ≠ doesn't exist), **groom-and-flag** instead — a false stop
+   costs the user their whole breakdown, a flag costs one open question. Everything narrower is
+   groom-and-flag too. **When you can't ask**
    (dispatched as the `groomie` agent, or otherwise non-interactive) do **not** deadlock: groom the
    verified reading and lead `## Open questions` with that contradiction, marked premise-level.
 6. **Fan out bounded** when step 2 found subagents: only claims that need a real search are worth
@@ -153,8 +156,9 @@ guide's *Verifying the ticket's claims* section; read it, then run this loop:
    forbidden list).
 
 **Mode scaling.** `--stories` verifies the scope and behavior claims (does this behavior already
-exist? is the stated boundary true?) and needn't chase code-level ones; `--full` additionally
-verifies every technical claim a task would inherit.
+exist? is the stated boundary true?) **against its non-code sources** — links, docs, comments —
+keeping the mode's no-code-read promise; an unresolved one is an open question, not a code dive.
+`--full` additionally verifies every technical claim a task would inherit, against the code.
 
 ### 4. Groom
 
@@ -420,7 +424,8 @@ self-review layer for a revise); run this:
      touched** (edited/added nodes and any section it rewrote — an untouched story doesn't need
      re-scanning), with the same one-bounded-fix-pass rule as step 6 of a fresh groom.
 
-   Then print a short change summary (added / removed / edited / re-wired, by key) followed by the
+   Then print a short change summary (added / removed / edited / re-wired, by key — **plus
+   anything step 4's verification changed or flagged** on the content you added) followed by the
    updated markdown, and **end the message with the same closing block a fresh groom uses** (step
    5): the resolved location's file paths last, plus the nothing-written-to-Jira note.
 
