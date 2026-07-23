@@ -137,15 +137,13 @@ guide's *Verifying the ticket's claims* section; read it, then run this loop:
 4. **Act on the verdict** per the guide's table — confirmed ⇒ use it; contradicted ⇒ groom the
    **verified reality** and open a question naming both readings; unverifiable ⇒ never state it as
    fact. In the **text-only mode** (step 2 found no sources) nearly everything is unverifiable:
-   derive from the ticket as the code bullet above says, but carry those assumptions as open
-   questions and say so in one line.
+   derive from the ticket as the code bullet above says, and carry the lot as **one consolidated
+   open question** listing the assumptions — not one question per claim, which would bury the
+   breakdown — plus the one-line notice in item 7.
 5. **A premise-breaking contradiction stops the groom and asks** — before you write anything, on
-   the guide's narrow bar only, and **only when a source directly evidences the break**. If you
-   are *inferring* it (nothing found ≠ doesn't exist), **groom-and-flag** instead — a false stop
-   costs the user their whole breakdown, a flag costs one open question. Everything narrower is
-   groom-and-flag too. **When you can't ask**
-   (dispatched as the `groomie` agent, or otherwise non-interactive) do **not** deadlock: groom the
-   verified reading and lead `## Open questions` with that contradiction, marked premise-level.
+   the guide's narrow bar and under its two limits (**directly evidenced only**, and **never
+   deadlock when you can't ask** — as the `groomie` agent or any non-interactive session). Read
+   them there; everything short of that bar is **groom-and-flag**.
 6. **Fan out bounded** when step 2 found subagents: only claims that need a real search are worth
    one, related claims travel together — a ticket with a dozen claims is **~3–5 subagents, not a
    dozen** — and each returns just its verdict, evidence, and source. The ledger and the step-4
@@ -394,10 +392,10 @@ self-review layer for a revise); run this:
    prose edits (remove, rename, re-word, re-wire) stay **local**, no Jira/network round-trip. An
    unknown becomes an `## Open questions` entry — never an invented requirement. **New content is
    verified like fresh content:** a task you add states what the *code* shows, not what the revise
-   instruction's wording asserts — run step 3's loop **items 1–4** over its load-bearing claims
-   (list → verify → classify → act) and flag a contradicted or unverifiable one as an open question.
-   Items 5–7 don't apply here: a revise neither stops-and-asks nor prints the `Verification:` line —
-   step 7's change summary reports what the verification changed.
+   instruction's wording asserts — run step 3's **list → verify → classify → act** over its
+   load-bearing claims and flag a contradicted or unverifiable one as an open question. The loop's
+   other parts don't apply to a revise: **no stop-and-ask, no fan-out, no `Verification:` line** —
+   step 7's change summary is where the verification reports.
 5. **Keep keys and edges intact.**
    - **Keys are stable.** Never renumber an existing `E#`/`S#`/`T#`/`B#`. A removed key is **retired**
      — do not reuse it; a new node takes the next free number.

@@ -65,7 +65,9 @@ single given change under the same contract (stable keys, consistent edges, targ
 all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
 
 Return the groomed markdown, **ending with the skill's closing block** (the written file paths
-last, per the skill's step 5) — and nothing else (no summary, no TL;DR). Two **process blocks**
-are allowed alongside it, each exactly as the skill defines it (including its per-claim /
-per-key detail lines): step 3's `Verification: N claims checked — …` before the breakdown, and
-step 6's `Self-review: …` after it. Neither is ever a section inside the `.md`.
+last, per the skill's step 5) — and nothing else (no summary, no TL;DR). Alongside it you may emit
+only the **process blocks the skill itself defines**, exactly as it defines them (including their
+per-claim / per-key detail lines): on a **fresh groom**, step 3's
+`Verification: N claims checked — …` before the breakdown and step 6's `Self-review: …` after it;
+on a **revise**, the skill's change summary instead — a revise prints **no** `Verification:` line.
+None of them is ever a section inside the `.md`.

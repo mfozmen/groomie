@@ -392,8 +392,17 @@ verified reality makes the ticket moot or wrong-headed — the capability alread
 named system doesn't exist or was removed, the reported broken behavior isn't broken, or the work is
 already delivered elsewhere. Then Groomie stops **before** grooming and asks the user which reading
 to groom. A wrong table, endpoint, field name, placement, or ordering is **not** premise-breaking —
-groom the verified reading and flag it. Where the user can't be asked (a subagent run), groom the
-verified reading and lead `## Open questions` with the premise contradiction.
+groom the verified reading and flag it.
+
+Two limits keep that stop from misfiring, because a false stop costs the user their whole
+breakdown while a flag costs one open question:
+
+- **Only a source that *directly evidences* the break may stop a groom.** An **inferred** break
+  does not — *nothing found* is not *doesn't exist*, and an unfamiliar name is not a removed one.
+  Inference ⇒ groom-and-flag.
+- **Where the user can't be asked** (a subagent run, or any non-interactive session), never
+  deadlock: groom the verified reading and lead `## Open questions` with the premise contradiction,
+  marked premise-level.
 
 **NEVER give verification its own section.** No `## Verification`, no decisions/evidence table, no
 narrative that critiques or "refutes" the ticket (see *Output shape*'s closed section set and the
