@@ -64,6 +64,13 @@ or the legacy flat path) per the skill's lookup rule, apply the
 single given change under the same contract (stable keys, consistent edges, targeted edit), re-emit
 all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
 
+**If your prompt is an add-tasks instruction** (add the technical-task layer to an existing epic +
+stories breakdown — the stories→full upgrade) rather than a fresh groom, follow the skill's **"Add
+the tasks layer (`/groomie:tasks`)"** section instead of steps 2–3: load the existing breakdown per
+the skill's lookup rule, run the step-3 research/verify loop over the real code, **top up tasks only
+for stories that have no blocking task** (existing keys stable, mode flips to `full`), re-emit all
+three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
+
 Return the groomed markdown, **ending with the skill's closing block** (the written file paths
 last, per the skill's step 5) — and nothing else (no summary, no TL;DR). Alongside it you may emit
 only the **process blocks the skill itself defines**, exactly as it defines them (including their

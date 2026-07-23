@@ -427,6 +427,60 @@ self-review layer for a revise); run this:
    updated markdown, and **end the message with the same closing block a fresh groom uses** (step
    5): the resolved location's file paths last, plus the nothing-written-to-Jira note.
 
+## Add the tasks layer (`/groomie:tasks`)
+
+`/groomie:stories <KEY>` produces an epic + user stories and **stops** — no technical tasks. When
+the user later wants the tasks that build those exact stories **without re-grooming** (a fresh
+`/groomie <KEY>` overwrites everything and can reshuffle the stories), run `/groomie:tasks <KEY>`.
+It is the **stories → full upgrade**: it **adds** the tasks layer while keeping the epic and every
+story byte-for-byte. This is the **only** path that turns a stories breakdown into a full one
+without re-grooming; `--stories` mode itself is unchanged.
+
+It is a **revise-class flow** — load the existing breakdown, preserve keys and edges, re-emit the
+three files — not a fresh groom. Do NOT run steps 1–6; run this:
+
+1. **Resolve + guard.** Get the issue key. Locate `<KEY>/<KEY>-groomed.{md,json}` — folder first,
+   legacy-flat fallback, the **same resolver as revise/push**; both files must be present together
+   at one location. If the pair isn't found, **stop** and tell the user to run
+   `/groomie:stories <KEY>` (or `/groomie <KEY>`) first — never groom a fresh breakdown here.
+2. **Load the current state.** Read the `.md` and `.json` as one model (JSON = graph, MD = prose).
+   Note the existing `T#` keys and, per story, **whether it already has a blocking task** (a
+   `blocks` edge whose target is that story, i.e. the story's `Is blocked by:` list is non-empty).
+3. **Research & verify the code.** Run the **step 3** *Research & verify the feature* loop to the
+   full depth the environment allows — read the actual code so tasks are grounded in reality, and
+   verify every technical claim a task would inherit (contradictions and unverifiable claims become
+   `## Open questions`, exactly as a full groom). Tasks mode is not a structural edit; it needs the
+   same code research `--full` does, which is why it is a separate command from a plain revise.
+4. **Generate tasks for uncovered stories only — top-up.** For **every story that has no blocking
+   task**, produce the `[Discipline]` tasks that build it under the task-granularity rules
+   (`references/breakdown-guide.md` → *Technical tasks*): imperative `[Discipline] <verb …>` titles,
+   `Implementation` + `Done when`, split on repo/discipline, tests/in-repo docs inside the task. Wire
+   `Blocks:` (the story it enables — and any task→task sequencing) and `Is blocked by:` both ways,
+   and add the matching story-side `Is blocked by:` line. Honor the merged config (repo→discipline,
+   disciplines, granularity, output language). **Stories that already have a task are left exactly
+   as-is** — do not re-word or re-wire them. New tasks take the **next free `T#`**; a retired key is
+   never reused.
+5. **Flip the mode to `full`.** The breakdown now carries tasks, so set the JSON `mode` to `full`
+   and the version-stamp word to `full`. **If the breakdown is already `full`:** don't re-groom the
+   task layer — top up only the stories that still lack a task (if any) and keep mode `full`; if
+   **every** story already has a blocking task, change nothing and report *"already full — every
+   story has a task; nothing to add."*
+6. **Re-emit all three files** into the location step 1 resolved (folder or legacy-flat — not
+   unconditionally the folder): rewrite the `.md`, rewrite the `.json` (and its mermaid
+   `## Diagram`), and **regenerate the `.html`** with the same shell concat. Keys stable, MD
+   `Blocks:` / `Is blocked by:` and JSON edges in agreement, deduped — the revise re-emit rules
+   verbatim. Keep the version stamp (current version, mode now `full`).
+7. **Self-verify, then report the delta.** Same two layers as revise step 7: the **graph
+   invariants** (`node "$SKILL/scripts/check-graph.mjs"` on the resolved pair, best-effort — eyeball
+   if `node` can't run) and the **prose checklist** (`references/review-checklist.md`) over the
+   **added tasks** and any section rewritten, one bounded fix pass. Then print a short summary
+   (`added T# — <title>  blocks S# …`, plus anything the step-3 verification flagged) followed by the
+   updated markdown, and **end with the standard closing block** (step 5): the resolved location's
+   file paths last, plus the nothing-written-to-Jira note.
+
+Read-only against Jira. Run in the main thread (or dispatch the `groomie` agent); never a
+general-purpose subagent.
+
 ## Configure by conversation
 
 Groomie's per-project customization (`references/breakdown-guide.md` → *Per-project config*) is a

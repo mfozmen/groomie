@@ -160,11 +160,18 @@ allow), or plain "user" — Groomie never guesses a job title.
 /groomie PROJ-123            # full breakdown (default): epic + stories + tasks
 /groomie:full PROJ-123       # same, explicit
 /groomie:stories PROJ-123    # quick: epic + user stories only (behavior/scope, no tasks)
+/groomie:tasks PROJ-123      # add the tasks layer to a stories breakdown (stories → full)
 ```
 
 Pick the mode by **subcommand** (`/groomie:full`, `/groomie:stories`) or just run `/groomie`
 for the default full breakdown. Full reads the code to write accurate technical tasks; stories
 skips tasks for a faster, behavior-only pass. (The old `--full` / `--stories` flags still work.)
+
+Ran `/groomie:stories` first and now want the tasks that build those exact stories?
+**`/groomie:tasks PROJ-123`** is the upgrade: it reads the code, adds `[Discipline]` tasks for the
+stories that don't have one yet, wires the blockers, and leaves the epic and stories untouched —
+no re-groom, no reshuffle. It tops up only what's missing (idempotent), and flips the breakdown
+from stories to full.
 
 ### Revising a breakdown
 

@@ -1,6 +1,6 @@
 {
   "name": "groomie",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "Groom a messy single-feature Jira issue into a clean epic / user-story / technical-task breakdown, with tasks blocking stories. Outputs markdown.",
   "author": {
     "name": "Mehmet Fahri Özmen"
