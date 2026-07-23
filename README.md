@@ -221,6 +221,13 @@ node you removed from the breakdown gets a soft **`[deleted]`** prefix on its Ji
 **never hard-deletes or transitions** an issue, and never touches status, assignee, or sprint. It asks
 once whether to turn the source issue into the epic or create a fresh one.
 
+The pushed **epic carries the dependency map**: its description ends with a `### Dependency map`
+section — the same blocker graph as the breakdown, as a mermaid diagram — so the map lives on the
+epic itself and is refreshed on every push. It renders as a diagram where your Jira supports mermaid
+(a rendering app), and as a readable code block otherwise. (The interactive `.html` visualizer can't
+be embedded in Jira — the Atlassian MCP has no way to attach a file or image — so the map ships as
+text that always survives.)
+
 ## What the output looks like
 
 ```markdown

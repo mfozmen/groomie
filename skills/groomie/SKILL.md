@@ -573,6 +573,10 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
      bug→story link); prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
      local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
      status/assignee/sprint/other fields.
+   - **The epic's description ends with a `### Dependency map`** — the epic's blocker graph as a
+     fenced ```mermaid `flowchart TD` (the guide's *Fields* mapping + *Diagram (mermaid)* rules,
+     same renderer as the `.md`'s `## Diagram`). Because the whole epic description is rewritten on
+     every push, the map is regenerated each time and always reflects the current breakdown.
    - **After *every* Jira write that changes the ledger** — a created key added to `jira.pushed`, or
      an orphan's id added to `jira.tombstoned` — **save `<KEY>-groomed.json` to disk immediately**,
      before the next Jira call. Never batch these in memory to flush at the end: a mid-run failure
