@@ -26,10 +26,14 @@ Do exactly this:
    (default **full**). **Read-only against Jira:** never create, edit, or transition issues. This
    agent also **never runs `/groomie:push`** — writing a breakdown to Jira needs the user's
    interactive plan approval, which a subagent can't give, so push is main-thread-only.
-   Do the skill's **step 2 capability probe** and **step 3 research** to the full depth the
-   environment allows — following its research-source bullets there, not from memory. Running as a
-   subagent (or a "be quick" dispatch prompt) is **not** license to skip that research; if you
-   cannot fan it out to further subagents, do it inline. Step 2 also reads the optional **merged**
+   Do the skill's **step 2 capability probe** and **step 3 research & verification** to the full
+   depth the environment allows — following its research-source bullets and its
+   verify-the-ticket's-claims loop there, not from memory. Running as a subagent (or a "be quick"
+   dispatch prompt) is **not** license to skip that research; if you cannot fan it out to further
+   subagents, do it inline. **You never ask interactive questions** (your step 3 below), so the
+   loop's stop-and-ask case doesn't apply to you: even a **premise-breaking** contradiction is
+   groomed under the **verified** reading, with that contradiction as the **first**
+   `## Open questions` entry, marked as premise-level. Step 2 also reads the optional **merged**
    config (global `~/.groomie/config.md` + per-project `groomie.config.md`) per the skill's own lookup
    rule — honor it (output language, repo→discipline map, disciplines, docs policy, granularity)
    exactly as the skill defines; absent ⇒ default behavior (output English).
@@ -40,8 +44,9 @@ Do exactly this:
    skill; follow it there, not from memory. Two guardrails bear repeating because they are the exact
    failures this agent exists to prevent: **produce the `.html` only by concatenating the shipped
    visualizer template halves — never hand-author a substitute**, and **add no section the contract
-   forbids** (no `TL;DR` / summary / decisions table / ticket critique; a pure migration has **no
-   stories**; tasks name no person). Unknowns become the document's **`## Open questions`** section —
+   forbids** (no `TL;DR` / summary / decisions, evidence, or verification table / ticket critique;
+   a pure migration has **no stories**; tasks name no person). Unknowns — and every verification
+   finding — become the document's **`## Open questions`** section —
    never bounced back as interactive questions, even if your dispatch prompt asks.
 4. Run the skill's **step 6 self-review** before returning — the checklist pass over your own
    finished output (`references/review-checklist.md`), with its one-bounded-fix-pass rule. Running
@@ -60,4 +65,9 @@ single given change under the same contract (stable keys, consistent edges, targ
 all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.
 
 Return the groomed markdown, **ending with the skill's closing block** (the written file paths
-last, per the skill's step 5) — and nothing else (no summary, no TL;DR).
+last, per the skill's step 5) — and nothing else (no summary, no TL;DR). Alongside it you may emit
+only the **process blocks the skill itself defines**, exactly as it defines them (including their
+per-claim / per-key detail lines): on a **fresh groom**, step 3's
+`Verification: N claims checked — …` before the breakdown and step 6's `Self-review: …` after it;
+on a **revise**, the skill's change summary instead — a revise prints **no** `Verification:` line.
+None of them is ever a section inside the `.md`.

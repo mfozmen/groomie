@@ -364,11 +364,65 @@ task points) is a planned later addition. Do not surface this mode to end users 
   story and leave a bug open, or open a bug that blocks a story. So a bug has **no `affects`/edge** in
   the breakdown; it's just a standalone node under the epic.
 
+## Verifying the ticket's claims
+
+**The ticket is a claim, not truth.** The issues Groomie exists for are not just vague — they are
+often *wrong*: a renamed store, a capability that already ships, a scope boundary the code
+contradicts, a cause someone guessed at. Grooming a wrong claim launders it into stories and tasks
+that look authoritative. So every load-bearing claim is **checked before it is used** (the flow is
+SKILL.md step 3).
+
+**Load-bearing** means the breakdown would change if the claim were false: named systems /
+services / repos / tables / endpoints / fields, "X already exists / already works", a stated cause,
+a stated scope boundary, a stated dependency or ordering, a description of today's behavior. Trivia
+that changes nothing isn't worth verifying.
+
+**Source order** — code (when reachable) → linked issues / PRD / design docs → the issue's comments
+and changelog (later comments beat a stale description) → web for external or standards claims. **A
+ticket never verifies itself**, and neither does another ticket that merely repeats it.
+
+| Verdict | What the breakdown does |
+| --- | --- |
+| **Confirmed** | Use the claim. |
+| **Contradicted** | Groom the **verified reality** — never carry the ticket's wrong claim through — and add an open question naming **both** readings. |
+| **Unverifiable** | Never state it as fact in a task, AC, or the epic. Phrase the work so it doesn't depend on the unconfirmed specific, or make it an open question. |
+
+**Premise-breaking contradictions are the one stop-and-ask case, and the bar is narrow:** the
+verified reality makes the ticket moot or wrong-headed — the capability already exists as asked, the
+named system doesn't exist or was removed, the reported broken behavior isn't broken, or the work is
+already delivered elsewhere. Then Groomie stops **before** grooming and asks the user which reading
+to groom. A wrong table, endpoint, field name, placement, or ordering is **not** premise-breaking —
+groom the verified reading and flag it.
+
+Two limits keep that stop from misfiring, because a false stop costs the user their whole
+breakdown while a flag costs one open question:
+
+- **Only a source that *directly evidences* the break may stop a groom.** An **inferred** break
+  does not — *nothing found* is not *doesn't exist*, and an unfamiliar name is not a removed one.
+  Inference ⇒ groom-and-flag.
+- **Where the user can't be asked** (a subagent run, or any non-interactive session), never
+  deadlock: groom the verified reading and lead `## Open questions` with the premise contradiction,
+  marked premise-level.
+
+**NEVER give verification its own section.** No `## Verification`, no decisions/evidence table, no
+narrative that critiques or "refutes" the ticket (see *Output shape*'s closed section set and the
+anti-patterns in `examples.md`). Findings land in exactly two places: the **`## Open questions`**
+section, and a **one-line conversational summary** outside the document
+(`Verification: N claims checked — A confirmed, B contradicted, C unverifiable.`).
+
 ## Open questions
 
 Anything ambiguous in the source issue becomes an explicit open question — never a
 silently invented requirement. List them at the end so the user can resolve them before
-the work is filed.
+the work is filed. This is also where **verification findings** land — a contradicted claim names
+both readings; an unverifiable load-bearing claim names what could not be confirmed:
+
+```markdown
+- The ticket says saved views are stored in `search_prefs`, but the views repository writes them
+  to `user_views` — which store is authoritative?
+- The ticket assumes the export job already retries failed rows; nothing reachable in this session
+  confirms it — does it?
+```
 
 ## Output shape
 
@@ -483,9 +537,10 @@ technical migration, for example, is often just the epic + `## Tasks` + `## Open
 **Emit these sections and no others.** The allowed set is exactly: the `# Epic:` block (with its
 version-stamp line), `## Stories`, `## Tasks`, `## Bugs`, `## Open questions`, `## Diagram`. Do
 **not** add a `TL;DR` / executive summary / "the work, simplified", a `Locked decisions` /
-decisions / evidence / rationale table, an `Epic (context)` preamble, or any narrative that
-critiques, "refutes", or re-summarizes the ticket. Research shapes the *content* of the sections
-above; it is never a section of its own.
+decisions / evidence / rationale table, a `Verification` / claim-audit section, an
+`Epic (context)` preamble, or any narrative that critiques, "refutes", or re-summarizes the
+ticket. Research **and verification** shape the *content* of the sections above; neither is ever
+a section of its own.
 
 **Mode deltas** (see the skill's Modes section): in `--stories` mode omit the `## Tasks`
 section entirely; in `--estimate` mode each task carries an `**Estimate:**` line

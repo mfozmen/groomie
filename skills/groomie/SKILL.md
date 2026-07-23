@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows, and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ISSUE-KEY>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
+description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows — verifying the ticket's claims rather than trusting them — and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ISSUE-KEY>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
 ---
 
 # Groomie
@@ -34,8 +34,8 @@ bare `/groomie <ISSUE-KEY>`, which defaults to **full**. The `--full` / `--stori
 flags on `$ARGUMENTS` still select the mode (back-compat). If nothing selects a mode, use **full**.
 
 - **`--full`** (default) — epic + user stories + technical tasks. Do the deep research
-  (step 3: comments, links, and the actual code) needed to write accurate tasks. Produces
-  a sprint-ready breakdown.
+  (step 3: comments, links, the actual code, and the claim check) needed to write accurate
+  tasks. Produces a sprint-ready breakdown.
 - **`--stories`** — epic + user stories only, **no technical tasks**. Lighter and faster:
   you still research enough to understand the feature and its user-facing behavior, but
   you do not need to read the code to derive tasks. Use to see the behavior/scope quickly.
@@ -100,7 +100,12 @@ optional:** if a file is missing (or a section is), groom exactly as you do toda
 anything, say one line naming what it set. Apply it in step 4 per the guide's *Per-project config
 (`groomie.config.md`)* section — never let it introduce a hard dependency or block the groom.
 
-### 3. Research the feature
+### 3. Research & verify the feature
+
+**Treat the ticket as a claim, not as truth.** A messy issue is routinely *wrong*, not merely
+vague — it names a store that was renamed, asserts a capability that already ships, or fixes a
+scope boundary the code contradicts. So research has two jobs: understand the feature, **and
+check what the ticket asserts** before any of it hardens into a story or a task.
 
 Using what step 2 surfaced, dig until you understand the feature well enough to break it
 down honestly. When these inputs exist, using them is **not optional**:
@@ -120,8 +125,38 @@ down honestly. When these inputs exist, using them is **not optional**:
   questions.
 - Prefer delegating heavy searching to subagents; keep only the conclusions.
 
-Surface every contradiction you find — ticket-vs-code, or ticket-vs-other-tickets — as an
-open question. Never silently paper over it, and never invent the answer.
+**Then verify, before you groom.** The rules — what counts as load-bearing, the source order, the
+three verdicts, the narrow premise-breaking bar, and the never-its-own-section rule — live in the
+guide's *Verifying the ticket's claims* section; read it, then run this loop:
+
+1. **List the ticket's load-bearing claims** — the assertions the breakdown would silently inherit
+   (a claim is load-bearing only if a story, a task, or the epic's scope would change were it
+   false).
+2. **Verify each** against the guide's source order. The ticket never verifies itself.
+3. **Classify:** confirmed / contradicted / unverifiable.
+4. **Act on the verdict** per the guide's table — confirmed ⇒ use it; contradicted ⇒ groom the
+   **verified reality** and open a question naming both readings; unverifiable ⇒ never state it as
+   fact. In the **text-only mode** (step 2 found no sources) nearly everything is unverifiable:
+   derive from the ticket as the code bullet above says, and carry the lot as **one consolidated
+   open question** listing the assumptions — not one question per claim, which would bury the
+   breakdown — plus the one-line notice in item 7.
+5. **A premise-breaking contradiction stops the groom and asks** — before you write anything, on
+   the guide's narrow bar and under its two limits (**directly evidenced only**, and **never
+   deadlock when you can't ask** — as the `groomie` agent or any non-interactive session). Read
+   them there; everything short of that bar is **groom-and-flag**.
+6. **Fan out bounded** when step 2 found subagents: only claims that need a real search are worth
+   one, related claims travel together — a ticket with a dozen claims is **~3–5 subagents, not a
+   dozen** — and each returns just its verdict, evidence, and source. The ledger and the step-4
+   judgment stay yours. **No subagents ⇒ verify inline**, same rules, never a hard dependency.
+7. **Report one line** before the breakdown:
+   `Verification: N claims checked — A confirmed, B contradicted, C unverifiable.` plus a half-line
+   per contradicted claim. **Conversation, not document** — never a `.md` section (step 5's
+   forbidden list).
+
+**Mode scaling.** `--stories` verifies the scope and behavior claims (does this behavior already
+exist? is the stated boundary true?) **against its non-code sources** — links, docs, comments —
+keeping the mode's no-code-read promise; an unresolved one is an open question, not a code dive.
+`--full` additionally verifies every technical claim a task would inherit, against the code.
 
 ### 4. Groom
 
@@ -211,10 +246,12 @@ add a Fibonacci `Estimate:` to each task.
 6. `## Diagram`
 
 Emit **no other sections and no preamble.** Specifically **forbidden:** a `TL;DR` / executive
-summary / "the work, simplified", a `Locked decisions` / decisions / evidence / rationale table,
-an `Epic (context)` or any narrative that **critiques, "refutes", or re-summarizes the ticket.**
-Your research shapes the *content* of the sections above — it is never shown as its own narrative.
-A contradiction between the ticket and the code is an **open question**, never a commentary section.
+summary / "the work, simplified", a `Locked decisions` / decisions / evidence / rationale table, a
+`Verification` / claim-audit section, an `Epic (context)` or any narrative that **critiques,
+"refutes", or re-summarizes the ticket.**
+Your research and verification shape the *content* of the sections above — never shown as their own
+narrative. A contradiction between the ticket and the code is an **open question** (plus step 3's
+one-line conversational summary), never a commentary section.
 
 **Version stamp (every run).** Immediately under the first `# Epic:` heading (before its
 `**Description:**`; once per document, not per epic), emit one italic line so both you and the
@@ -353,7 +390,12 @@ self-review layer for a revise); run this:
 4. **Research only when the change needs new content** it can't derive locally — e.g. "add tasks to
    implement X" — using step 3's research sources (read the code/Jira, read-only). Pure structural or
    prose edits (remove, rename, re-word, re-wire) stay **local**, no Jira/network round-trip. An
-   unknown becomes an `## Open questions` entry — never an invented requirement.
+   unknown becomes an `## Open questions` entry — never an invented requirement. **New content is
+   verified like fresh content:** a task you add states what the *code* shows, not what the revise
+   instruction's wording asserts — run step 3's **list → verify → classify → act** over its
+   load-bearing claims and flag a contradicted or unverifiable one as an open question. The loop's
+   other parts don't apply to a revise: **no stop-and-ask, no fan-out, no `Verification:` line** —
+   step 7's change summary is where the verification reports.
 5. **Keep keys and edges intact.**
    - **Keys are stable.** Never renumber an existing `E#`/`S#`/`T#`/`B#`. A removed key is **retired**
      — do not reuse it; a new node takes the next free number.
@@ -380,7 +422,8 @@ self-review layer for a revise); run this:
      touched** (edited/added nodes and any section it rewrote — an untouched story doesn't need
      re-scanning), with the same one-bounded-fix-pass rule as step 6 of a fresh groom.
 
-   Then print a short change summary (added / removed / edited / re-wired, by key) followed by the
+   Then print a short change summary (added / removed / edited / re-wired, by key — **plus
+   anything step 4's verification changed or flagged** on the content you added) followed by the
    updated markdown, and **end the message with the same closing block a fresh groom uses** (step
    5): the resolved location's file paths last, plus the nothing-written-to-Jira note.
 
