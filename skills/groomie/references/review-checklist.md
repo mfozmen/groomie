@@ -71,7 +71,8 @@ answering every item below. Collect violations first; then fix them in **one bou
 
 - [ ] Sections are exactly the closed ordered set (epic block → `## Stories` → `## Tasks` →
       `## Bugs` → `## Open questions` → `## Diagram`), **empty sections omitted entirely** —
-      no TL;DR, no decisions table, no ticket critique.
+      no TL;DR, no decisions table, no ticket critique, **no `## Verification` section**
+      (verification findings live in `## Open questions`, not a section of their own).
 - [ ] Keys (`S#`/`T#`/`B#`) unique across the whole document; on a revise, retired keys are
       never reused or renumbered.
 - [ ] Mermaid `## Diagram` labels are each node's **own title verbatim** run through the
@@ -81,6 +82,12 @@ answering every item below. Collect violations first; then fix them in **one bou
       headings, the stamp) stays fixed.
 - [ ] Nothing invented: every claim traces to the ticket, its links, or the research;
       ambiguities live in `## Open questions`, not in silently-invented requirements.
+- [ ] **Nothing unverified stated as fact:** a load-bearing ticket claim in a task, AC, or the
+      epic is either verified against a source or carried in `## Open questions`.
+      *(guide: "Verifying the ticket's claims")*
+- [ ] **Contradictions follow the verified reading:** where the ticket and a source disagree, the
+      breakdown grooms what the source shows — the ticket's wrong claim isn't copied through —
+      and the disagreement is an open question naming both readings.
 
 ## Fixing (bounded — ONE pass)
 

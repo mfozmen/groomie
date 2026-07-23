@@ -59,7 +59,9 @@ can pick up, with its scope, its done-criteria, and its edges spelled out.
 - **Open questions** — anything the ticket leaves ambiguous or contradictory (scope ownership,
   unconfirmed placements, ticket-vs-code mismatches) becomes an explicit question at the end of
   the breakdown for you to resolve before filing — Groomie never papers over a gap with an
-  invented requirement.
+  invented requirement. This is also where **verification** lands: a ticket claim the code
+  contradicts is listed with both readings, and a load-bearing claim nothing could confirm is
+  listed as unconfirmed rather than quietly written in as fact.
 
 The whole breakdown is saved to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — each groom lands in its own
 per-issue folder named for the key, so repeated runs don't pile up loose in one directory — and
@@ -252,8 +254,12 @@ once whether to turn the source issue into the epic or create a fresh one.
 ## How it works
 
 1. **Fetch** the issue from Jira (summary, description, comments, history, links).
-2. **Research** the feature — following links and, when a codebase is reachable, reading the
-   actual code so tasks are grounded in reality.
+2. **Research & verify** — follow the links and, when a codebase is reachable, read the actual
+   code. The ticket's claims are treated as **unverified**: Groomie checks the load-bearing ones
+   against the code, the links, and the comments, grooms what is actually true rather than what
+   the ticket asserts, and turns contradictions into open questions — stopping to ask you only
+   when a contradiction invalidates the ticket's premise (the feature already exists, the named
+   system is gone, the "bug" isn't broken).
 3. **Groom** it into the epic / stories / tasks breakdown.
 4. **Save & print** the markdown (with a mermaid diagram), and write the JSON graph plus a
    standalone interactive `<ISSUE-KEY>-groomed.html` (offline, double-clickable) next to it — all

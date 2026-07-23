@@ -26,10 +26,15 @@ Do exactly this:
    (default **full**). **Read-only against Jira:** never create, edit, or transition issues. This
    agent also **never runs `/groomie:push`** — writing a breakdown to Jira needs the user's
    interactive plan approval, which a subagent can't give, so push is main-thread-only.
-   Do the skill's **step 2 capability probe** and **step 3 research** to the full depth the
-   environment allows — following its research-source bullets there, not from memory. Running as a
+   Do the skill's **step 2 capability probe** and **step 3 research & verification** to the full
+   depth the environment allows — following its research-source bullets and its
+   verify-the-ticket's-claims loop there, not from memory. Running as a
    subagent (or a "be quick" dispatch prompt) is **not** license to skip that research; if you
-   cannot fan it out to further subagents, do it inline. Step 2 also reads the optional **merged**
+   cannot fan it out to further subagents, do it inline. **You never ask interactive questions**
+   (your step 3 below), so the loop's stop-and-ask case doesn't apply to you: even a
+   **premise-breaking** contradiction is groomed under the **verified** reading, with that
+   contradiction as the **first** `## Open questions` entry, marked as premise-level.
+   Step 2 also reads the optional **merged**
    config (global `~/.groomie/config.md` + per-project `groomie.config.md`) per the skill's own lookup
    rule — honor it (output language, repo→discipline map, disciplines, docs policy, granularity)
    exactly as the skill defines; absent ⇒ default behavior (output English).
