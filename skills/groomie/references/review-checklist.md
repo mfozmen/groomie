@@ -80,16 +80,17 @@ answering every item below. Collect violations first; then fix them in **one bou
 - [ ] Under a configured `## Output language`, only human-readable content is translated —
       the contract skeleton (keys, `[Discipline]`, `Blocks:` / `Is blocked by:`, the fixed
       headings, the stamp) stays fixed.
-- [ ] Nothing invented: every claim traces to the ticket, its links, or the research;
-      ambiguities live in `## Open questions`, not in silently-invented requirements.
-- [ ] **Nothing unverified stated as fact:** no task, AC, or epic line asserts a specific
-      system / table / endpoint / field, or an "already works" claim, that isn't traceable to
-      the ticket, its links, the research, or `## Open questions`.
-      *(guide: "Verifying the ticket's claims")*
+- [ ] Nothing invented **and nothing unverified stated as fact**: every claim — including each
+      specific system / table / endpoint / field and every "already works" assertion — traces to
+      the ticket, its links, or the research; ambiguities and unconfirmed claims live in
+      `## Open questions`, not in silently-invented requirements.
+      *(guide: "Open questions", "Verifying the ticket's claims")*
 - [ ] **Contradictions read as both-sided open questions** — a ticket-vs-source disagreement
       appears under `## Open questions` naming both readings, and the body grooms the source's
-      reading. *(guide: same section. Standalone `/groomie:review` has no sources — check the
-      shape of what's there; never re-verify or research.)*
+      reading. *(guide: same section.)*
+
+Both items above are **shape checks**: standalone `/groomie:review` has no ticket and no research
+sources, so it judges what the files say — it never re-verifies a claim or opens new research.
 
 ## Fixing (bounded — ONE pass)
 

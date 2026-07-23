@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows — treating the ticket's claims as unverified and checking them against the code, links, and comments before grooming — and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ISSUE-KEY>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
+description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows — verifying the ticket's claims rather than trusting them — and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ISSUE-KEY>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
 ---
 
 # Groomie
@@ -35,8 +35,7 @@ flags on `$ARGUMENTS` still select the mode (back-compat). If nothing selects a 
 
 - **`--full`** (default) — epic + user stories + technical tasks. Do the deep research
   (step 3: comments, links, the actual code, and the claim check) needed to write accurate
-  tasks. Produces
-  a sprint-ready breakdown.
+  tasks. Produces a sprint-ready breakdown.
 - **`--stories`** — epic + user stories only, **no technical tasks**. Lighter and faster:
   you still research enough to understand the feature and its user-facing behavior, but
   you do not need to read the code to derive tasks. Use to see the behavior/scope quickly.
@@ -126,57 +125,36 @@ down honestly. When these inputs exist, using them is **not optional**:
   questions.
 - Prefer delegating heavy searching to subagents; keep only the conclusions.
 
-**Then verify, before you groom.** Run this loop; the full rule text lives in the guide's
-*Verifying the ticket's claims* section:
+**Then verify, before you groom.** The rules — what counts as load-bearing, the source order, the
+three verdicts, the narrow premise-breaking bar, and the never-its-own-section rule — live in the
+guide's *Verifying the ticket's claims* section; read it, then run this loop:
 
-1. **List the ticket's load-bearing claims** — the assertions the breakdown would silently
-   inherit: named systems / services / repos / tables / endpoints / fields; "X already exists /
-   already works"; the stated cause of a bug; a stated scope boundary ("no UI change needed");
-   a stated dependency or ordering; a stated description of how the product behaves today. A
-   claim is **load-bearing only if a story, a task, or the epic's scope would change were it
-   false** — don't audit trivia.
-2. **Verify each against the best source available**, in the guide's order — **code** (when
-   reachable) → **links** (PRD / design docs / sibling issues) → the issue's own **comments and
-   changelog** → the **web** for external or standards claims. **The ticket's own prose never
-   verifies itself**, and neither does a restatement of it in another ticket.
-3. **Classify each claim: confirmed / contradicted / unverifiable.**
-4. **Act on the verdict.**
-   - **Confirmed** → use it.
-   - **Contradicted** → groom against the **verified reality**, never the ticket's wrong claim,
-     and record an `## Open questions` entry naming **both** readings ("the ticket says X;
-     `<source>` shows Y — which is authoritative?").
-   - **Unverifiable** → never state it as fact in a task, AC, or the epic. Either phrase the
-     work so it doesn't depend on the unconfirmed specific, or raise it as an open question. In
-     the text-only mode most claims land here — say so in one line rather than implying they
-     were checked.
-5. **A premise-breaking contradiction stops the groom and asks — before you write anything.**
-   Premise-breaking is **narrow**: the verified reality makes the ticket moot or wrong-headed —
-   the capability **already exists as asked**, the system/component it names **doesn't exist or
-   was removed**, the reported broken behavior **isn't broken**, or the work is **already
-   delivered elsewhere**. State the evidence and both readings in 2–3 lines, ask the user which
-   to groom, then continue with their answer. Anything narrower (wrong table, wrong endpoint,
-   stale field name, wrong placement, wrong ordering) is **groom-and-flag** — never stop for
-   those. **When the session can't ask** — dispatched as the `groomie` agent, or otherwise
-   non-interactive — do **not** deadlock: groom under the verified reading and make that
-   contradiction the **first** `## Open questions` entry, marked as premise-level.
-6. **Fan verification out to subagents when step 2 found them** — but **bounded**: only claims
-   that need a real search are worth a subagent, and related claims travel together, so a ticket
-   with a dozen claims is **~3–5 subagents, not a dozen**. Each returns only its verdict, the
-   evidence, and the source it checked. Keep the verdict ledger here; the classification and the
-   step-4 judgment stay yours. Optional like every research capability: **no subagents ⇒ verify
-   inline**, same rules — never a hard dependency.
-7. **Report one line** when the loop finishes, before the breakdown:
-   `Verification: N claims checked — A confirmed, B contradicted, C unverifiable.` followed by
-   a half-line per contradicted claim. This is **conversation, not document** — the breakdown's
-   section contract is unchanged: **never** add a verification / decisions / evidence section to
-   the `.md` (step 5's forbidden list).
+1. **List the ticket's load-bearing claims** — the assertions the breakdown would silently inherit
+   (a claim is load-bearing only if a story, a task, or the epic's scope would change were it
+   false).
+2. **Verify each** against the guide's source order. The ticket never verifies itself.
+3. **Classify:** confirmed / contradicted / unverifiable.
+4. **Act on the verdict** per the guide's table — confirmed ⇒ use it; contradicted ⇒ groom the
+   **verified reality** and open a question naming both readings; unverifiable ⇒ never state it as
+   fact. In the **text-only mode** (step 2 found no sources) nearly everything is unverifiable:
+   derive from the ticket as the code bullet above says, but carry those assumptions as open
+   questions and say so in one line.
+5. **A premise-breaking contradiction stops the groom and asks** — before you write anything, on
+   the guide's narrow bar only. Everything narrower is **groom-and-flag**. **When you can't ask**
+   (dispatched as the `groomie` agent, or otherwise non-interactive) do **not** deadlock: groom the
+   verified reading and lead `## Open questions` with that contradiction, marked premise-level.
+6. **Fan out bounded** when step 2 found subagents: only claims that need a real search are worth
+   one, related claims travel together — a ticket with a dozen claims is **~3–5 subagents, not a
+   dozen** — and each returns just its verdict, evidence, and source. The ledger and the step-4
+   judgment stay yours. **No subagents ⇒ verify inline**, same rules, never a hard dependency.
+7. **Report one line** before the breakdown:
+   `Verification: N claims checked — A confirmed, B contradicted, C unverifiable.` plus a half-line
+   per contradicted claim. **Conversation, not document** — never a `.md` section (step 5's
+   forbidden list).
 
 **Mode scaling.** `--stories` verifies the scope and behavior claims (does this behavior already
 exist? is the stated boundary true?) and needn't chase code-level ones; `--full` additionally
 verifies every technical claim a task would inherit.
-
-Every contradiction you find — ticket-vs-code, ticket-vs-comments, or ticket-vs-other-tickets —
-ends up as an open question. Never silently paper over one, and never invent the answer.
 
 ### 4. Groom
 
@@ -412,8 +390,10 @@ self-review layer for a revise); run this:
    prose edits (remove, rename, re-word, re-wire) stay **local**, no Jira/network round-trip. An
    unknown becomes an `## Open questions` entry — never an invented requirement. **New content is
    verified like fresh content:** a task you add states what the *code* shows, not what the revise
-   instruction's wording asserts — run step 3's verification loop over its load-bearing claims before
-   writing it, and flag a contradicted or unverifiable one as an open question.
+   instruction's wording asserts — run step 3's loop **items 1–4** over its load-bearing claims
+   (list → verify → classify → act) and flag a contradicted or unverifiable one as an open question.
+   Items 5–7 don't apply here: a revise neither stops-and-asks nor prints the `Verification:` line —
+   step 7's change summary reports what the verification changed.
 5. **Keep keys and edges intact.**
    - **Keys are stable.** Never renumber an existing `E#`/`S#`/`T#`/`B#`. A removed key is **retired**
      — do not reuse it; a new node takes the next free number.

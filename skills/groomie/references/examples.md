@@ -193,8 +193,8 @@ changes **no** user-facing behavior. Every item below is a real failure mode; th
 shape. (Synthetic example — a generic "snapshot legacy records into the primary store" migration.)
 
 - **A TL;DR / executive summary / "the work, simplified" / decisions, evidence, or verification
-  table.** ❌ Only
-  the contracted sections exist (epic → stories? → tasks → bugs? → open questions → diagram).
+  table.** ❌ Only the contracted sections exist (epic → stories? → tasks → bugs? → open
+  questions → diagram).
   Research **and verification** shape the *content*; neither is ever its own narrative, and the doc
   never critiques, "refutes", or re-summarizes the ticket. ✅ A claim the code contradicts is one
   `## Open questions` line naming both readings.
