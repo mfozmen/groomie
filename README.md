@@ -40,6 +40,55 @@ JSON graph for tooling and agents. A well-groomed breakdown is what makes agent-
 development actually workable — each task becomes a bounded work item an agent (or a person)
 can pick up, with its scope, its done-criteria, and its edges spelled out.
 
+## Why an epic has to be closeable
+
+Teams open epics that can never be finished. `Authentication`. `Payments`. `Platform`. `Mobile`.
+They look like tidy containers, and they never close — because they were never a body of work in
+the first place, only a **topic**. The rule that separates the two is blunt: **if it can never be
+marked done, it's a theme, not an epic — split it.**
+
+An epic **is** the feature: a coherent chunk of work that can realistically be completed in a
+defined timeframe. A few sprints, not "forever".
+
+### What a never-closing epic costs you
+
+- **Progress stops meaning anything.** "Authentication is 60% done" is noise when the denominator
+  keeps growing. Burndown, velocity, and every forecast built on them inherit the lie.
+- **It becomes a dumping ground.** An open-ended epic attracts anything vaguely related. Scope
+  doesn't creep so much as *accumulate*, permanently, because there's no natural moment to say no.
+- **Nobody can answer "are we done?"** With no definition of done at feature level, the question
+  gets settled by opinion — a different opinion per person, every time it's asked.
+- **You can't sequence it.** Planning needs an end to schedule against. Something with no end
+  can't be committed to a release, a quarter, or anyone else's dependency chain.
+- **Ownership evaporates.** An eternal epic outlives the people who opened it. Two reorgs later
+  nobody remembers what "done" was supposed to look like, and nobody feels responsible for it.
+- **The team never learns.** Estimate-versus-actual is the main feedback loop planning has. An
+  epic that never closes never produces that comparison, so estimates never get better.
+- **Nothing ships as a unit.** You can't release "Payments". You can release "Add Refunds to the
+  Checkout Flow".
+
+### What a closeable epic looks like
+
+- **One epic = one feature**, closeable on its own. Use more than one only when the work genuinely
+  spans **separate, independently closeable features** — and a second *Infrastructure* epic only
+  for substantial groundwork (standing up a whole new service), never for small setup, which is
+  just a task.
+- **The title leads with a verb**, in Title Case, so it names the *work* instead of the topic:
+  `Add` / `Support` / `Enable` for a new capability, `Change` / `Migrate` for changing existing
+  behavior, `Remove` for a removal. The title alone should tell you what is in scope **and when
+  it is finished**:
+  - ✅ `Enable Traditional Authentication`, `Add SSO Login`, `Support Book Discovery Search`
+  - ❌ `Traditional Authentication`, `Book Discovery System` — bounded, but a label; front it with a verb
+  - ❌ `Authentication`, `Books`, `User System`, `Platform` — bare *and* open-ended; these never close
+- **The body is two lines:** what it implements, and why it matters (plus a design link when one
+  exists). No acceptance criteria — those belong to the stories. No inline task list — those are
+  separate issues underneath it.
+
+Groomie produces exactly this shape: one epic per feature, a verb-led Title Case name, a body of
+Description + Business Value (plus a Design link when research finds one), and no acceptance
+criteria smuggled onto the epic. If your issue genuinely spans two independent features, it says
+so and emits two epics rather than one bucket.
+
 ## Why user stories carry the sprint
 
 The story layer is the first thing teams skip. It looks like paperwork — the epic already names
