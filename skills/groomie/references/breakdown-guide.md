@@ -161,11 +161,21 @@ blocker). Bugs are QA-tested whether they are technical or not.
   - **Test Cases** — required. Concrete `input → expected result` scenarios, including the
     key failure cases (invalid input, duplicates, edge conditions).
 - **One responsibility per story — follow INVEST.** Each story is Independent, Negotiable,
-  Valuable, Estimable, Small, and Testable, and covers **exactly one user capability**. If a
-  story bundles two things — "edit **or** delete", "create **and** manage" — split it into
-  separate stories (one to edit, one to delete). **Split whenever each resulting story stays
-  independently valuable and testable** — but don't shatter one capability into
-  non-independent slivers. A story needing a dozen tasks is really several stories.
+  Valuable, Estimable, Small, and Testable, and covers **exactly one user capability**. **Split
+  whenever each resulting story stays independently valuable and testable** — but don't shatter
+  one capability into non-independent slivers. A story needing a dozen tasks is really several
+  stories. A story bundles in **two** ways, and both need splitting:
+  - **Two actions** — "edit **or** delete", "create **and** manage". Split one per action.
+  - **Two surfaces / scopes / entry points** — the tell is `in both … and …`, `across … and …`,
+    `for both … and …`. **The verb being singular does not make it one story**: the same
+    capability delivered on two separate surfaces is two stories whenever each ships and is
+    tested on its own.
+    - ❌ "As a user, I want to add dynamic content in both the visual and HTML editors, so
+      that …" — one verb, two surfaces.
+    - ✅ one story per editor.
+    - The exception is real but narrow: if shipping one surface alone would be a broken or
+      partial feature you would never release, it is **one** story delivered by two tasks —
+      splitting there would produce a story that cannot ship independently.
 - Each story states **`Is blocked by:`** the tasks that build it — **one reference per line
   as `- <key> — <title>`** (title-carrying, not the bare key; a per-line list stays
   unambiguous even though the titles contain commas). This is Jira's "is blocked by" link:
