@@ -49,7 +49,10 @@ answering every item below. Collect violations first; then fix them in **one bou
       *(guide: "User stories" → the persona priority rule)*
 - [ ] Title is the full sentence `As a <role>, I want <capability>, so that <benefit>.` —
       comma before *so that*, period at the end, within Jira's 255-char summary limit.
-- [ ] Each story = **one** capability (INVEST) — no "edit **or** delete" bundles.
+- [ ] Each story = **one** capability (INVEST). Two bundling shapes to catch: **two actions**
+      ("edit **or** delete") **and two surfaces/scopes** (`in both … and …`, `across … and …`) —
+      a single verb does **not** make it one story. Split unless shipping one alone would be a
+      partial feature. *(guide: "User stories" → One responsibility per story)*
 - [ ] Every story that exists is a genuine user-facing behavior change — no technical
       outcomes dressed as stories; a story-less epic has **no** `## Stories` section at all.
 - [ ] Body carries description → **Acceptance Criteria** → **Test Cases** (both required;
