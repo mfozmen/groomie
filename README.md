@@ -48,7 +48,28 @@ the first place, only a **topic**. The rule that separates the two is blunt: **i
 marked done, it's a theme, not an epic — split it.**
 
 An epic **is** the feature: a coherent chunk of work that can realistically be completed in a
-defined timeframe. A few sprints, not "forever".
+defined timeframe. A few sprints, not "forever". Atlassian's own vocabulary makes the same
+distinction — an epic is a body of work that breaks down into stories, while a **theme** is a
+categorisation/labelling mechanism ([Epics, Stories, and
+Initiatives](https://www.atlassian.com/agile/project-management/epics-stories-themes)). Most
+never-closing epics are themes that were filed as epics.
+
+### The buckets teams file as epics
+
+Nearly every unclosable epic is one of four shapes. None of them is a body of work:
+
+| Bucket | What you'll see | Why it can never close | Do this instead |
+|---|---|---|---|
+| **Category** | `Tech Debt`, `Bugs`, `Bug Fixes`, `Improvements`, `Maintenance`, `Refactoring`, `Chores` | Work of that *kind* keeps arriving, by definition. It's a backlog wearing an epic's clothes. | Use a label or component for reporting. Promote the real items: `Migrate the Report Service off the Legacy Queue` is an epic — `Tech Debt` never will be. |
+| **Team / component** | `Platform`, `Backend`, `Mobile App`, `Infrastructure`, `Design System` | Named after who owns it or what it runs on, not what gets delivered — and the team doesn't stop existing. | Name the delivery: `Add Offline Mode to the Mobile App`. |
+| **Time** | `Q3 Roadmap`, `Sprint 42`, `2026 Planning`, `H1 Goals` | Closes by calendar rather than completion, so whatever is unfinished silently rolls into the next one. | Let the sprint/version fields carry time; the epic carries the feature. |
+| **Topic** | `Authentication`, `Payments`, `Search`, `Notifications` | A domain the product will keep having for as long as it exists. | Narrow it to one delivery inside the domain: `Enable Traditional Authentication`. |
+
+**`Tech Debt` and `Bugs` are the two you'll meet most often, and they do the most damage.** They
+aren't merely unclosable — they're permanently open queues, so everything filed inside them is
+invisible to planning: no end date, no scope, no completion signal, forever. A bug is an issue,
+not an epic (in Groomie's model bugs are epic *children*, QA-tested alongside the stories). A debt
+item is a task — or, when it's genuinely large, its own epic that names the migration and ends.
 
 ### What a never-closing epic costs you
 
@@ -97,6 +118,15 @@ the feature, the tasks already say what to build, so why write `As a user, I wan
 Because a story isn't documentation. It's the **boundary between what the user needs and how it
 gets built** — and it's the only artifact the whole team can agree on without reading code. Take
 that boundary away and the cost doesn't disappear. It moves into your sprint.
+
+The canonical shape — `As a <role>, I want <capability>, so that <benefit>.` — and the reason it's
+written from the user's perspective rather than the system's are covered well in Atlassian's own
+guide ([User Stories With Examples and a
+Template](https://www.atlassian.com/agile/project-management/user-stories)). The quality bar most
+teams mean when they say "a good story" is **INVEST**: Independent, Negotiable, Valuable,
+Estimable, Small, Testable ([Bill Wake,
+2003](https://xp123.com/invest-in-good-stories-and-smart-tasks/)). Groomie applies the INVEST split
+rule directly — a story bundling two capabilities ("edit **or** delete") becomes two stories.
 
 ### What a missing story layer costs you
 
@@ -157,6 +187,58 @@ Groomie's part is only the structure: stories that stay behavioral, tasks that c
 explicit `blocks` edges between them. Who reviews, gates, and signs off what is your team's
 process — and the parts Groomie can adapt to it live in
 [`groomie.config.md`](#configuration-optional).
+
+## Why a task is a unit of delivery, not a step
+
+If the story is the *what*, the task is the **how** — and it's the layer teams get wrong in both
+directions at once: split into too many pieces, and sliced along the wrong lines.
+
+A task is one coherent piece of work **that one discipline can ship on its own**. Not a step in a
+checklist, and not a whole feature either. The classic formulation is Bill Wake's **SMART** —
+Specific, Measurable, Achievable, Relevant, Time-boxed — the task-level companion to INVEST for
+stories ([INVEST in Good Stories, and SMART
+Tasks](https://xp123.com/invest-in-good-stories-and-smart-tasks/)).
+
+### The task splits that cost you
+
+- **`Tests` as its own task.** The single most expensive habit on this list. A separate test task
+  is the first thing dropped when the sprint tightens — so the code ships and the tests don't.
+  Tests belong *inside* the task that writes the code, recorded in its done-criteria.
+- **`Documentation` as its own task.** Same failure, same fix — in-repo docs are part of the work.
+  (Docs that live *outside* the repo, e.g. a Confluence page a process mandates, are a genuine
+  exception: a separate deliverable in another system.)
+- **Micro-tasks for one responsibility.** `Create the table` → `Add the index` → `Write the model`
+  → `Add the endpoint` → `Add validation`. That's five branches, five PRs, five pipelines, five
+  reviews for what one backend engineer ships in one pass. CI overhead is real; every task has to
+  be worth its own cycle.
+- **Process steps filed as tasks.** `Code review`, `Merge to main`, `Deploy`, `Regression test`.
+  These are stages your workflow already models — as tasks they inflate the board and measure
+  nothing.
+- **Coordination and sign-off tasks.** `T0 — Decision & coordination`, `Get approval from <name>`.
+  Nobody can *build* these. An unresolved decision is an **open question**, not a work item — and
+  naming a person makes the task stale the moment they move teams.
+- **Vague notes as titles.** `Backend work`, `Frontend changes`. A title should be an instruction:
+  `[Backend] Implement the password-reset endpoints`.
+- **A task that blocks nothing.** If no story needs it, either a story is missing or the task is
+  out of scope. Worth catching either way.
+
+### What a well-sized task looks like
+
+- **`[Discipline] <imperative action>`** — the prefix routes the work to the producing team
+  without relying on Jira fields; the verb makes it an instruction rather than a note.
+- **One responsibility, sized to real delivery.** Split where work needs **separate ownership,
+  review, or CI** — a different repo or a different discipline is always its own task. Don't split
+  below that: schema + the endpoints that use it + their tests, same repo and discipline, is
+  **one** task, not four.
+- **Tests and in-repo docs live in its done-criteria**, never as separate tasks.
+- **Body is Implementation + Done when** — concrete steps the engineer can follow without
+  re-deriving the design, and the conditions that make it finished. Tasks carry *done-criteria*,
+  not test cases, because **tasks aren't QA-tested** — stories and bugs are.
+- **Wired both ways** — what it `Blocks:` and what it's `Is blocked by:`. One foundational task
+  can block many stories; that's the signal that tells you what to build first.
+- **A sibling of the story, not a subtask of it.** Stories and tasks sit side by side under the
+  epic, joined by `blocks` — which is what lets QA own the story layer while engineering owns the
+  task layer.
 
 ## What you get
 
@@ -399,6 +481,20 @@ text that always survives.)
 5. **Self-review** the finished output against the grooming contract (the leak scan, shapes,
    sections, diagram), fix violations in one bounded pass, and close the message with the saved
    file paths.
+
+## Further reading
+
+The three-layer model Groomie produces isn't invented here — it's the standard agile breakdown,
+and these are the sources worth reading if you want the reasoning in full:
+
+- [Epics, Stories, and Initiatives](https://www.atlassian.com/agile/project-management/epics-stories-themes) — Atlassian's hierarchy, and the epic-vs-theme distinction that most never-closing epics fall foul of.
+- [Agile epics: definition, examples, and templates](https://www.atlassian.com/agile/project-management/epics) — Atlassian on what an epic is and how it breaks into stories.
+- [User Stories With Examples and a Template](https://www.atlassian.com/agile/project-management/user-stories) — Atlassian on the `As a … I want … so that …` form and why stories stay user-facing.
+- [INVEST in Good Stories, and SMART Tasks](https://xp123.com/invest-in-good-stories-and-smart-tasks/) — Bill Wake (2003), the origin of both quality bars: **INVEST** for stories, **SMART** for tasks.
+
+Jira's own hierarchy is Epic → Story/Task → Sub-task; Groomie deliberately makes tasks **siblings**
+of stories rather than sub-tasks, so a task can block several stories and QA can own the story
+layer independently.
 
 ---
 
