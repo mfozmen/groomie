@@ -87,8 +87,8 @@ often carries placement, field names, or flow ordering; grooming translates thos
 behavior, it never copies them into a story:
 
 - Menu / navigation placement is design's decision — name the capability, not where it lives:
-  - ❌ `As a shopper, I want to manage saved search filters under Account → Preferences → Saved Filters, so that …`
-  - ✅ `As a shopper, I want to manage my saved search filters, so that I can reuse them across visits.`
+  - ❌ `As a shopper, I want to reuse saved search filters under Account → Preferences → Saved Filters, so that …`
+  - ✅ `As a shopper, I want to reuse my saved search filters, so that I don't rebuild them on every visit.`
 - Technical field / parameter names never enter an AC — state the capability they grant:
   - ❌ "Saving a filter set requires setting `sort_key` (+ asc/desc) and `max_items`"
   - ✅ "The shopper controls the order of saved sets and caps how many are kept"

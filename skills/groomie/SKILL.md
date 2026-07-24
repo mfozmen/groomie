@@ -181,8 +181,9 @@ Core rules (full detail in the guide):
   config's `## Personas` when defined, else a name the source actually uses (the ticket, its
   docs, or roles found in the project's already-filed stories — research opportunistically),
   else generic `user` (the guide's persona rule). **One responsibility per story (INVEST) — split a
-  compound story (e.g. "edit or delete") into separate stories whenever each part stays
-  independently valuable and testable.** Body carries required **Acceptance Criteria** and **Test Cases**, plus **`Is blocked
+  compound story into separate stories whenever each part stays independently valuable and
+  testable. A story bundles two ways: by action ("edit or delete") and by surface/scope ("in both
+  the X and Y editors") — a single verb does not make it one story.** Body carries required **Acceptance Criteria** and **Test Cases**, plus **`Is blocked
   by:`** the tasks that build it (one per line as `- <key> — <title>`). QA tests stories. **Only write
   stories when the feature changes user-facing behavior** — a pure technical
   migration/refactor/infra epic has **no stories**. Not every epic has stories; never force one.
