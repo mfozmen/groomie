@@ -160,11 +160,18 @@ allow), or plain "user" — Groomie never guesses a job title.
 /groomie PROJ-123            # full breakdown (default): epic + stories + tasks
 /groomie:full PROJ-123       # same, explicit
 /groomie:stories PROJ-123    # quick: epic + user stories only (behavior/scope, no tasks)
+/groomie:tasks PROJ-123      # add the tasks layer to a stories breakdown (stories → full)
 ```
 
 Pick the mode by **subcommand** (`/groomie:full`, `/groomie:stories`) or just run `/groomie`
 for the default full breakdown. Full reads the code to write accurate technical tasks; stories
 skips tasks for a faster, behavior-only pass. (The old `--full` / `--stories` flags still work.)
+
+Ran `/groomie:stories` first and now want the tasks that build those exact stories?
+**`/groomie:tasks PROJ-123`** is the upgrade: it reads the code, adds `[Discipline]` tasks for the
+stories that don't have one yet, wires the blockers, and leaves the epic and stories untouched —
+no re-groom, no reshuffle. It tops up only what's missing (idempotent), and flips the breakdown
+from stories to full.
 
 ### Revising a breakdown
 
@@ -213,6 +220,13 @@ Groomie remembers what it created (a ledger inside the `.json`), so it **never m
 node you removed from the breakdown gets a soft **`[deleted]`** prefix on its Jira title — Groomie
 **never hard-deletes or transitions** an issue, and never touches status, assignee, or sprint. It asks
 once whether to turn the source issue into the epic or create a fresh one.
+
+The pushed **epic carries the dependency map**: its description ends with a `### Dependency map`
+section — the same blocker graph as the breakdown, as a mermaid diagram — so the map lives on the
+epic itself and is refreshed on every push. It renders as a diagram where your Jira supports mermaid
+(a rendering app), and as a readable code block otherwise. (The interactive `.html` visualizer can't
+be embedded in Jira — the Atlassian MCP has no way to attach a file or image — so the map ships as
+text that always survives.)
 
 ## What the output looks like
 
