@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/mfozmen/groomie/compare/v0.17.0...v0.18.0) (2026-07-24)
+
+### Features
+
+* **groomie:** /groomie:tasks + dependency-map section on push ([#53](https://github.com/mfozmen/groomie/issues/53)) ([9bd671c](https://github.com/mfozmen/groomie/commit/9bd671cd882f9d3e5f05a1e79cbf042321baa892))
+* **groomie:** verify the ticket's claims before grooming ([#52](https://github.com/mfozmen/groomie/issues/52)) ([048c73d](https://github.com/mfozmen/groomie/commit/048c73dd875df29f333ad4e131ac072f4ae2bf6a))
+
 ## [0.17.0](https://github.com/mfozmen/groomie/compare/v0.16.0...v0.17.0) (2026-07-17)
 
 ### Features
