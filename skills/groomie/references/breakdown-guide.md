@@ -46,6 +46,12 @@ blocker). Bugs are QA-tested whether they are technical or not.
   - ✅ "Enable Traditional Authentication", "Add SSO Login", "Support Book Discovery Search"
   - ❌ "Traditional Authentication", "Book Discovery System" (bounded, but a label — front it with a verb)
   - ❌ "Authentication", "Books", "User System", "Platform" (bare *and* open-ended — never close)
+  - ❌ **Bucket epics — never emit one.** A container that new work keeps arriving into is a theme,
+    not an epic: a **category** ("Tech Debt", "Bugs", "Improvements", "Maintenance", "Refactoring"),
+    a **team/component** ("Platform", "Backend", "Mobile App", "Design System"), or a **time box**
+    ("Q3 Roadmap", "Sprint 42"). If the source issue is one of these, it is not a single feature —
+    groom the actual feature inside it, and raise the rest as an open question rather than
+    reproducing the bucket.
 - **Body:** two required lines — `**Description:**` (what it implements, one sentence)
   and `**Business Value:**` (why it matters, one sentence) — plus an optional
   `**Design:**` line linking the Figma / mockups **when research surfaces them** (omit the
