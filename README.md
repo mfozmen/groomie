@@ -40,7 +40,7 @@ JSON graph for tooling and agents. A well-groomed breakdown is what makes agent-
 development actually workable — each task becomes a bounded work item an agent (or a person)
 can pick up, with its scope, its done-criteria, and its edges spelled out.
 
-## Why an epic has to be closeable
+## Why epics must close
 
 Teams open epics that can never be finished. `Authentication`. `Payments`. `Platform`. `Mobile`.
 They look like tidy containers, and they never close — because they were never a body of work in
@@ -110,7 +110,7 @@ Description + Business Value (plus a Design link when research finds one), and n
 criteria smuggled onto the epic. If your issue genuinely spans two independent features, it says
 so and emits two epics rather than one bucket.
 
-## Why user stories carry the sprint
+## Why stories carry the sprint
 
 The story layer is the first thing teams skip. It looks like paperwork — the epic already names
 the feature, the tasks already say what to build, so why write `As a user, I want …` in between?
@@ -126,7 +126,15 @@ Template](https://www.atlassian.com/agile/project-management/user-stories)). The
 teams mean when they say "a good story" is **INVEST**: Independent, Negotiable, Valuable,
 Estimable, Small, Testable ([Bill Wake,
 2003](https://xp123.com/invest-in-good-stories-and-smart-tasks/)). Groomie applies the INVEST split
-rule directly — a story bundling two capabilities ("edit **or** delete") becomes two stories.
+rule directly, in **both** the shapes a story bundles:
+
+- **Two actions** — "edit **or** delete", "create **and** manage" → one story per action.
+- **Two surfaces or scopes** — "in both the visual and HTML editors" → one story per surface. **A
+  single verb doesn't make it one story**, and this is the shape that slips through most often.
+
+The one exception: if shipping one half alone would be a partial feature you'd never release, it
+stays **one** story built by two tasks — splitting there would produce a story that can't ship on
+its own.
 
 ### What a missing story layer costs you
 
@@ -188,7 +196,7 @@ explicit `blocks` edges between them. Who reviews, gates, and signs off what is 
 process — and the parts Groomie can adapt to it live in
 [`groomie.config.md`](#configuration-optional).
 
-## Why a task is a unit of delivery, not a step
+## Why tasks are units of delivery
 
 If the story is the *what*, the task is the **how** — and it's the layer teams get wrong in both
 directions at once: split into too many pieces, and sliced along the wrong lines.
