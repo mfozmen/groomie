@@ -40,6 +40,75 @@ JSON graph for tooling and agents. A well-groomed breakdown is what makes agent-
 development actually workable — each task becomes a bounded work item an agent (or a person)
 can pick up, with its scope, its done-criteria, and its edges spelled out.
 
+## Why user stories carry the sprint
+
+The story layer is the first thing teams skip. It looks like paperwork — the epic already names
+the feature, the tasks already say what to build, so why write `As a user, I want …` in between?
+
+Because a story isn't documentation. It's the **boundary between what the user needs and how it
+gets built** — and it's the only artifact the whole team can agree on without reading code. Take
+that boundary away and the cost doesn't disappear. It moves into your sprint.
+
+### What a missing story layer costs you
+
+- **Estimates become guesses.** Nobody can size "implement the export thing". A story with
+  acceptance criteria and test cases is estimable; a ticket mixing five concerns is not — so the
+  sprint commitment is fiction from day one.
+- **QA has to invent the test plan.** With no story to test, QA reverse-engineers intent from the
+  ticket, the PR, or a developer's shoulder. Much of the coverage is guesswork, and the part that
+  matters most is the part most often missed.
+- **Ambiguity surfaces at the worst possible moment.** Unasked questions don't go away — they
+  detonate mid-sprint, in code review, or in UAT, once the work is done and reversing it is
+  expensive.
+- **Rework instead of progress.** "That's not what I meant" arrives *after* implementation, and
+  the team pays a second cycle to build the same feature twice.
+- **Grooming and planning meetings run long.** The ticket gets decoded live, out loud, in a room
+  full of people — every sprint, from scratch, because the decoding was never written down.
+- **Everyone reads everything.** In one giant ticket a backend dev wades through design debates,
+  QA through schema arguments, product through deployment notes. Most of it concerns nobody in
+  the room.
+- **Blockers show up late.** Nothing states which piece must land first, so work stalls midway
+  through the sprint on a dependency someone could have named on day one.
+- **"Done" stays negotiable.** With no acceptance criteria, closing a ticket is an opinion — which
+  is exactly how work carries into the next sprint, and the one after that.
+- **Nothing ships partially.** When a sprint slips, a story-shaped backlog still delivers *some
+  complete behavior*. A task-shaped one delivers half of everything and none of it releasable.
+
+### Who owns what
+
+Stories and tasks split responsibility along a clean seam. Groomie doesn't enforce any process —
+it produces the artifacts that make this way of working possible, and plenty of teams run it
+differently:
+
+| Role | Owns | What that means |
+|---|---|---|
+| **Product** | the story's intent | Requests arrive as **behavior and need**, never as a solution — "the user can reset their password", not "add a reset endpoint". |
+| **QA** | the story's verification | Tests **stories and bugs — never tasks**, and releases on them. The acceptance criteria and test cases *are* the test plan, so QA never has to read code to work out what to verify. |
+| **Developers** | the technical tasks | Own the implementation end to end: review it, test it, close it themselves. No product sign-off on an implementation detail, no QA gate on a refactor. |
+
+The story becomes the whole team's shared object — product wrote it, QA verifies it, developers
+deliver it — while the technical work stays entirely with the people qualified to judge it.
+
+### What that buys you
+
+- **Focus.** Each role reads the layer that concerns them. A `[Backend]` task is one team's
+  problem; the story above it is everyone's.
+- **Shorter meetings.** Grooming stops being a live decoding session. The breakdown arrives
+  already written, so the meeting only has to resolve the open questions.
+- **Parallel work.** Tasks split by discipline and wired with explicit blockers can start at the
+  same time — and the ones that genuinely can't are *visibly* blocked rather than silently stuck.
+- **Fewer round trips.** Ambiguity becomes an open question *before* code is written, when
+  answering it costs a sentence instead of a sprint.
+- **A real definition of done.** A story closes when its acceptance criteria pass — not when
+  someone feels it's finished.
+- **Release notes for free.** A finished sprint's stories already read as user-facing changes,
+  because that is exactly what a story is.
+
+Groomie's part is only the structure: stories that stay behavioral, tasks that carry the HOW, and
+explicit `blocks` edges between them. Who reviews, gates, and signs off what is your team's
+process — and the parts Groomie can adapt to it live in
+[`groomie.config.md`](#configuration-optional).
+
 ## What you get
 
 - **Epic(s)** — the feature, bounded and closeable, with a `Description` + `Business Value`;
