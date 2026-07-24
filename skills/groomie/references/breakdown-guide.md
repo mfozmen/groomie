@@ -723,6 +723,19 @@ against production during development.)
   description + Acceptance Criteria + Test Cases, a task's Implementation + Done when, a bug's
   repro/expected/actual. Description format (ADF vs wiki markup) is an MCP detail (*verify on demo
   Jira*).
+- **Epic description carries a dependency map.** After the epic's `Description` + `Business Value`
+  (+ optional `Design`), append a **`### Dependency map`** section holding the epic's blocker graph
+  as **one fenced ```mermaid `flowchart TD`** — built by the **same renderer and the same
+  sanitize → cap → wrap → prefix label rules as the `## Diagram`** (see *Diagram (mermaid)*),
+  filtered to **that epic's own** nodes and the `blocks` edges among them (task→story and
+  task→task). Reuse the existing mermaid generation — do **not** write a second renderer. For a
+  single-epic push the `subgraph` wrapper is optional; the nodes, the `-->` edges, and the `classDef`
+  colour block are enough. **Omit the whole `### Dependency map` section only when the epic has no
+  nodes at all** (mirrors the `## Diagram` omit rule); a stories-only epic with no tasks yet still
+  lists its story nodes (no edges). It renders as a diagram where the Jira instance supports mermaid
+  and as a readable code block otherwise (*verify on demo Jira* — a rendering assumption, like the
+  ADF-vs-wiki one above). The map is part of the **Groomie-owned epic description**, so the *Upsert
+  scope* rule already refreshes it on **every** re-push — no marker block, no separate write.
 
 **Upsert scope.** An UPDATE overwrites **only** the groomie-owned fields — **summary, description, and
 the blocks links groomie created** — and **never** touches status, assignee, sprint, priority,
