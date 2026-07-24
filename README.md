@@ -36,9 +36,8 @@ issue, researches it, and splits it into **bounded, testable, explicitly-wired p
 Ambiguities aren't papered over; they surface as open questions for a human to answer.
 
 The result is readable by people *and* consumable by machines: the markdown for your team, the
-JSON graph for tooling and agents. A well-groomed breakdown is what makes agent-driven
-development actually workable — each task becomes a bounded work item an agent (or a person)
-can pick up, with its scope, its done-criteria, and its edges spelled out.
+JSON graph for tooling and agents. That second audience is why this matters more than it used to —
+see [Why this matters more in the AI era](#why-this-matters-more-in-the-ai-era).
 
 ## Why epics must close
 
@@ -248,6 +247,66 @@ Tasks](https://xp123.com/invest-in-good-stories-and-smart-tasks/)).
   only thing joining them is `blocks`. One task can block several stories at once, and a task can
   block another task — which is what lets QA own the story layer while engineering owns the task
   layer, and what tells you the build order.
+
+## Why this matters more in the AI era
+
+Grooming was always worth doing. What changed is the **cost of skipping it**: a person handed a
+vague ticket asks a question at standup. An agent handed the same ticket invents an answer and
+writes code against it.
+
+Everything the three layers give a human — a bounded scope, a verifiable target, an explicit
+order — turns out to be exactly what an agent needs, for a sharper reason: **context is its
+scarcest resource.**
+
+### Context is the budget
+
+A feature run out of one ticket means a description, forty comments spanning three months, six
+links and a screenshot. Most of it is irrelevant to the change at hand — but nothing marks *which*
+part, so the agent loads all of it and reasons over the noise. Long tickets also contradict
+themselves: a comment from March quietly overrides a description nobody ever edited, and the agent
+has no way to tell which one is current.
+
+A groomed task is a **bounded context** — this task, its done-criteria, the stories it unblocks.
+The agent reads what it needs and nothing else. And where the ticket *did* contradict itself,
+Groomie's verification pass surfaced it as an open question instead of letting the agent silently
+pick a side.
+
+### A stopping condition
+
+The hardest question for an agent isn't "what do I build?" — it's **"am I finished?"** Without an
+explicit finish line it stops early or gold-plates indefinitely.
+
+- **`Done when`** on a task is a checkable stopping condition.
+- **Acceptance criteria** and **test cases** on a story are a verifiable target — the difference
+  between *"implement this"* and *"implement this, and here is how you'll know it works"*.
+
+### Order without having to ask
+
+`blocks` edges state which work must exist first. A person infers that at standup; an agent can't
+infer it at all — but it can *read* it. That's also what makes **parallel agents** viable:
+independent tasks (already split by repo and discipline) can go to different agents at once, while
+blocked ones wait for their dependency instead of racing it.
+
+The JSON graph is what makes this mechanical rather than a reading exercise — an orchestrator
+consumes the nodes and edges directly.
+
+### Ambiguity that stays visible
+
+This is the failure mode that actually bites. Handed a gap, an agent fills it with something
+plausible, commits it, and the invention only surfaces in review — or in production. Groomie's rule
+is that an unknown becomes an **open question**, never a guessed requirement. The gap stays a gap
+until a human closes it.
+
+### Blast radius
+
+A task scoped to one repo and one discipline bounds what an agent is entitled to touch. An
+unbounded ticket is an open invitation to refactor half the codebase on the way past.
+
+---
+
+None of this is AI-specific magic — it's the same discipline teams have always been told to keep.
+Agents just removed the tolerance for skipping it: ambiguity that used to cost a conversation now
+costs a merged PR built on a guess.
 
 ## What you get
 
