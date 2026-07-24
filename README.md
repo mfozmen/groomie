@@ -236,9 +236,10 @@ Tasks](https://xp123.com/invest-in-good-stories-and-smart-tasks/)).
   not test cases, because **tasks aren't QA-tested** — stories and bugs are.
 - **Wired both ways** — what it `Blocks:` and what it's `Is blocked by:`. One foundational task
   can block many stories; that's the signal that tells you what to build first.
-- **A sibling of the story, not a subtask of it.** Stories and tasks sit side by side under the
-  epic, joined by `blocks` — which is what lets QA own the story layer while engineering owns the
-  task layer.
+- **An independent child of the epic.** Stories and tasks sit side by side under the epic, and the
+  only thing joining them is `blocks`. One task can block several stories at once, and a task can
+  block another task — which is what lets QA own the story layer while engineering owns the task
+  layer, and what tells you the build order.
 
 ## What you get
 
@@ -492,9 +493,11 @@ and these are the sources worth reading if you want the reasoning in full:
 - [User Stories With Examples and a Template](https://www.atlassian.com/agile/project-management/user-stories) — Atlassian on the `As a … I want … so that …` form and why stories stay user-facing.
 - [INVEST in Good Stories, and SMART Tasks](https://xp123.com/invest-in-good-stories-and-smart-tasks/) — Bill Wake (2003), the origin of both quality bars: **INVEST** for stories, **SMART** for tasks.
 
-Jira's own hierarchy is Epic → Story/Task → Sub-task; Groomie deliberately makes tasks **siblings**
-of stories rather than sub-tasks, so a task can block several stories and QA can own the story
-layer independently.
+One deliberate difference: in Groomie's model an epic has **two independent kinds of children —
+stories and tasks** — and the only relationship between them is `blocks`. A task can block one
+story, several stories at once, or another task. That's what lets a single foundational task
+unblock a whole set of stories, and lets QA own the story layer independently of how engineering
+chose to split the work.
 
 ---
 
