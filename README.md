@@ -76,12 +76,14 @@ that boundary away and the cost doesn't disappear. It moves into your sprint.
 
 ### Who owns what
 
-Stories and tasks split responsibility along a clean seam, and that split is the whole point:
+Stories and tasks split responsibility along a clean seam. Groomie doesn't enforce any process —
+it produces the artifacts that make this way of working possible, and plenty of teams run it
+differently:
 
 | Role | Owns | What that means |
 |---|---|---|
 | **Product** | the story's intent | Requests arrive as **behavior and need**, never as a solution — "the user can reset their password", not "add a reset endpoint". |
-| **QA** | the story's verification | Tests **stories only**, and releases on them. The acceptance criteria and test cases *are* the test plan — QA never reads code to work out what to verify. |
+| **QA** | the story's verification | Tests **stories and bugs — never tasks**, and releases on them. The acceptance criteria and test cases *are* the test plan, so QA never has to read code to work out what to verify. |
 | **Developers** | the technical tasks | Own the implementation end to end: review it, test it, close it themselves. No product sign-off on an implementation detail, no QA gate on a refactor. |
 
 The story becomes the whole team's shared object — product wrote it, QA verifies it, developers
@@ -101,11 +103,11 @@ deliver it — while the technical work stays entirely with the people qualified
   someone feels it's finished.
 - **Release notes for free.** A finished sprint's stories already read as user-facing changes,
   because that is exactly what a story is.
-- **Work an agent can take.** A bounded task with done-criteria and explicit edges is precisely
-  what an AI agent — or a new hire — can pick up without a briefing.
 
-This is the shape Groomie produces by default: stories that stay behavioral, tasks that carry the
-HOW, and explicit `blocks` edges between them.
+Groomie's part is only the structure: stories that stay behavioral, tasks that carry the HOW, and
+explicit `blocks` edges between them. Who reviews, gates, and signs off what is your team's
+process — and the parts Groomie can adapt to it live in
+[`groomie.config.md`](#configuration-optional).
 
 ## What you get
 
