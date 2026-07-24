@@ -14,6 +14,10 @@ answering every item below. Collect violations first; then fix them in **one bou
 - [ ] Title **leads with a verb, Title Case** (Add / Enable / Support / Change / Migrate /
       Remove — minor words lowercased). *(guide: "Epics")*
 - [ ] Title makes the bounded scope self-evident — not a bare label, not an umbrella.
+- [ ] Epic is a **bounded feature, not a bucket** — not a category (`Tech Debt`, `Bugs`,
+      `Improvements`), a team/component (`Platform`, `Mobile App`), or a time box (`Q3 Roadmap`),
+      **even when the title leads with a verb** (`Improve Tech Debt` is still a bucket).
+      *(guide: "Epics" → the bucket-epic rule)*
 - [ ] Body is exactly `**Description:**` + `**Business Value:**` (+ optional `**Design:**`
       when research surfaced mockups) — nothing else, no AC on the epic.
 - [ ] Version stamp `_groomie v<version> · <mode> breakdown_` sits under the first epic

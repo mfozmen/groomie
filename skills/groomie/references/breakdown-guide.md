@@ -50,8 +50,9 @@ blocker). Bugs are QA-tested whether they are technical or not.
     not an epic: a **category** ("Tech Debt", "Bugs", "Improvements", "Maintenance", "Refactoring"),
     a **team/component** ("Platform", "Backend", "Mobile App", "Design System"), or a **time box**
     ("Q3 Roadmap", "Sprint 42"). If the source issue is one of these, it is not a single feature —
-    groom the actual feature inside it, and raise the rest as an open question rather than
-    reproducing the bucket.
+    groom the **real feature(s) inside it**, one epic each and only under the multi-epic rule
+    above (each independently bounded and closeable), and raise whatever isn't a bounded feature
+    as an open question. Never reproduce the bucket itself as an epic.
 - **Body:** two required lines — `**Description:**` (what it implements, one sentence)
   and `**Business Value:**` (why it matters, one sentence) — plus an optional
   `**Design:**` line linking the Figma / mockups **when research surfaces them** (omit the
