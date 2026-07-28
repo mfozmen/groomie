@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.18.1](https://github.com/mfozmen/groomie/compare/v0.18.0...v0.18.1) (2026-07-28)
+
+### Bug Fixes
+
+* **groomie:** catch stories bundled by surface, not just by action ([#58](https://github.com/mfozmen/groomie/issues/58)) ([bf2b93d](https://github.com/mfozmen/groomie/commit/bf2b93daeb8061c9fb037df83d656b350fe1e289))
+
 ## [0.18.0](https://github.com/mfozmen/groomie/compare/v0.17.0...v0.18.0) (2026-07-24)
 
 ### Features
