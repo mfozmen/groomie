@@ -85,4 +85,10 @@ describe('detailsHtml', () => {
     expect(html).toContain('Z1')
     expect(html).toContain('weird')
   })
+
+  // Exact equality, not toContain: the point is that a titleless node emits no heading at all
+  // rather than an empty <h3></h3>, and toContain would pass either way.
+  it('omits the heading when an unknown kind has no title', () => {
+    expect(detailsHtml({ id: 'Z2', kind: 'chore' } as never)).toBe('<h2>Z2</h2>')
+  })
 })

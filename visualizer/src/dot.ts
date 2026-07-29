@@ -16,13 +16,14 @@ const FALLBACK_STYLE = KIND_STYLE.task // unknown kinds render as plain boxes ra
 
 // Graphviz HTML-like labels parse a tag subset; escape everything that could break out.
 export const esc = (s: string): string =>
-  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
 // Escape a value used as a DOT quoted identifier ("<id>"): a stray " or \ in an id loaded from a
 // hand-edited/untrusted groomed.json would otherwise close the quote and produce invalid DOT that
 // Graphviz throws on. Node ids appear both here and in HTML `id=` attributes (via esc()); keep both
 // escaped so the same value can't break one context while it's safe in the other.
-export const dotId = (s: string): string => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+export const dotId = (s: string): string =>
+  String(s).replaceAll('\\', String.raw`\\`).replaceAll('"', String.raw`\"`)
 
 // Wrap to ~n chars per line for readable node cards. Lines are left-aligned via <br align="left"/>
 // (Graphviz centres <br/> lines by default, which reads as a slid-down title).
