@@ -6,40 +6,35 @@ import type { GroomNode } from './types'
 
 const list = (title: string, items?: string[]): string => {
   if (!items?.length) return ''
-  return `<h4>${esc(title)}</h4><ul>${items.map((it) => `<li>${esc(it)}</li>`).join('')}</ul>`
+  const entries = items.map((it) => `<li>${esc(it)}</li>`).join('')
+  return `<h4>${esc(title)}</h4><ul>${entries}</ul>`
 }
 
 const para = (label: string, text?: string | null): string =>
   text ? `<p><em>${esc(label)}:</em> ${esc(text)}</p>` : ''
 
+// Unlabelled, unlike para(): a description is the node's own prose, not an annotated field.
+const prose = (text?: string | null): string => (text ? `<p>${esc(text)}</p>` : '')
+
 export function detailsHtml(node: GroomNode): string {
   switch (node.kind) {
     case 'epic':
-      return `<h2>${esc(node.id)} · Epic</h2><h3>${esc(node.title)}</h3>${
-        node.description ? `<p>${esc(node.description)}</p>` : ''
-      }${para('Business value', node.businessValue)}${para('Design', node.design)}`
+      return `<h2>${esc(node.id)} · Epic</h2><h3>${esc(node.title)}</h3>${prose(node.description)}${para('Business value', node.businessValue)}${para('Design', node.design)}`
     case 'story':
-      return `<h2>${esc(node.id)} · Story</h2><h3>${esc(node.title)}</h3>${
-        node.description ? `<p>${esc(node.description)}</p>` : ''
-      }${list('Acceptance Criteria', node.acceptanceCriteria)}${list('Test Cases', node.testCases)}${list('Links', node.links)}`
+      return `<h2>${esc(node.id)} · Story</h2><h3>${esc(node.title)}</h3>${prose(node.description)}${list('Acceptance Criteria', node.acceptanceCriteria)}${list('Test Cases', node.testCases)}${list('Links', node.links)}`
     case 'task': {
-      const badges = `${node.discipline ? ` <span class="badge">${esc(node.discipline)}</span>` : ''}${
+      const discipline = node.discipline ? ` <span class="badge">${esc(node.discipline)}</span>` : ''
+      const estimate =
         typeof node.estimate === 'number' ? ` <span class="badge est">${node.estimate}</span>` : ''
-      }`
-      return `<h2>${esc(node.id)} · Task${badges}</h2><h3>${esc(node.title)}</h3>${list(
-        'Implementation',
-        node.implementation,
-      )}${list('Done when', node.doneWhen)}`
+      return `<h2>${esc(node.id)} · Task${discipline}${estimate}</h2><h3>${esc(node.title)}</h3>${list('Implementation', node.implementation)}${list('Done when', node.doneWhen)}`
     }
     case 'bug':
-      return `<h2>${esc(node.id)} · Bug</h2><h3>${esc(node.title)}</h3>${para('Repro', node.repro)}${para(
-        'Expected',
-        node.expected,
-      )}${para('Actual', node.actual)}`
+      return `<h2>${esc(node.id)} · Bug</h2><h3>${esc(node.title)}</h3>${para('Repro', node.repro)}${para('Expected', node.expected)}${para('Actual', node.actual)}`
     default: {
       // The JSON is cast, not validated — an unknown kind still gets a minimal, safe card.
       const n = node as { id: string; title?: string }
-      return `<h2>${esc(n.id)}</h2>${n.title ? `<h3>${esc(n.title)}</h3>` : ''}`
+      const title = n.title ? `<h3>${esc(n.title)}</h3>` : ''
+      return `<h2>${esc(n.id)}</h2>${title}`
     }
   }
 }

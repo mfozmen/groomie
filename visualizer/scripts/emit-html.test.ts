@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 // @ts-expect-error — plain .mjs helper, no types
 import { injectGraph, resolvePaths, readGraph } from './emit-html.mjs'
 
@@ -45,8 +45,11 @@ describe('injectGraph', () => {
 describe('resolvePaths', () => {
   it('resolves a relative json path against the base (INIT_CWD) and derives .html', () => {
     const { jsonPath, outPath } = resolvePaths('sub/PROJ-1-groomed.json', undefined, '/base')
-    expect(jsonPath).toBe('/base/sub/PROJ-1-groomed.json')
-    expect(outPath).toBe('/base/sub/PROJ-1-groomed.html')
+    // Expectations built with resolve() rather than written as POSIX literals: on Windows the
+    // same input yields C:\base\sub\..., which made this the one test that only passed on CI.
+    // What is being asserted is unchanged — relative-against-base, and .json → .html.
+    expect(jsonPath).toBe(resolve('/base/sub/PROJ-1-groomed.json'))
+    expect(outPath).toBe(resolve('/base/sub/PROJ-1-groomed.html'))
   })
 
   it('keeps an absolute input path and an explicit output path', () => {

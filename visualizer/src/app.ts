@@ -47,7 +47,9 @@ export async function showGraph(
       el && !node;
       el = el.parentElement?.closest('[id]') ?? null
     ) {
-      node = byId.get(el.getAttribute('id') ?? '')
+      // `el.id` rather than `getAttribute('id') ?? ''`: the walk only ever lands on `[id]`
+      // matches, so the null branch was unreachable — and Element#id is a string either way.
+      node = byId.get(el.id)
     }
     if (node) root.querySelector('.panel-body')!.innerHTML = detailsHtml(node)
   })
