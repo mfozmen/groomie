@@ -464,7 +464,10 @@ hyphens, cap at ~40 chars without cutting mid-word (`Checkout Redesign — Phase
 `sources[]` has the **same primary ref** — including when the source was retitled and today's slug
 differs (don't fork a duplicate; check existing `*/*-groomed.json` files — and any legacy flat
 `*-groomed.json` — for a matching primary `sources[]` ref before creating
-a new folder). Conversely, a slug collision with a **different** primary ref is a different
+a new folder). The check is **best-effort, like everything else in the skill**: it is the
+one-level glob above in the working directory, never a recursive sweep of a large tree — and
+when no match turns up, creating a fresh folder is the correct outcome, not a failure.
+Conversely, a slug collision with a **different** primary ref is a different
 breakdown — never overwrite it: pick a distinct slug (interactive: ask for a name;
 non-interactive: extend the slug with a distinguishing word from the ref). Never create a numbered
 sibling for the *same* breakdown.
