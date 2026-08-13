@@ -78,6 +78,10 @@ Fetch **every** source the user gave, each with the reader that fits its kind: a
 issue or Confluence page** via the **Atlassian MCP** (tool names vary by install — look for
 the "get Jira issue" / "get Confluence page" tools, commonly `getJiraIssue` /
 `getConfluencePage` or similar), a **URL** via `WebFetch`, a **file path** via `Read`.
+A URL that *looks* like Jira/Confluence but isn't on `*.atlassian.net` (a self-hosted
+instance — a `/browse/KEY-123` or `/wiki/` path shape) goes to the **MCP first**, falling
+back to `WebFetch` if the MCP can't read it; a source's `kind` (step 5) records what
+actually read it.
 
 **When a Jira issue is among the sources, harvest everything only Jira gives** — this is
 where Jira still earns its keep: summary, description, issue type, comments, change history
@@ -617,7 +621,8 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
    - The breakdown **has a Jira source** — the primary one when it is a Jira issue, else the
      **first** `kind:"jira"` entry with `status: "used"` in `sources[]` — never an
      unreachable/skipped one (the same pick the per-epic "relates to" link
-     uses) ⇒ ask, with that
+     uses). A legacy JSON with no `sources[]` at all (pre-multi-source — always
+     Jira-primary) counts too: its `issueKey` *is* the Jira source. ⇒ ask, with that
      source's project as the default: *create the epic(s) under the source issue's project
      (`<PROJ>`), or a different project?* Confirming keeps `<PROJ>`.
    - **No Jira source** ⇒ ask for the target project key outright.
