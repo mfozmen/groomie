@@ -381,7 +381,7 @@ task points) is a planned later addition. Do not surface this mode to end users 
   story and leave a bug open, or open a bug that blocks a story. So a bug has **no `affects`/edge** in
   the breakdown; it's just a standalone node under the epic.
 
-## Verifying the ticket's claims
+## Verifying the sources' claims
 
 **The ticket is a claim, not truth.** The issues Groomie exists for are not just vague — they are
 often *wrong*: a renamed store, a capability that already ships, a scope boundary the code
@@ -394,9 +394,12 @@ services / repos / tables / endpoints / fields, "X already exists / already work
 a stated scope boundary, a stated dependency or ordering, a description of today's behavior. Trivia
 that changes nothing isn't worth verifying.
 
-**Source order** — code (when reachable) → linked issues / PRD / design docs → the issue's comments
-and changelog (later comments beat a stale description) → web for external or standards claims. **A
-ticket never verifies itself**, and neither does another ticket that merely repeats it.
+**Source order** — code (when reachable) → **user-given supporting sources** and linked issues /
+PRD / design docs (a PRD the user pasted ranks with the ticket's own linked docs — code stays the
+referee) → the issue's comments and changelog (later comments beat a stale description) → web for
+external or standards claims. **A source never verifies itself** — the ticket doesn't, a Confluence
+page groomed as the primary source doesn't, and neither does another ticket that merely repeats it;
+a load-bearing claim needs a source other than the one asserting it.
 
 | Verdict | What the breakdown does |
 | --- | --- |
@@ -440,6 +443,66 @@ both readings; an unverifiable load-bearing claim names what could not be confir
 - The ticket assumes the export job already retries failed rows; nothing reachable in this session
   confirms it — does it?
 ```
+
+## Sources
+
+Groomie grooms from **one or more user-given sources** (SKILL.md's *Input*): the first is the
+**primary** source (defines the feature, names the breakdown), the rest are supporting evidence.
+A Jira issue is one kind of source, not a prerequisite.
+
+**Kinds and identity.** `kind ∈ jira | confluence | web | file`. The breakdown's identity `<ID>` —
+folder name, file names, and what `revise`/`tasks`/`push`/`review` resolve by — is decided by the
+**primary** source alone: a Jira-issue primary ⇒ its **key** — whether it was given as a bare key
+or as a Jira issue URL, the resolved key names the breakdown (a supporting Jira key never does);
+anything else ⇒ a **slug of the primary source's title** — its document title or first
+heading, falling back to the file-name stem or the URL's last path segment when it has neither:
+strip markup, lowercase, non-alphanumerics → single hyphens, trim leading/trailing
+hyphens, cap at ~40 chars without cutting mid-word (`Checkout Redesign — Phase 2` →
+`checkout-redesign-phase-2`).
+
+**Sameness is the primary ref, not the folder name.** Reuse the existing folder whose JSON
+`sources[]` has the **same primary ref** — including when the source was retitled and today's slug
+differs (don't fork a duplicate; check existing `*/*-groomed.json` files — and any legacy flat
+`*-groomed.json` — for a matching primary `sources[]` ref before creating
+a new folder; a legacy JSON with no `sources[]` at all matches by its `issueKey` instead —
+pre-multi-source breakdowns were always Jira-primary). The check is **best-effort, like everything else in the skill**: it is the
+one-level glob above in the working directory, never a recursive sweep of a large tree — and
+when no match turns up, creating a fresh folder is the correct outcome, not a failure.
+Conversely, a slug collision with a **different** primary ref is a different
+breakdown — never overwrite it: pick a distinct slug (interactive: ask for a name;
+non-interactive: extend the slug with a distinguishing word from the ref). Never create a numbered
+sibling for the *same* breakdown.
+
+**Statuses.** Each source resolves to one of: `used` (fetched and fed into research), `skipped`
+(the user chose to drop it — including after a failed fetch), `unreachable` (fetch failed and the
+user was never able to resolve it — the non-interactive path). A `skipped` source needs no open
+question (the user decided with full knowledge); an `unreachable` one always gets one.
+
+**Unreachable sources are surfaced, never silently dropped.** The primary source unreachable stops
+the run (nothing to groom). Supporting sources that fail to fetch are raised **once, batched** —
+every failed source with its reason, one question: grant access and retry, or skip? The user's
+"skip" makes them `skipped` — no open question needed. In a
+non-interactive session there is no question (the same never-deadlock limit as *Verifying the
+sources' claims*): they are recorded `unreachable` and carried as **one consolidated**
+`## Open questions` entry. A missing reader (e.g. a Jira source with no Atlassian MCP connected)
+is the same situation as a permission error — same handling, and the fix is named to the user.
+
+**The `## Sources` document section** lists every resolved source, one bullet each — title (or the
+ref itself) linked to the ref, unreachable/skipped ones marked as such:
+
+```markdown
+## Sources
+
+- [PROJ-123 — Bulk export for saved views](https://…/browse/PROJ-123) — primary
+- [Checkout Redesign PRD](https://…/wiki/…) 
+- https://…/spec.pdf — unreachable (401), assumptions listed under Open questions
+```
+
+It sits **after `## Open questions`, before `## Diagram`**, and is **omitted** when the only
+source is the primary Jira issue — the document's key already says that. The full resolved list
+(including that case) always lives in the JSON's `sources[]` (see *JSON graph output*), which is
+what `revise`/`tasks` reload — **they preserve and extend `sources[]`**, so a source the user gave
+once keeps informing every later run.
 
 ## Output shape
 
@@ -537,6 +600,10 @@ _groomie v<version> · <mode> breakdown_   <!-- version from .claude-plugin/plug
 
 - ...
 
+## Sources   <!-- omit when the only source is the primary Jira issue; see the "Sources" section -->
+
+- ...
+
 ## Diagram
 
 (a mermaid flowchart TD block — see the "Diagram (mermaid)" section below; omit if no nodes)
@@ -548,11 +615,12 @@ only shows how the pieces lay out together in one document.
 
 **Omit every empty section.** Only include a section that has content: no user-facing
 behavior change → no `## Stories`; no bugs → no `## Bugs`; no open questions → no
-`## Open questions`. Never print an empty heading or a "(none)" placeholder. A pure
+`## Open questions`; sole primary-Jira source → no `## Sources`. Never print an empty heading or a "(none)" placeholder. A pure
 technical migration, for example, is often just the epic + `## Tasks` + `## Open questions`.
 
 **Emit these sections and no others.** The allowed set is exactly: the `# Epic:` block (with its
-version-stamp line), `## Stories`, `## Tasks`, `## Bugs`, `## Open questions`, `## Diagram`. Do
+version-stamp line), `## Stories`, `## Tasks`, `## Bugs`, `## Open questions`, `## Sources`,
+`## Diagram`. Do
 **not** add a `TL;DR` / executive summary / "the work, simplified", a `Locked decisions` /
 decisions / evidence / rationale table, a `Verification` / claim-audit section, an
 `Epic (context)` preamble, or any narrative that critiques, "refutes", or re-summarizes the
@@ -645,8 +713,8 @@ flowchart TD
 
 ## JSON graph output
 
-Alongside the markdown (in the same per-issue `<ISSUE-KEY>/` folder), write
-`<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` — the **same graph, machine-readable**
+Alongside the markdown (in the same per-breakdown `<ID>/` folder), write
+`<ID>/<ID>-groomed.json` — the **same graph, machine-readable**
 (the visualizer's input). One flat `nodes[]` array (epics are first-class `kind:"epic"` nodes)
 plus a directed `edges[]` array. Epics get JSON-only ids `E1`, `E2`, … (the markdown `# Epic:`
 heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
@@ -655,6 +723,13 @@ heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
 {
   "issueKey": "PROJ-123",
   "mode": "estimate",
+  "sources": [
+    { "ref": "PROJ-123", "kind": "jira", "title": "Bulk export for saved views",
+      "status": "used", "primary": true },
+    { "ref": "https://example.atlassian.net/wiki/spaces/PS/pages/1/Checkout+Redesign",
+      "kind": "confluence", "title": "Checkout Redesign PRD", "status": "used" },
+    { "ref": "https://example.com/spec.pdf", "kind": "web", "status": "unreachable", "note": "401" }
+  ],
   "nodes": [
     { "id": "E1", "kind": "epic", "title": "Enable Traditional Authentication",
       "description": "...", "businessValue": "...", "design": null },
@@ -675,6 +750,15 @@ heading is unchanged); every non-epic node carries `epicId`. Edges are deduped.
 ```
 
 Rules:
+- **`issueKey` holds the breakdown identity `<ID>`** — the Jira key, or the slug for a no-Jira
+  groom (see *Sources*). The field name is kept for compatibility: the visualizer shows it as the
+  panel title and older tooling reads it.
+- **`sources[]`** records every resolved source: `ref` (the key / URL / path as given), `kind`,
+  `status`, optional `title`, `primary: true` on the first source, and an optional `note` (e.g. the
+  failure reason). Data only — like `jira`, it is ignored by `check-graph.mjs` and the visualizer —
+  and it is **preserved and extended** by revise/tasks **and by a fresh re-groom of the same
+  `<ID>`** (which also carries the `jira` ledger forward unchanged — see SKILL.md step 5), never
+  dropped.
 - `mode ∈ full | stories | estimate`. Common node fields: `id`, `kind` (`epic|story|task|bug`),
   `title`. Non-epic nodes carry `epicId`.
 - **Story:** `description` (the one-liner), `links[]` (PRD / background docs, `[]` if none),
@@ -698,9 +782,20 @@ Rules:
 
 ## Jira write-back (`/groomie:push`)
 
-`/groomie:push <ISSUE-KEY>` writes a finalized breakdown into Jira via the Atlassian MCP —
+`/groomie:push <ID>` writes a finalized breakdown into Jira via the Atlassian MCP —
 **opt-in, idempotent, and only after an approved preview** (see SKILL.md's *Push to Jira* flow). This
 section defines the data contract; the flow defines the behavior.
+
+**The source issue is never written to.** Push only CREATEs Groomie's own epic(s) — with the
+stories/tasks/bugs as their children — and UPDATEs issues Groomie itself created on a prior push
+(plus the one legacy exception below: a ledger from the removed `source-as-epic` mode keeps updating the epic
+it already owns, which is the source issue itself).
+When the breakdown has a Jira source — the primary one when it is a Jira issue, else the first
+`kind:"jira"` entry with `status: "used"` in `sources[]` (the same pick everywhere: this link **and** the push project
+default) — each created epic gets a **"relates to"** link to that source
+issue (*verify on demo Jira*) — the one trace push leaves on it; with no Jira source the link is
+simply omitted. The source issue holds the user's raw idea and its discussion — overwriting it would
+destroy the very input Groomie grooms from.
 
 **The ledger.** The JSON gains a top-level `jira` object recording every issue groomie owns for this
 breakdown:
@@ -708,24 +803,39 @@ breakdown:
 ```json
 "jira": {
   "project": "PROJ",
-  "epicMode": "source-as-epic",
-  "pushed": { "E1": "PROJ-123", "S1": "PROJ-457", "T1": "PROJ-460" },
+  "pushed": {
+    "E1": { "key": "PROJ-456", "summary": "Enable Traditional Authentication" },
+    "S1": { "key": "PROJ-457", "summary": "As a user, I want to create an account …, so that …." },
+    "T1": "PROJ-460"
+  },
   "tombstoned": []
 }
 ```
 
-- `pushed` maps a groomie node id → the Jira key groomie created/owns for it. **Entries are never
+(`T1` above shows the legacy bare-string form a pre-drift ledger may still carry — read both;
+new writes always use the object form.)
+
+- `pushed` maps a groomie node id → the Jira issue groomie created/owns for it. New writes use the
+  object form `{ "key": "PROJ-457", "summary": "<the title as pushed>" }`; a bare string key is the
+  legacy form and stays valid (read both). Recording the pushed summary is what lets a later push
+  **show drift**: an UPDATE whose recorded summary no longer matches the node's current title is
+  rendered old → new in the plan preview, so a re-groom that silently re-used a node id can't
+  overwrite a live issue unnoticed. **Entries are never
   removed** — a node later dropped from the breakdown keeps its entry so its now-orphan Jira issue can
-  still be found and tombstoned. Each key is written **immediately** after a successful create, so a
+  still be found and tombstoned. Each entry is written **immediately** after a successful create, so a
   mid-run failure resumes as an UPDATE, never a duplicate CREATE.
 - `tombstoned` is the list of node ids already `[deleted]`-marked; the push flow skips these so it
   never re-prepends the prefix (a local check — no live Jira read needed).
-- Under **`source-as-epic`** the epic node maps to the **source issue key itself** (`E1` → `PROJ-123`
-  above — the source `<KEY>`, seeded before the first push, updated in place, never re-created). Under
-  **`new-epic`** the epic gets a fresh created key like the stories/tasks.
-- `epicMode ∈ source-as-epic | new-epic` is **chosen on the first push and recorded, then reused
-  (locked) on every re-push** — a breakdown can't switch epic modes (that would orphan the epic a
-  prior push created). `project` is the target Jira project (default: the source issue's project).
+- The epic gets a fresh created key like the stories/tasks — never the source issue's key.
+  **Legacy back-compat:** a ledger written while the removed mode existed may carry
+  `epicMode: "source-as-epic"` and map the epic
+  node to the source issue key itself (the removed mode that updated the source in place). The
+  ledger governs: that epic keeps classifying as UPDATE of its recorded key, so a re-push never
+  duplicates or strands it — but it is **never tombstoned**: if its node is gone from the
+  breakdown, leave the source issue's title untouched and report it for the user to resolve by
+  hand. `epicMode` is read-if-present only — never written to a new ledger.
+- `project` is the target Jira project — resolved once on the first push (SKILL.md's *Push to Jira*
+  step 2: a Jira source's project offered as the default, else asked), recorded, then reused.
 
 **Mapping.** (Names marked *verify on demo Jira* are assumptions to confirm on a real instance — never
 against production during development.)

@@ -6,11 +6,12 @@
 [![Security](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
 
-Turn a messy Jira issue into a clean, sprint-ready backlog breakdown — as markdown.
+Turn a messy feature idea into a clean, sprint-ready backlog breakdown — as markdown.
 
 Groomie is a [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin. Point it at
-one badly-written, single-feature Jira issue (vague, over-stuffed, no acceptance criteria)
-and it recovers the real feature underneath, researches it as deeply as your environment
+one badly-written, single-feature idea — a Jira issue, a Confluence page, a PRD link, a file,
+or several of these at once (vague, over-stuffed, no acceptance criteria)
+— and it recovers the real feature underneath, researches it as deeply as your environment
 allows, and hands back a structured **epic → user stories → technical tasks** breakdown you
 can review and file.
 
@@ -331,23 +332,28 @@ costs a merged PR built on a guess.
   contradicts is listed with both readings, and a load-bearing claim nothing could confirm is
   listed as unconfirmed rather than quietly written in as fact.
 
-The whole breakdown is saved to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — each groom lands in its own
-per-issue folder named for the key, so repeated runs don't pile up loose in one directory — and
+The whole breakdown is saved to `<ID>/<ID>-groomed.md` — each groom lands in its own
+per-breakdown folder named for its id (the Jira key, or a slug of the primary source's title for a
+no-Jira groom), so repeated runs don't pile up loose in one directory — and
 printed for you. The markdown ends with a **mermaid diagram** of the blocker graph (renders on GitHub,
-VS Code, and other markdown viewers). Two more files are written into the same per-issue folder: a
-machine-readable **`<ISSUE-KEY>-groomed.json`** graph, and a standalone **`<ISSUE-KEY>-groomed.html`** — the interactive visualizer (below) with
+VS Code, and other markdown viewers), and — unless your only source was the one Jira issue — a
+**`## Sources`** section listing every source used (and any that couldn't be reached). Two more
+files are written into the same folder: a
+machine-readable **`<ID>-groomed.json`** graph (which also records the resolved sources, so a later
+revise still knows them), and a standalone **`<ID>-groomed.html`** — the interactive visualizer (below) with
 your breakdown baked in: epics as containers, stories/tasks/bugs nested, blockers as arrows.
 **Offline, double-click to open, no server or install.**
 
 ![The Groomie visualizer: a purple epic container holding blue tasks, green stories and a red bug, with blocker arrows, and a details panel on the right.](docs/visualizer.png)
 
-<sub>The `<ISSUE-KEY>-groomed.html` output on synthetic demo data (Jira-default colours — epic purple, story green, task blue, bug red). Click a node for its acceptance criteria, tasks, or repro.</sub>
+<sub>The `<ID>-groomed.html` output on synthetic demo data (Jira-default colours — epic purple, story green, task blue, bug red). Click a node for its acceptance criteria, tasks, or repro.</sub>
 
 ## Requirements
 
 - **Claude Code.**
-- **Atlassian MCP** connected to your Jira — the one hard dependency; all Jira access goes
-  through it (reading the issue, and the opt-in `/groomie:push` writes).
+- **Atlassian MCP** connected — needed whenever a source is a Jira issue or Confluence page,
+  and for the opt-in `/groomie:push` writes. A groom whose sources are plain URLs or files
+  doesn't need it at all.
 - *Optional:* any research capability in your session (a code/knowledge-base MCP, web search,
   subagents). Groomie detects what's available and digs accordingly — none of it is required,
   and nothing is company-specific.
@@ -435,6 +441,23 @@ Pick the mode by **subcommand** (`/groomie:full`, `/groomie:stories`) or just ru
 for the default full breakdown. Full reads the code to write accurate technical tasks; stories
 skips tasks for a faster, behavior-only pass. (The old `--full` / `--stories` flags still work.)
 
+**A Jira issue isn't required, and one source doesn't have to be all.** Groomie grooms from
+whatever you hand it — a Jira key, a Jira/Confluence URL, any URL (a PRD, a spec), a local file —
+and you can pass **several sources at once**, plus free-text context. The first source is the
+primary one; the rest feed research and verification:
+
+```
+/groomie https://…/wiki/…/Checkout+Redesign          # groom straight from a Confluence page
+/groomie PROJ-123 https://…/prd https://…/spec.pdf   # a ticket plus the docs you have open
+/groomie PROJ-123 notes.md "focus on the export path"
+```
+
+A no-Jira breakdown is named by a slug of the primary source's title (e.g.
+`checkout-redesign/`) — the closing block tells you the id to use with `revise`/`tasks`/`push`.
+If a source can't be reached, Groomie says so and asks whether to retry with access or skip it —
+a skipped source is listed under `## Sources` and its assumptions land in `## Open questions`,
+never silently dropped.
+
 Ran `/groomie:stories` first and now want the tasks that build those exact stories?
 **`/groomie:tasks PROJ-123`** is the upgrade: it reads the code, adds `[Discipline]` tasks for the
 stories that don't have one yet, wires the blockers, and leaves the epic and stories untouched —
@@ -454,7 +477,7 @@ no re-groom, no reshuffle:
 ```
 
 Revise reads your existing `PROJ-123/PROJ-123-groomed.{md,json}` (or the legacy flat
-`PROJ-123-groomed.{md,json}`, for breakdowns groomed before the per-issue folder), applies just that change under the same
+`PROJ-123-groomed.{md,json}`, for breakdowns groomed before the per-breakdown folder), applies just that change under the same
 rules (existing `S#`/`T#` keys stay stable, blockers stay consistent), and re-writes all three
 files — the markdown, the JSON graph, and the `.html`. Groom the issue first if you haven't yet.
 
@@ -486,8 +509,12 @@ preview** (what it will `CREATE` / `UPDATE` / mark `[deleted]`, plus the links) 
 approval** before writing anything. It's **idempotent**: re-pushing updates the same issues in place —
 Groomie remembers what it created (a ledger inside the `.json`), so it **never makes duplicates**. A
 node you removed from the breakdown gets a soft **`[deleted]`** prefix on its Jira title — Groomie
-**never hard-deletes or transitions** an issue, and never touches status, assignee, or sprint. It asks
-once whether to turn the source issue into the epic or create a fresh one.
+**never hard-deletes or transitions** an issue, and never touches status, assignee, or sprint. And it
+**never writes to your source issue**: the idea you groomed from stays exactly as you wrote it.
+Groomie creates its own fresh epic(s) and links each back to the source issue with a "relates to"
+link. (Breakdowns first pushed with the old `source-as-epic` mode keep updating the epic they
+already own.) On the first push it confirms the target project once (your source issue's project is the
+default; with no Jira source it simply asks which project to use) and remembers it.
 
 The pushed **epic carries the dependency map**: its description ends with a `### Dependency map`
 section — the same blocker graph as the breakdown, as a mermaid diagram — so the map lives on the
@@ -535,17 +562,20 @@ text that always survives.)
 
 ## How it works
 
-1. **Fetch** the issue from Jira (summary, description, comments, history, links).
+1. **Resolve the sources** — every key, URL, and file you gave. When a Jira issue is among
+   them, Groomie also harvests what only Jira has (comments, history, links, the project key);
+   an unreachable source is surfaced, never silently dropped.
 2. **Research & verify** — follow the links and, when a codebase is reachable, read the actual
-   code. The ticket's claims are treated as **unverified**: Groomie checks the load-bearing ones
-   against the code, the links, and the comments, grooms what is actually true rather than what
-   the ticket asserts, and turns contradictions into open questions — stopping to ask you only
-   when a contradiction invalidates the ticket's premise (the feature already exists, the named
+   code. The sources' claims are treated as **unverified**: Groomie checks the load-bearing ones
+   against the code, the other sources, the links, and the comments, grooms what is actually true
+   rather than what
+   a source asserts, and turns contradictions into open questions — stopping to ask you only
+   when a contradiction invalidates the primary source's premise (the feature already exists, the named
    system is gone, the "bug" isn't broken).
 3. **Groom** it into the epic / stories / tasks breakdown.
 4. **Save & print** the markdown (with a mermaid diagram), and write the JSON graph plus a
-   standalone interactive `<ISSUE-KEY>-groomed.html` (offline, double-clickable) next to it — all
-   under a per-issue `<ISSUE-KEY>/` folder.
+   standalone interactive `<ID>-groomed.html` (offline, double-clickable) next to it — all
+   under a per-breakdown `<ID>/` folder.
 5. **Self-review** the finished output against the grooming contract (the leak scan, shapes,
    sections, diagram), fix violations in one bounded pass, and close the message with the saved
    file paths.

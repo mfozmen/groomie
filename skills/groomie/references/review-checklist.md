@@ -5,7 +5,7 @@ counterpart of `scripts/check-graph.mjs`. Generation drops rules under load; thi
 re-reads the output in *checking* mode, item by item, against `breakdown-guide.md` (the
 rule text lives THERE — this file only enumerates what to check, so the two never drift).
 
-**How to run it:** read the finished `<KEY>-groomed.md` (and `.json`) top to bottom ONCE,
+**How to run it:** read the finished `<ID>-groomed.md` (and `.json`) top to bottom ONCE,
 answering every item below. Collect violations first; then fix them in **one bounded pass**
 (see "Fixing" at the end). Never skip the run — a clean result is reported in one line.
 
@@ -77,7 +77,8 @@ answering every item below. Collect violations first; then fix them in **one bou
 ## Document
 
 - [ ] Sections are exactly the closed ordered set (epic block → `## Stories` → `## Tasks` →
-      `## Bugs` → `## Open questions` → `## Diagram`), **empty sections omitted entirely** —
+      `## Bugs` → `## Open questions` → `## Sources` → `## Diagram`), **empty sections omitted
+      entirely** —
       no TL;DR, no decisions table, no ticket critique, **no `## Verification` section**
       (verification findings live in `## Open questions`, not a section of their own).
 - [ ] Keys (`S#`/`T#`/`B#`) unique across the whole document; on a revise, retired keys are
@@ -92,12 +93,17 @@ answering every item below. Collect violations first; then fix them in **one bou
       *(guide: "Open questions")*
 - [ ] **Nothing unverified stated as fact:** each load-bearing claim — a specific system /
       table / endpoint / field, an "already works" assertion — rests on a source **other than
-      the ticket** (code, links, comments, research). A claim the ticket alone supports is
+      the one asserting it** (code, other sources, links, comments, research). A claim the
+      primary source alone supports is
       unverified: it belongs in `## Open questions`, not asserted in a task, AC, or the epic.
-      *(guide: "Verifying the ticket's claims" — "a ticket never verifies itself")*
+      *(guide: "Verifying the sources' claims" — "a source never verifies itself")*
 - [ ] **Contradictions read as both-sided open questions** — a ticket-vs-source disagreement
       appears under `## Open questions` naming both readings, and the body grooms the source's
-      reading. *(guide: "Verifying the ticket's claims")*
+      reading. *(guide: "Verifying the sources' claims")*
+- [ ] **Sources accounted for:** every `used` source in the JSON's `sources[]` appears in
+      `## Sources` (unless the section is rightly omitted — sole primary Jira source);
+      `unreachable`/`skipped` sources are marked there as such, and every `unreachable` one
+      (not a user-`skipped` one) is covered by an `## Open questions` entry. *(guide: "Sources")*
 
 ## Fixing (bounded — ONE pass)
 

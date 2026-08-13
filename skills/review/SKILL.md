@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review an already-produced Groomie breakdown against the full grooming contract — the story-boundary NEVERs (no placement/nav paths, no technical field names, no interaction sequences, no source-ticket numbering, no widget names), epic/task/bug shape, section contract, and diagram rules. Invoked as `/groomie:review <ISSUE-KEY>`, or when the user asks to check/review/validate an existing breakdown. Reads the output files, runs the canonical checklist, fixes violations in ONE bounded pass, and re-verifies. Read-only against Jira — never pushes.
+description: Review an already-produced Groomie breakdown against the full grooming contract — the story-boundary NEVERs (no placement/nav paths, no technical field names, no interaction sequences, no source-ticket numbering, no widget names), epic/task/bug shape, section contract, and diagram rules. Invoked as `/groomie:review <ID>` (the breakdown id — Jira key or slug), or when the user asks to check/review/validate an existing breakdown. Reads the output files, runs the canonical checklist, fixes violations in ONE bounded pass, and re-verifies. Read-only against Jira — never pushes.
 ---
 
 # Groomie — review a breakdown
@@ -17,10 +17,11 @@ review from memory.
 
 ## Flow
 
-1. **Resolve the breakdown.** From the arguments take the issue key. Locate the pair
-   `<KEY>/<KEY>-groomed.md` **and** `<KEY>/<KEY>-groomed.json` (per-issue folder), falling
-   back to the legacy flat `<KEY>-groomed.{md,json}` in the working directory. Both files
-   must exist together at one location — if not, tell the user to run `/groomie <KEY>`
+1. **Resolve the breakdown.** From the arguments take the breakdown id `<ID>` — the Jira key,
+   or the slug of a no-Jira groom. Locate the pair
+   `<ID>/<ID>-groomed.md` **and** `<ID>/<ID>-groomed.json` (per-breakdown folder), falling
+   back to the legacy flat `<ID>-groomed.{md,json}` in the working directory. Both files
+   must exist together at one location — if not, tell the user to run `/groomie <ID>`
    first and stop. Never review (or regenerate) from memory of a previous session.
 2. **Load the contract.** Read `review-checklist.md` and the guide sections it points to.
 3. **Check.** Read the `.md` (and `.json`) top to bottom once, answering every checklist
@@ -40,7 +41,7 @@ review from memory.
 5. **Report.** One line if clean (`Self-review: clean — N stories, M tasks checked`);
    otherwise the fixed items and the reported-but-not-fixed items, by key. If the JSON's
    `jira.pushed` ledger is non-empty, add the drift warning: the Jira issues now lag these
-   fixes until the user runs `/groomie:push <KEY>` again. When files were rewritten, **end
+   fixes until the user runs `/groomie:push <ID>` again. When files were rewritten, **end
    the message with the main skill's closing block** (step 5 of a fresh groom): the file
    paths last, plus the nothing-written-to-Jira note.
 
@@ -57,5 +58,5 @@ review from memory.
   and say so if the assets can't be found).
 - One fix pass, then stop. A breakdown that needs restructuring beyond mechanical fixes
   (stories that shouldn't exist, missing research) is a `/groomie:revise` or a fresh
-  `/groomie <KEY>` — say which, don't do it here.
-- If invoked with no issue key, ask for one before doing anything else.
+  `/groomie <ID>` — say which, don't do it here.
+- If invoked with no breakdown id, ask for one before doing anything else.

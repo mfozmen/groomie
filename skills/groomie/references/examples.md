@@ -186,6 +186,24 @@ Only reproduces for addresses on custom domains; Gmail/Outlook are unaffected.
 (No `affects:` / no story-link block, and no diagram edge — the bug is just a red node inside its
 epic subgraph.)
 
+## Sources
+
+When the groom used more than the one primary Jira issue, the document carries a `## Sources`
+section (after `## Open questions`, before `## Diagram`) — one bullet per resolved source, the
+primary marked, unreachable/skipped ones labelled with their reason:
+
+```markdown
+## Sources
+
+- [PROJ-123 — User authentication for the platform](https://example.atlassian.net/browse/PROJ-123) — primary
+- [Authentication PRD](https://example.atlassian.net/wiki/spaces/PS/pages/1/Authentication+PRD)
+- https://example.com/security-checklist.pdf — unreachable (401), assumptions listed under Open questions
+```
+
+The same list lives in the JSON's `sources[]` (with `kind`/`status`/`primary`), which
+revise/tasks/re-grooms preserve. When the only source is the primary Jira issue, the section is
+omitted — the key says it already.
+
 ## Anti-patterns (what a groomed doc must never do)
 
 Calibration on a **backfill/migration** issue — one that copies existing data into a new store and
@@ -194,7 +212,7 @@ shape. (Synthetic example — a generic "snapshot legacy records into the primar
 
 - **A TL;DR / executive summary / "the work, simplified" / decisions, evidence, or verification
   table.** ❌ Only the contracted sections exist (epic → stories? → tasks → bugs? → open
-  questions → diagram).
+  questions? → sources? → diagram).
   Research **and verification** shape the *content*; neither is ever its own narrative, and the doc
   never critiques, "refutes", or re-summarizes the ticket. ✅ A claim the code contradicts is one
   `## Open questions` line naming both readings.
@@ -265,7 +283,7 @@ the project's already-filed stories use (researched opportunistically) — else 
 The user sets all of this **by conversation**, never by hand. Running `/groomie:config outputs in
 Turkish` while chatting in English makes Groomie add an `## Output language` section with a `- Turkish`
 bullet (the documented schema, not an inline `Heading: value`) to the global `~/.groomie/config.md`
-and reply `Set Output language = Turkish (global).` — it does **not** groom. The next `/groomie <KEY>`
+and reply `Set Output language = Turkish (global).` — it does **not** groom. The next `/groomie <ID>`
 then produces the breakdown **content in Turkish** (epic/story/task prose, node labels) while the
 conversation stays in English and the skeleton stays fixed: the keys (`S1`/`T1`), the `[Discipline]`
 prefixes, the `Blocks:` / `Is blocked by:` link markers, the `Acceptance Criteria` /
@@ -281,21 +299,26 @@ the JSON `jira` ledger (see the breakdown guide's *Jira write-back* section). Wo
 slice** of the auth breakdown — epic `E1`, story `S1`, task `T1`, bug `B1` — for brevity; all keys
 synthetic.
 
-**First push** — the ledger is empty, so everything is a CREATE. Groomie asks the epic mode (say
-"new epic") and prints the plan, then waits:
+**First push** — the ledger is empty, so everything is a CREATE. Groomie confirms the target
+project (defaulting to the source issue's — say the user keeps `PROJ`) and prints the plan, then
+waits:
 
 ```
-Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
+Push plan for PROJ-123 → project PROJ
   CREATE    epic E1, S1 (Story), T1 (Task), B1 (Bug)
-  LINKS     T1 blocks S1
+  LINKS     T1 blocks S1 · E1 relates to PROJ-123 (source — never modified)
 Approve? (nothing is written until you confirm)
 ```
 
 On approval it creates the issues in order and records each key, leaving this ledger in the `.json`:
 
 ```json
-"jira": { "project": "PROJ", "epicMode": "new-epic",
-          "pushed": { "E1": "PROJ-450", "S1": "PROJ-457", "T1": "PROJ-460", "B1": "PROJ-461" },
+"jira": { "project": "PROJ",
+          "pushed": {
+            "E1": { "key": "PROJ-450", "summary": "Enable Traditional Authentication" },
+            "S1": { "key": "PROJ-457", "summary": "As a user, I want to create an account using email and password, so that I can have my own personal access to the platform." },
+            "T1": { "key": "PROJ-460", "summary": "[Backend] Design and implement user schema and database tables" },
+            "B1": { "key": "PROJ-461", "summary": "Verification email is never delivered on signup" } },
           "tombstoned": [] }
 ```
 
@@ -303,8 +326,10 @@ On approval it creates the issues in order and records each key, leaving this le
 gone from the breakdown but still in the ledger ⇒ tombstone. No duplicates are created:
 
 ```
-Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
-  UPDATE    E1 → PROJ-450, S1 → PROJ-457, T1 → PROJ-460   (summary + description + links)
+Push plan for PROJ-123 → project PROJ
+  UPDATE    E1 → PROJ-450 — unchanged title
+  UPDATE    S1 → PROJ-457 — unchanged title
+  UPDATE    T1 → PROJ-460 — unchanged title
   [deleted] B1 → PROJ-461  (removed from the breakdown)   ⚠ destructive
 ```
 
