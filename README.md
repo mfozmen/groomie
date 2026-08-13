@@ -569,8 +569,8 @@ text that always survives.)
    code. The sources' claims are treated as **unverified**: Groomie checks the load-bearing ones
    against the code, the other sources, the links, and the comments, grooms what is actually true
    rather than what
-   the ticket asserts, and turns contradictions into open questions — stopping to ask you only
-   when a contradiction invalidates the ticket's premise (the feature already exists, the named
+   a source asserts, and turns contradictions into open questions — stopping to ask you only
+   when a contradiction invalidates the primary source's premise (the feature already exists, the named
    system is gone, the "bug" isn't broken).
 3. **Groom** it into the epic / stories / tasks breakdown.
 4. **Save & print** the markdown (with a mermaid diagram), and write the JSON graph plus a
