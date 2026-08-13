@@ -81,7 +81,9 @@ the "get Jira issue" / "get Confluence page" tools, commonly `getJiraIssue` /
 A URL that *looks* like Jira/Confluence but isn't on `*.atlassian.net` (a self-hosted
 instance — a `/browse/KEY-123` or `/wiki/` path shape) goes to the **MCP first**, falling
 back to `WebFetch` if the MCP can't read it; a source's `kind` (step 5) records what
-actually read it.
+actually read it — **by design**: a Jira instance the MCP can't reach can't be harvested,
+linked, or pushed to either, so it is `kind:"web"` and deliberately does not count as the
+breakdown's Jira source for push's project default or the "relates to" link.
 
 **When a Jira issue is among the sources, harvest everything only Jira gives** — this is
 where Jira still earns its keep: summary, description, issue type, comments, change history

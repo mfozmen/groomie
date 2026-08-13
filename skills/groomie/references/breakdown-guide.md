@@ -464,7 +464,8 @@ hyphens, cap at ~40 chars without cutting mid-word (`Checkout Redesign — Phase
 `sources[]` has the **same primary ref** — including when the source was retitled and today's slug
 differs (don't fork a duplicate; check existing `*/*-groomed.json` files — and any legacy flat
 `*-groomed.json` — for a matching primary `sources[]` ref before creating
-a new folder). The check is **best-effort, like everything else in the skill**: it is the
+a new folder; a legacy JSON with no `sources[]` at all matches by its `issueKey` instead —
+pre-multi-source breakdowns were always Jira-primary). The check is **best-effort, like everything else in the skill**: it is the
 one-level glob above in the working directory, never a recursive sweep of a large tree — and
 when no match turns up, creating a fresh folder is the correct outcome, not a failure.
 Conversely, a slug collision with a **different** primary ref is a different
