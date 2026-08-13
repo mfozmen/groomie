@@ -381,7 +381,7 @@ task points) is a planned later addition. Do not surface this mode to end users 
   story and leave a bug open, or open a bug that blocks a story. So a bug has **no `affects`/edge** in
   the breakdown; it's just a standalone node under the epic.
 
-## Verifying the ticket's claims
+## Verifying the sources' claims
 
 **The ticket is a claim, not truth.** The issues Groomie exists for are not just vague — they are
 often *wrong*: a renamed store, a capability that already ships, a scope boundary the code
@@ -478,7 +478,7 @@ the run (nothing to groom). Supporting sources that fail to fetch are raised **o
 every failed source with its reason, one question: grant access and retry, or skip? The user's
 "skip" makes them `skipped` — no open question needed. In a
 non-interactive session there is no question (the same never-deadlock limit as *Verifying the
-ticket's claims*): they are recorded `unreachable` and carried as **one consolidated**
+sources' claims*): they are recorded `unreachable` and carried as **one consolidated**
 `## Open questions` entry. A missing reader (e.g. a Jira source with no Atlassian MCP connected)
 is the same situation as a permission error — same handling, and the fix is named to the user.
 

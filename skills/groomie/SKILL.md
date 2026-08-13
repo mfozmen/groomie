@@ -1,6 +1,6 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a feature idea — typically invoked as `/groomie <source> [<source> …]`, where a source is a Jira issue key (e.g. `PROJ-123`), a Jira/Confluence URL, any URL, or a local file. Resolves every given source (Jira, when present, additionally contributes comments, changelog, links, and the project key — but is not required), researches the feature as deeply as the environment allows — verifying the ticket's claims rather than trusting them — and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ID> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ID>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ID>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
+description: Use when the user asks to groom, break down, or refine a feature idea — typically invoked as `/groomie <source> [<source> …]`, where a source is a Jira issue key (e.g. `PROJ-123`), a Jira/Confluence URL, any URL, or a local file. Resolves every given source (Jira, when present, additionally contributes comments, changelog, links, and the project key — but is not required), researches the feature as deeply as the environment allows — verifying the sources' claims rather than trusting them — and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ID> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ID>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ID>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
 ---
 
 # Groomie
@@ -176,7 +176,7 @@ on a well-sourced groom, and never in a non-interactive session (groom and flag 
 
 **Then verify, before you groom.** The rules — what counts as load-bearing, the source order, the
 three verdicts, the narrow premise-breaking bar, and the never-its-own-section rule — live in the
-guide's *Verifying the ticket's claims* section; read it, then run this loop:
+guide's *Verifying the sources' claims* section; read it, then run this loop:
 
 1. **List the sources' load-bearing claims** — the assertions the breakdown would silently inherit
    (a claim is load-bearing only if a story, a task, or the epic's scope would change were it
@@ -598,7 +598,7 @@ local config files, never Jira. Run this:
 preview**. **It never modifies the source issue**: push only CREATEs Groomie's own epic(s) — split
 at the boundary the guide's multi-epic rule sets — with the stories/tasks/bugs as their children,
 and UPDATEs what Groomie itself created on a prior push. (The one exception is a **legacy
-legacy ledger — one written while the removed `source-as-epic`
+ledger — one written while the removed `source-as-epic`
 mode existed —** whose epic maps to the source issue key from that
 mode — the ledger governs, so that epic keeps updating in place; see step 3.) The source issue (when the breakdown has a
 Jira source) is only **linked** from each created epic with a "relates to" link — the one trace push
@@ -633,7 +633,8 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
    breakdown** — **and not already listed in `jira.tombstoned`** — ⇒ **`[deleted]`** (this local check
    means a re-push skips an already-tombstoned issue without a live read and never doubles the prefix).
    Collect the `blocks` edges as **LINKS** (bugs have no edges — they're epic children only), plus one
-   **"relates to" link per created epic** to the source issue when the breakdown has a Jira source.
+   **"relates to" link per created epic** to the source issue when the breakdown has a Jira source
+   (a legacy source-mapped epic gets **no** relates-to link — it *is* the source issue).
 4. **Render the dry-run plan and STOP — write nothing yet.** Print it grouped, with the **fixed
    English keywords** and destructive actions flagged, e.g.:
    ```

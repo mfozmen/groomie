@@ -96,10 +96,10 @@ answering every item below. Collect violations first; then fix them in **one bou
       the one asserting it** (code, other sources, links, comments, research). A claim the
       primary source alone supports is
       unverified: it belongs in `## Open questions`, not asserted in a task, AC, or the epic.
-      *(guide: "Verifying the ticket's claims" — "a source never verifies itself")*
+      *(guide: "Verifying the sources' claims" — "a source never verifies itself")*
 - [ ] **Contradictions read as both-sided open questions** — a ticket-vs-source disagreement
       appears under `## Open questions` naming both readings, and the body grooms the source's
-      reading. *(guide: "Verifying the ticket's claims")*
+      reading. *(guide: "Verifying the sources' claims")*
 - [ ] **Sources accounted for:** every `used` source in the JSON's `sources[]` appears in
       `## Sources` (unless the section is rightly omitted — sole primary Jira source);
       `unreachable`/`skipped` sources are marked there as such, and every `unreachable` one
