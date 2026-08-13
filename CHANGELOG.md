@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.0](https://github.com/mfozmen/groomie/compare/v0.18.1...v1.0.0) (2026-08-13)
+
+### Features
+
+* **groomie:** multi-source input — Jira optional, sources recorded ([#61](https://github.com/mfozmen/groomie/issues/61)) ([7cb6f7e](https://github.com/mfozmen/groomie/commit/7cb6f7e6b7c9e8617588e489d00e8bf48c1865e0))
+
 ## [0.18.1](https://github.com/mfozmen/groomie/compare/v0.18.0...v0.18.1) (2026-07-28)
 
 ### Bug Fixes
