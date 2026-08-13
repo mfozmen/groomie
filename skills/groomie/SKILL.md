@@ -125,8 +125,8 @@ Look for, in rough order of usefulness:
 - Web research (`WebSearch` / `WebFetch`) — for domain, standards, prior art.
 - Subagents (the `Agent` / Task tool) — to fan out research without bloating context.
 
-Say one line about what you found and the depth you'll use. If nothing beyond the Jira
-issue is available, say so and groom from the issue text alone — that is a valid mode.
+Say one line about what you found and the depth you'll use. If nothing beyond the given
+sources is available, say so and groom from the source text alone — that is a valid mode.
 
 **Also read the config, if any.** Load the **merged** effective config: the global
 `~/.groomie/config.md` with the per-project `groomie.config.md` (working directory, and — when the cwd
