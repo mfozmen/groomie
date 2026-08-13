@@ -101,9 +101,9 @@ answering every item below. Collect violations first; then fix them in **one bou
       appears under `## Open questions` naming both readings, and the body grooms the source's
       reading. *(guide: "Verifying the ticket's claims")*
 - [ ] **Sources accounted for:** every `used` source in the JSON's `sources[]` appears in
-      `## Sources` (unless the section is rightly omitted — sole primary Jira source), and every
-      `unreachable`/`skipped` source is marked there **and** covered by an `## Open questions`
-      entry. *(guide: "Sources")*
+      `## Sources` (unless the section is rightly omitted — sole primary Jira source);
+      `unreachable`/`skipped` sources are marked there as such, and every `unreachable` one
+      (not a user-`skipped` one) is covered by an `## Open questions` entry. *(guide: "Sources")*
 
 ## Fixing (bounded — ONE pass)
 

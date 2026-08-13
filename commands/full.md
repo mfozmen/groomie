@@ -1,5 +1,5 @@
 ---
-description: "Groom a Jira issue into a FULL epic / user-story / technical-task breakdown. Usage: /groomie:full <source> [<source> …]"
+description: "Groom a feature idea — a Jira issue, Confluence page, URL, or file — into a FULL epic / user-story / technical-task breakdown. Usage: /groomie:full <source> [<source> …]"
 ---
 
 Run the **groomie** skill in **full** mode on `$ARGUMENTS`.

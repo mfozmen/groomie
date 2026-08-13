@@ -83,7 +83,9 @@ the "get Jira issue" / "get Confluence page" tools, commonly `getJiraIssue` /
 where Jira still earns its keep: summary, description, issue type, comments, change history
 (the changelog — you may need to request it explicitly, e.g. `expand=changelog`), labels,
 linked issues, and the **project key** (remembered for `/groomie:push`). When none is,
-make **no** Atlassian call and say so in one line — a no-Jira groom is a fully valid mode.
+skip the Jira harvest and say so in one line — a no-Jira groom is a fully valid mode. (A
+**Confluence** source still goes through the Atlassian MCP — "no Jira source" means no Jira
+*issue* to harvest, not a ban on the MCP.)
 
 **An unreachable source is never dropped in silence.** The rules (and the interactive /
 non-interactive split) live in the guide's *Sources* section; the flow:
@@ -98,10 +100,14 @@ non-interactive split) live in the guide's *Sources* section; the flow:
   as one consolidated `## Open questions` entry.
 
 **Fix the breakdown's identity `<ID>` now** — it names the output folder and files and is what
-`revise`/`tasks`/`push`/`review` resolve by: the **Jira key** when a Jira issue is among the
-sources (the primary one wins), else a **slug of the primary source's title** per the guide's
-*Sources* slug rule. An existing `<ID>/` folder means a re-groom of the same breakdown — reuse
-it, never fork a numbered sibling.
+`revise`/`tasks`/`push`/`review` resolve by. **The primary source decides:** a Jira-issue
+primary ⇒ its **key**; anything else ⇒ a **slug of the primary source's title** per the guide's
+*Sources* slug rule (a supporting Jira key never names the breakdown). **The primary ref, not
+the folder name, is what makes two grooms the same breakdown** (the guide's reuse rule): reuse
+the existing folder whose JSON's primary source ref matches — even if the source was retitled
+and the slug would differ — and on a slug collision with a *different* primary ref, pick a
+distinct slug (interactive: ask for a name; non-interactive: extend the slug with a
+distinguishing word from the ref) instead of overwriting.
 
 ### 2. Probe capabilities (decide how deep you can research)
 
@@ -162,7 +168,8 @@ down honestly. When these inputs exist, using them is **not optional**:
   questions.
 - Prefer delegating heavy searching to subagents; keep only the conclusions.
 
-**If research came back thin** — no reachable code **and** the primary source carries no links —
+**If research came back thin** — no reachable code, the primary source carries no links, **and
+the user gave no supporting sources** —
 ask **once** whether the user has more sources (a PRD, a design doc, a related page) before
 grooming from so little; that is the one moment the answer changes the output. Never ask this
 on a well-sourced groom, and never in a non-interactive session (groom and flag instead).
@@ -319,6 +326,12 @@ solid arrows for blocking (`T# --> S#`); bugs are standalone nodes (no edge), co
 by kind, each node labelled with its **full title wrapped at ~34 chars** (`<br/>`) like the HTML
 visualizer. See the guide's *Diagram (mermaid)* section for the exact shape, label, and sanitization
 rules. Omit the `## Diagram` when there are no nodes.
+
+**A re-groom never orphans what earlier runs recorded.** When the target `<ID>` already has a
+`<ID>-groomed.json`, the fresh groom overwrites the *graph* (nodes/edges/mode) but **carries the
+old JSON's `jira` ledger forward unchanged and merges its `sources[]`** (old entries kept, this
+run's added) — dropping the ledger would make the next `/groomie:push` duplicate every issue it
+had already created.
 
 **Save it to a file AND print it.** Write the document to `<ID>/<ID>-groomed.md` — a
 per-breakdown folder named for the step-1 identity (Jira key or slug) in the current working
@@ -581,7 +594,9 @@ local config files, never Jira. Run this:
 **one write action**. It is **opt-in, idempotent, and never writes before the user approves a plan
 preview**. **It never modifies the source issue**: push only CREATEs Groomie's own epic(s) — split
 at the boundary the guide's multi-epic rule sets — with the stories/tasks/bugs as their children,
-and UPDATEs what Groomie itself created on a prior push. The source issue (when the breakdown has a
+and UPDATEs what Groomie itself created on a prior push. (The one exception is a **legacy
+pre-0.19 ledger** whose epic maps to the source issue key from the removed `source-as-epic`
+mode — the ledger governs, so that epic keeps updating in place; see step 3.) The source issue (when the breakdown has a
 Jira source) is only **linked** from each created epic with a "relates to" link — the one trace push
 leaves on it. Run it **in the main thread** (it needs interactive approval); never delegate it. See
 the guide's *Jira write-back* section for the ledger + mapping contract. Run this:
@@ -590,21 +605,25 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
    folder first, legacy-flat fallback). Read the **JSON as the source of truth** for the push (don't
    re-parse the `.md`). If the pair isn't found, **stop** and tell the user to run `/groomie <ID>`
    first — never groom here.
-2. **Resolve the target project — once, on the first push; recorded after.** **If `jira.project` is
+2. **Resolve the target project — once, on the first push; recorded after.** First, if **no
+   Atlassian MCP is available** in this session, **stop now** — before any question or preview —
+   and tell the user to connect it (a breakdown groomed from URLs/files never needed the MCP,
+   but the push always does). Then: **if `jira.project` is
    already recorded** (a prior push), reuse it — never re-ask — and skip to step 3. Otherwise:
    - The breakdown **has a Jira source** (`sources[]`, or a Jira-key `<ID>`) ⇒ ask, with that
      source's project as the default: *create the epic(s) under the source issue's project
      (`<PROJ>`), or a different project?* Confirming keeps `<PROJ>`.
    - **No Jira source** ⇒ ask for the target project key outright.
-   - **Non-interactive session:** use the Jira source's project when there is one; with neither a
-     ledger nor a Jira source, **stop and report** — a first push can't guess a project.
-   Record the answer as `jira.project`.
+   Record the answer as `jira.project`. (Push is main-thread, interactive-only — there is no
+   non-interactive branch here; a session that can't ask can't approve step 5 either.)
 3. **Classify every node against the ledger** (`jira.pushed`, empty/absent on a first push): a node
    **in** the ledger ⇒ **UPDATE** its Jira key; a node **absent** ⇒ **CREATE** — so a first push
    CREATEs the epic(s), never repurposes an existing issue. (**Legacy back-compat:** a pre-0.19
    ledger may map an epic node to the source issue key itself, from the removed `source-as-epic`
    mode — the ledger governs, so that epic keeps classifying as UPDATE of that key; never seed a
-   *new* ledger this way.) Any ledger entry whose node id is **no longer in the
+   *new* ledger this way. The one thing that overrides the ledger: such a source-mapped epic is
+   **never tombstoned** — if its node is gone from the breakdown, leave the source issue's title
+   untouched, skip the `[deleted]` write, and report it for the user to resolve by hand.) Any ledger entry whose node id is **no longer in the
    breakdown** — **and not already listed in `jira.tombstoned`** — ⇒ **`[deleted]`** (this local check
    means a re-push skips an already-tombstoned issue without a live read and never doubles the prefix).
    Collect the `blocks` edges as **LINKS** (bugs have no edges — they're epic children only), plus one

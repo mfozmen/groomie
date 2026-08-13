@@ -1,5 +1,5 @@
 ---
-description: "Groom a Jira issue into an epic + user stories only (no technical tasks). Usage: /groomie:stories <source> [<source> …]"
+description: "Groom a feature idea — a Jira issue, Confluence page, URL, or file — into an epic + user stories only (no technical tasks). Usage: /groomie:stories <source> [<source> …]"
 ---
 
 Run the **groomie** skill in **stories** mode on `$ARGUMENTS`.

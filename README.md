@@ -336,7 +336,7 @@ The whole breakdown is saved to `<ID>/<ID>-groomed.md` — each groom lands in i
 per-breakdown folder named for its id (the Jira key, or a slug of the primary source's title for a
 no-Jira groom), so repeated runs don't pile up loose in one directory — and
 printed for you. The markdown ends with a **mermaid diagram** of the blocker graph (renders on GitHub,
-VS Code, and other markdown viewers), and — when you gave more than the one Jira issue — a
+VS Code, and other markdown viewers), and — unless your only source was the one Jira issue — a
 **`## Sources`** section listing every source used (and any that couldn't be reached). Two more
 files are written into the same folder: a
 machine-readable **`<ID>-groomed.json`** graph (which also records the resolved sources, so a later
@@ -512,7 +512,8 @@ node you removed from the breakdown gets a soft **`[deleted]`** prefix on its Ji
 **never hard-deletes or transitions** an issue, and never touches status, assignee, or sprint. And it
 **never writes to your source issue**: the idea you groomed from stays exactly as you wrote it.
 Groomie creates its own fresh epic(s) and links each back to the source issue with a "relates to"
-link. On the first push it confirms the target project once (your source issue's project is the
+link. (Breakdowns first pushed with the old `source-as-epic` mode keep updating the epic they
+already own.) On the first push it confirms the target project once (your source issue's project is the
 default) and remembers it.
 
 The pushed **epic carries the dependency map**: its description ends with a `### Dependency map`
