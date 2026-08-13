@@ -1,11 +1,12 @@
 ---
 name: groomie
-description: Use when the user asks to groom, break down, or refine a Jira issue — typically invoked as `/groomie <ISSUE-KEY>` (e.g. `/groomie PROJ-123`). Fetches the issue from Jira, researches it as deeply as the environment allows — verifying the ticket's claims rather than trusting them — and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ISSUE-KEY> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ISSUE-KEY>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ISSUE-KEY>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
+description: Use when the user asks to groom, break down, or refine a feature idea — typically invoked as `/groomie <source> [<source> …]`, where a source is a Jira issue key (e.g. `PROJ-123`), a Jira/Confluence URL, any URL, or a local file. Resolves every given source (Jira, when present, additionally contributes comments, changelog, links, and the project key — but is not required), researches the feature as deeply as the environment allows — verifying the ticket's claims rather than trusting them — and produces a clean epic / user-story / technical-task (and bug) breakdown as markdown, with tasks blocking the stories they enable. Also revises an already-produced breakdown in place (`/groomie:revise <ID> <change>`, or the user asks to change/add/remove/split an epic/story/task), customizes itself by conversation (`/groomie:config <what you want>`, e.g. "groom in Turkish" — writes the config file for the user, who never hand-edits it), and — opt-in only — pushes a finalized breakdown into Jira (`/groomie:push <ID>`), which is the ONE write action and writes only after the user approves a plan preview. Every groom/revise ends with a required self-review pass (`references/review-checklist.md`); the standalone `/groomie:review <ID>` (the separate `review` skill) runs that pass over an existing breakdown. Run it directly in the main thread (or dispatch the dedicated `groomie` agent) — do NOT delegate the grooming to a general-purpose subagent. Every flow except `/groomie:push` is read-only against Jira.
 ---
 
 # Groomie
 
-Turn one messy, single-feature Jira issue into a clean, groomed breakdown:
+Turn one messy, single-feature idea — a Jira issue, a Confluence page, a PRD link, a note —
+into a clean, groomed breakdown:
 **one epic, its user stories, the technical tasks that block those stories, and bugs
 where relevant**,
 delivered as a markdown document. Grooming, revising, and configuring are **read-only against
@@ -20,17 +21,28 @@ question — never leave it vague, and never invent it.
 
 ## Input
 
-The user gives you a Jira issue key (e.g. `PROJ-123`). It may be poorly written:
-vague, over-stuffed, mixing several concerns, missing acceptance criteria. That mess
-is the whole reason Groomie exists — your job is to recover the real feature underneath
-it and structure it properly.
+The user gives you **one or more sources**, plus optional free text:
 
-If no key is given, ask for one. Only ever groom **one feature** per run.
+```
+/groomie <source> [<source> …] [free text]
+```
+
+A source is a **Jira issue key** (e.g. `PROJ-123`), a **Jira or Confluence URL**, **any URL**
+(a PRD, a spec, a doc), or a **local file path**. The **first** source is the **primary** one —
+it defines the feature and names the breakdown; the rest are supporting evidence. Trailing free
+text ("also consider …") is research direction, never a claim to inherit. A Jira issue is **not
+required** — a Confluence page or a pasted link alone is a valid starting point.
+
+Any source may be poorly written: vague, over-stuffed, mixing several concerns, missing
+acceptance criteria. That mess is the whole reason Groomie exists — your job is to recover the
+real feature underneath it and structure it properly.
+
+If no source is given, ask for one. Only ever groom **one feature** per run.
 
 ## Modes
 
-Invoke by subcommand — `/groomie:full <ISSUE-KEY>` or `/groomie:stories <ISSUE-KEY>` — or as
-bare `/groomie <ISSUE-KEY>`, which defaults to **full**. The `--full` / `--stories` / `--estimate`
+Invoke by subcommand — `/groomie:full <source> …` or `/groomie:stories <source> …` — or as
+bare `/groomie <source> …`, which defaults to **full**. The `--full` / `--stories` / `--estimate`
 flags on `$ARGUMENTS` still select the mode (back-compat). If nothing selects a mode, use **full**.
 
 - **`--full`** (default) — epic + user stories + technical tasks. Do the deep research
@@ -49,7 +61,7 @@ flags on `$ARGUMENTS` still select the mode (back-compat). If nothing selects a 
 
 ## Consistency
 
-Given the same issue, produce the **same breakdown** — do not emit a different set of
+Given the same sources, produce the **same breakdown** — do not emit a different set of
 stories/tasks each run. Derive stories systematically: **one story per distinct
 user-facing behavior** the feature implies, in the order they appear, using the canonical
 `As a …, I want …, so that ….` phrasing. Don't rename, reshuffle, or invent between runs; when
@@ -60,16 +72,36 @@ creative one.
 
 Work through these steps in order. Announce each briefly so the user can follow.
 
-### 1. Fetch the issue (required — Jira is the one hard dependency)
+### 1. Resolve the sources
 
-Read the issue from Jira via the **Atlassian MCP** server. Tool names vary by install;
-look for the "get Jira issue" tool (commonly `getJiraIssue`, `jira_get_issue`, or similar).
-Pull: summary, description, issue type, comments, change history (the changelog — you may
-need to request it explicitly, e.g. `expand=changelog`), labels, and linked issues.
+Fetch **every** source the user gave, each with the reader that fits its kind: a **Jira
+issue or Confluence page** via the **Atlassian MCP** (tool names vary by install — look for
+the "get Jira issue" / "get Confluence page" tools, commonly `getJiraIssue` /
+`getConfluencePage` or similar), a **URL** via `WebFetch`, a **file path** via `Read`.
 
-If no Atlassian MCP is available, stop and tell the user: Groomie needs the Atlassian
-MCP connected to read the issue. Point them to install it (Claude Code: add the
-Atlassian MCP server), then retry.
+**When a Jira issue is among the sources, harvest everything only Jira gives** — this is
+where Jira still earns its keep: summary, description, issue type, comments, change history
+(the changelog — you may need to request it explicitly, e.g. `expand=changelog`), labels,
+linked issues, and the **project key** (remembered for `/groomie:push`). When none is,
+make **no** Atlassian call and say so in one line — a no-Jira groom is a fully valid mode.
+
+**An unreachable source is never dropped in silence.** The rules (and the interactive /
+non-interactive split) live in the guide's *Sources* section; the flow:
+
+- The **primary** source unreachable (fetch failed, or no reader exists for its kind — e.g.
+  a Jira source with no Atlassian MCP connected) ⇒ **stop**: there is nothing to groom. Name
+  the source, the reason, and the fix (grant access / connect the MCP), then let the user retry.
+- A **supporting** source unreachable ⇒ ask **once**, batched: list every unreachable source
+  with its reason and ask *grant access and retry, or skip them?* Never one question per
+  source. In a **non-interactive session** (the `groomie` agent, any subagent) never
+  deadlock: skip them, record each as `unreachable` in `sources[]` (step 5), and carry them
+  as one consolidated `## Open questions` entry.
+
+**Fix the breakdown's identity `<ID>` now** — it names the output folder and files and is what
+`revise`/`tasks`/`push`/`review` resolve by: the **Jira key** when a Jira issue is among the
+sources (the primary one wins), else a **slug of the primary source's title** per the guide's
+*Sources* slug rule. An existing `<ID>/` folder means a re-groom of the same breakdown — reuse
+it, never fork a numbered sibling.
 
 ### 2. Probe capabilities (decide how deep you can research)
 
@@ -102,13 +134,18 @@ anything, say one line naming what it set. Apply it in step 4 per the guide's *P
 
 ### 3. Research & verify the feature
 
-**Treat the ticket as a claim, not as truth.** A messy issue is routinely *wrong*, not merely
-vague — it names a store that was renamed, asserts a capability that already ships, or fixes a
-scope boundary the code contradicts. So research has two jobs: understand the feature, **and
-check what the ticket asserts** before any of it hardens into a story or a task.
+**Treat the primary source as a claim, not as truth.** A messy ticket or page is routinely
+*wrong*, not merely vague — it names a store that was renamed, asserts a capability that already
+ships, or fixes a scope boundary the code contradicts. So research has two jobs: understand the
+feature, **and check what the source asserts** before any of it hardens into a story or a task.
 
 Using what step 2 surfaced, dig until you understand the feature well enough to break it
 down honestly. When these inputs exist, using them is **not optional**:
+
+- **Use every supporting source the user gave** (step 1) — the user handed them over because
+  they carry evidence the primary source lacks; in verification they rank with the ticket's
+  own linked docs (the guide's source order). The trailing free text steers *where* you
+  research; it is never itself evidence.
 
 - **Read the issue's own comments and change history** — the real decisions, corrections,
   and intent often live in the comments, not the description, and the description may have
@@ -125,14 +162,20 @@ down honestly. When these inputs exist, using them is **not optional**:
   questions.
 - Prefer delegating heavy searching to subagents; keep only the conclusions.
 
+**If research came back thin** — no reachable code **and** the primary source carries no links —
+ask **once** whether the user has more sources (a PRD, a design doc, a related page) before
+grooming from so little; that is the one moment the answer changes the output. Never ask this
+on a well-sourced groom, and never in a non-interactive session (groom and flag instead).
+
 **Then verify, before you groom.** The rules — what counts as load-bearing, the source order, the
 three verdicts, the narrow premise-breaking bar, and the never-its-own-section rule — live in the
 guide's *Verifying the ticket's claims* section; read it, then run this loop:
 
-1. **List the ticket's load-bearing claims** — the assertions the breakdown would silently inherit
+1. **List the sources' load-bearing claims** — the assertions the breakdown would silently inherit
    (a claim is load-bearing only if a story, a task, or the epic's scope would change were it
    false).
-2. **Verify each** against the guide's source order. The ticket never verifies itself.
+2. **Verify each** against the guide's source order. A source never verifies itself — the
+   primary source's claims need a source other than itself.
 3. **Classify:** confirmed / contradicted / unverifiable.
 4. **Act on the verdict** per the guide's table — confirmed ⇒ use it; contradicted ⇒ groom the
    **verified reality** and open a question naming both readings; unverifiable ⇒ never state it as
@@ -230,7 +273,7 @@ Core rules (full detail in the guide):
 Produce a single markdown document (see the shape in the breakdown guide): the epic(s), then —
 only if the feature changes user-facing behavior — the stories (keyed `S1…`, each with
 acceptance criteria, test cases, and `Is blocked by:` its task keys), then the tasks (keyed
-`T1…`, each with `Blocks:` / `Is blocked by:`), then bugs, then open questions. **Omit any
+`T1…`, each with `Blocks:` / `Is blocked by:`), then bugs, then open questions, then sources. **Omit any
 empty section entirely** — no `## Stories` when there's no behavior change, no `## Bugs`
 when there are none, no empty `## Open questions`; never print a "(none)" placeholder. In `--stories` mode, omit the tasks section; in `--estimate` mode,
 add a Fibonacci `Estimate:` to each task.
@@ -244,7 +287,9 @@ add a Fibonacci `Estimate:` to each task.
 3. `## Tasks` — omitted entirely in `--stories` mode.
 4. `## Bugs` — only if the issue reports broken behavior.
 5. `## Open questions` — only if any.
-6. `## Diagram`
+6. `## Sources` — the resolved sources, one bullet each (the guide's *Sources* section);
+   **omitted** when the only source is the primary Jira issue (the key says it already).
+7. `## Diagram`
 
 Emit **no other sections and no preamble.** Specifically **forbidden:** a `TL;DR` / executive
 summary / "the work, simplified", a `Locked decisions` / decisions / evidence / rationale table, a
@@ -275,9 +320,10 @@ by kind, each node labelled with its **full title wrapped at ~34 chars** (`<br/>
 visualizer. See the guide's *Diagram (mermaid)* section for the exact shape, label, and sanitization
 rules. Omit the `## Diagram` when there are no nodes.
 
-**Save it to a file AND print it.** Write the document to `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` — a
-per-issue folder named for the key in the current working directory, so repeated grooms don't pile up
-loose in one directory. Create the folder first (`mkdir -p <ISSUE-KEY>`, e.g. `mkdir -p PROJ-123`,
+**Save it to a file AND print it.** Write the document to `<ID>/<ID>-groomed.md` — a
+per-breakdown folder named for the step-1 identity (Jira key or slug) in the current working
+directory, so repeated grooms don't pile up
+loose in one directory. Create the folder first (`mkdir -p <ID>`, e.g. `mkdir -p PROJ-123`,
 giving `PROJ-123/PROJ-123-groomed.md`), then print it inline so they can read it
 without opening the file. Do **not** write to Jira. Do **not** announce file paths here — paths
 go in the **closing block** at the very end of the message (below), so they are the last thing
@@ -291,12 +337,12 @@ human-readable content is translated — the contract skeleton (keys, `[Discipli
 markers `Blocks:` / `Is blocked by:`, the fixed headings, the version stamp) stays fixed
 so `check-graph.mjs` and the visualizer keep working.
 
-**Also emit a JSON graph** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` next to the markdown — the same
+**Also emit a JSON graph** `<ID>/<ID>-groomed.json` next to the markdown — the same
 epic/story/task/bug nodes and `blocks` edges as a machine-readable graph (the
 input for the visualizer). See the guide's *JSON graph output* section for the schema. Its path
 is reported in the closing block, not here.
 
-**Also emit a standalone interactive HTML** `<ISSUE-KEY>/<ISSUE-KEY>-groomed.html` — the graph visualizer
+**Also emit a standalone interactive HTML** `<ID>/<ID>-groomed.html` — the graph visualizer
 with this breakdown baked in: offline, double-clickable, no server. **No Node/npm needed** — you
 concatenate the two shipped template halves around the graph with plain shell. This skill ships
 `assets/visualizer-head.html` and `assets/visualizer-tail.html`; use **this skill's own directory**
@@ -306,10 +352,10 @@ concatenate the two shipped template halves around the graph with plain shell. T
 ```bash
 if [ -s "$SKILL/assets/visualizer-head.html" ] && [ -s "$SKILL/assets/visualizer-tail.html" ]; then
   TMP=$(mktemp)
-  sed 's/</\\u003c/g' <ISSUE-KEY>/<ISSUE-KEY>-groomed.json > "$TMP"
+  sed 's/</\\u003c/g' <ID>/<ID>-groomed.json > "$TMP"
   { cat "$SKILL/assets/visualizer-head.html"; \
     printf '<script>globalThis.__GROOMIE_GRAPH__='; cat "$TMP"; printf '</script>'; \
-    cat "$SKILL/assets/visualizer-tail.html"; } > <ISSUE-KEY>/<ISSUE-KEY>-groomed.html
+    cat "$SKILL/assets/visualizer-tail.html"; } > <ID>/<ID>-groomed.html
   rm -f "$TMP"
 fi
 ```
@@ -321,17 +367,18 @@ skip the HTML — the `.md` (with its mermaid diagram, which renders in any mark
 `.json` are the primary outputs and always ship.
 
 **Close the final message with the file paths.** The message ends — after the printed breakdown
-and the self-review line (step 6) — with a short closing block: the per-issue folder and the files
+and the self-review line (step 6) — with a short closing block: the per-breakdown folder and the files
 actually written (`.md`, `.json`, and the `.html` when produced — omit a line for a skipped file
 and say why it was skipped), plus the note that nothing was written to Jira. Paths appear **only**
 here, last, so the user never scrolls back up to find them:
 
 ```
-Files saved under <cwd>/<ISSUE-KEY>/:
-- <ISSUE-KEY>-groomed.md — the breakdown above
-- <ISSUE-KEY>-groomed.json — machine-readable graph
-- <ISSUE-KEY>-groomed.html — standalone interactive visualizer (double-click to open)
+Files saved under <cwd>/<ID>/:
+- <ID>-groomed.md — the breakdown above
+- <ID>-groomed.json — machine-readable graph
+- <ID>-groomed.html — standalone interactive visualizer (double-click to open)
 
+Breakdown id: <ID> — use it with /groomie:revise, /groomie:tasks, /groomie:push, /groomie:review.
 Nothing was written to Jira.
 ```
 
@@ -358,26 +405,28 @@ read the finished `.md` (and `.json`) top to bottom in *checking* mode and answe
   Anything needing new research or an unanswered judgment call is reported (or added to
   `## Open questions` if it is a genuine ambiguity) — never a second sweep.
 
-The same pass is available standalone as `/groomie:review <KEY>` (the `review` skill) for
+The same pass is available standalone as `/groomie:review <ID>` (the `review` skill) for
 breakdowns produced earlier. Never skip this step, and never present unreviewed output as final.
 
 ## Revise an existing breakdown
 
-Groom is one-shot: a plain `/groomie <KEY>` grooms fresh and **overwrites** the three files. When the
+Groom is one-shot: a plain `/groomie <ID>` grooms fresh and **overwrites** the three files. (`<ID>`
+throughout these flows is the breakdown identity step 1 fixed — the Jira key, or the slug for a
+no-Jira groom; the closing block names it.) When the
 user instead wants to **change what a previous run produced** — "split T3 into two", "remove S2",
 "add a `[Frontend]` task for the empty-state", "the epic's business value is wrong, it's X" — invoked
-as `/groomie:revise <KEY> <change>` or just phrased as an edit to an existing breakdown, do a
+as `/groomie:revise <ID> <change>` or just phrased as an edit to an existing breakdown, do a
 **targeted edit** instead of re-grooming. Do NOT run steps 1–6 (step 7 below carries the
 self-review layer for a revise); run this:
 
-1. **Resolve the target + change.** Get the issue key and the natural-language change. Locate the
-   breakdown: prefer the per-issue folder `<KEY>/<KEY>-groomed.{md,json}`, else fall back to the
-   legacy flat `<KEY>-groomed.{md,json}` in the working directory (pre-folder outputs). Both the
+1. **Resolve the target + change.** Get the breakdown id and the natural-language change. Locate the
+   breakdown: prefer the per-breakdown folder `<ID>/<ID>-groomed.{md,json}`, else fall back to the
+   legacy flat `<ID>-groomed.{md,json}` in the working directory (pre-folder outputs). Both the
    `.md` **and** the `.json` must be present together at one of those locations; if that pair isn't
-   found in either place, **stop** and tell the user to run `/groomie <KEY>` first — never silently
+   found in either place, **stop** and tell the user to run `/groomie <ID>` first — never silently
    groom a fresh breakdown here. Read from, and re-emit at, whichever location you resolved — **don't
    migrate a legacy-flat breakdown into the folder layout.**
-2. **Load the current state.** Read the resolved `<KEY>-groomed.md` and `<KEY>-groomed.json`; treat them as one
+2. **Load the current state.** Read the resolved `<ID>-groomed.md` and `<ID>-groomed.json`; treat them as one
    model (the JSON is the structured graph, the MD the rich prose). The mode is the JSON `mode` field
    / the version-stamp word — keep it.
 3. **Apply the change under the same contract.** The `references/breakdown-guide.md` +
@@ -408,14 +457,14 @@ self-review layer for a revise); run this:
      everything the user didn't ask to change.
 6. **Re-emit all three files** into the location step 1 resolved (the folder or the legacy-flat path —
    **not** unconditionally the folder), with the same content shape step 5's output uses: rewrite the
-   resolved `<KEY>-groomed.md`, rewrite the resolved `<KEY>-groomed.json` (and its mermaid
-   `## Diagram`), and **regenerate the resolved `<KEY>-groomed.html` with the same shell concat** — the
+   resolved `<ID>-groomed.md`, rewrite the resolved `<ID>-groomed.json` (and its mermaid
+   `## Diagram`), and **regenerate the resolved `<ID>-groomed.html` with the same shell concat** — the
    HTML is a pure derivative of the JSON and can only be rebuilt, never patched. Keep the version stamp
    (current version, unchanged mode word).
 7. **Self-verify, then report the delta.** Two layers, same as a fresh groom:
    - **Graph invariants** — best-effort, `node`-optional (like the `.html` step): if `node` is
-     available, run `node "$SKILL/scripts/check-graph.mjs"` on the resolved `<KEY>-groomed.json`
-     and `<KEY>-groomed.md` (the folder paths, or the legacy flat paths — whichever step 1 found;
+     available, run `node "$SKILL/scripts/check-graph.mjs"` on the resolved `<ID>-groomed.json`
+     and `<ID>-groomed.md` (the folder paths, or the legacy flat paths — whichever step 1 found;
      substitute this skill's base path for `$SKILL`) and fix any violation it prints
      before presenting; if `node` can't run, just eyeball the same invariants (every edge/`epicId`
      resolves, keys unique, MD blockers match the JSON edges) — never block the revise on the checker.
@@ -430,9 +479,9 @@ self-review layer for a revise); run this:
 
 ## Add the tasks layer (`/groomie:tasks`)
 
-`/groomie:stories <KEY>` produces an epic + user stories and **stops** — no technical tasks. When
+`/groomie:stories <source> …` produces an epic + user stories and **stops** — no technical tasks. When
 the user later wants the tasks that build those exact stories **without re-grooming** (a fresh
-`/groomie <KEY>` overwrites everything and can reshuffle the stories), run `/groomie:tasks <KEY>`.
+`/groomie <ID>` overwrites everything and can reshuffle the stories), run `/groomie:tasks <ID>`.
 It is the **stories → full upgrade**: it **adds** the tasks layer while keeping the epic and every
 story byte-for-byte. This is the **only** path that turns a stories breakdown into a full one
 without re-grooming; `--stories` mode itself is unchanged.
@@ -440,10 +489,10 @@ without re-grooming; `--stories` mode itself is unchanged.
 It is a **revise-class flow** — load the existing breakdown, preserve keys and edges, re-emit the
 three files — not a fresh groom. Do NOT run steps 1–6; run this:
 
-1. **Resolve + guard.** Get the issue key. Locate `<KEY>/<KEY>-groomed.{md,json}` — folder first,
+1. **Resolve + guard.** Get the breakdown id. Locate `<ID>/<ID>-groomed.{md,json}` — folder first,
    legacy-flat fallback, the **same resolver as revise/push**; both files must be present together
    at one location. If the pair isn't found, **stop** and tell the user to run
-   `/groomie:stories <KEY>` (or `/groomie <KEY>`) first — never groom a fresh breakdown here.
+   `/groomie:stories <ID>` (or `/groomie <ID>`) first — never groom a fresh breakdown here.
 2. **Load the current state.** Read the `.md` and `.json` as one model (JSON = graph, MD = prose).
    Note the existing `T#` keys and, per story, **whether it already has a blocking task** (a
    `blocks` edge whose target is that story, i.e. the story's `Is blocked by:` list is non-empty).
@@ -528,50 +577,56 @@ local config files, never Jira. Run this:
 
 ## Push to Jira
 
-`/groomie:push <KEY>` writes a **finalized** breakdown into Jira via the Atlassian MCP — Groomie's
+`/groomie:push <ID>` writes a **finalized** breakdown into Jira via the Atlassian MCP — Groomie's
 **one write action**. It is **opt-in, idempotent, and never writes before the user approves a plan
-preview**. Run it **in the main thread** (it needs interactive approval); never delegate it. See the
-guide's *Jira write-back* section for the ledger + mapping contract. Run this:
+preview**. **It never modifies the source issue**: push only CREATEs Groomie's own epic(s) — split
+at the boundary the guide's multi-epic rule sets — with the stories/tasks/bugs as their children,
+and UPDATEs what Groomie itself created on a prior push. The source issue (when the breakdown has a
+Jira source) is only **linked** from each created epic with a "relates to" link — the one trace push
+leaves on it. Run it **in the main thread** (it needs interactive approval); never delegate it. See
+the guide's *Jira write-back* section for the ledger + mapping contract. Run this:
 
-1. **Resolve the breakdown.** Locate `<KEY>/<KEY>-groomed.{md,json}` (same resolution as revise —
+1. **Resolve the breakdown.** Locate `<ID>/<ID>-groomed.{md,json}` (same resolution as revise —
    folder first, legacy-flat fallback). Read the **JSON as the source of truth** for the push (don't
-   re-parse the `.md`). If the pair isn't found, **stop** and tell the user to run `/groomie <KEY>`
+   re-parse the `.md`). If the pair isn't found, **stop** and tell the user to run `/groomie <ID>`
    first — never groom here.
-2. **Pick the epic mode — once, on the first push; locked after.** **If `jira.epicMode` is already
-   recorded** (a prior push for this breakdown), **reuse it — do not re-ask and do not re-seed** — and
-   skip to step 3. Switching modes across pushes is **not allowed**: it would strand the epic a prior
-   push already created; if a user truly needs to switch, they resolve that epic in Jira by hand
-   first. **Only on the first push** (no `jira.epicMode` yet) ask the user: **make the source issue
-   `<KEY>` the epic** (update it in place to carry the epic's title/description; stories/tasks become
-   its children) **or create a new epic** (a fresh Jira epic, linked to `<KEY>` with a "relates to"
-   link). Record the choice as `jira.epicMode` (`source-as-epic` | `new-epic`) and the target
-   `jira.project` (default: the source issue's project). If the choice is **`source-as-epic`, seed the
-   ledger now**: set `jira.pushed[<epic node id>] = <KEY>` (the source issue key itself) — so step 3
-   classifies the epic as UPDATE and the source issue is updated in place, never duplicated.
-3. **Classify every node against the ledger** (`jira.pushed`, empty/absent on a first push **except**
-   the `source-as-epic` seed from step 2): a node **in** the ledger ⇒ **UPDATE** its Jira key; a node
-   **absent** ⇒ **CREATE**. So the epic classifies as **UPDATE `<KEY>`** under `source-as-epic` (via
-   the seed) and as **CREATE** under `new-epic`. Any ledger entry whose node id is **no longer in the
+2. **Resolve the target project — once, on the first push; recorded after.** **If `jira.project` is
+   already recorded** (a prior push), reuse it — never re-ask — and skip to step 3. Otherwise:
+   - The breakdown **has a Jira source** (`sources[]`, or a Jira-key `<ID>`) ⇒ ask, with that
+     source's project as the default: *create the epic(s) under the source issue's project
+     (`<PROJ>`), or a different project?* Confirming keeps `<PROJ>`.
+   - **No Jira source** ⇒ ask for the target project key outright.
+   - **Non-interactive session:** use the Jira source's project when there is one; with neither a
+     ledger nor a Jira source, **stop and report** — a first push can't guess a project.
+   Record the answer as `jira.project`.
+3. **Classify every node against the ledger** (`jira.pushed`, empty/absent on a first push): a node
+   **in** the ledger ⇒ **UPDATE** its Jira key; a node **absent** ⇒ **CREATE** — so a first push
+   CREATEs the epic(s), never repurposes an existing issue. (**Legacy back-compat:** a pre-0.19
+   ledger may map an epic node to the source issue key itself, from the removed `source-as-epic`
+   mode — the ledger governs, so that epic keeps classifying as UPDATE of that key; never seed a
+   *new* ledger this way.) Any ledger entry whose node id is **no longer in the
    breakdown** — **and not already listed in `jira.tombstoned`** — ⇒ **`[deleted]`** (this local check
    means a re-push skips an already-tombstoned issue without a live read and never doubles the prefix).
-   Collect the `blocks` edges as **LINKS** (bugs have no edges — they're epic children only).
+   Collect the `blocks` edges as **LINKS** (bugs have no edges — they're epic children only), plus one
+   **"relates to" link per created epic** to the source issue when the breakdown has a Jira source.
 4. **Render the dry-run plan and STOP — write nothing yet.** Print it grouped, with the **fixed
    English keywords** and destructive actions flagged, e.g.:
    ```
-   Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
+   Push plan for PROJ-123 → project PROJ
      CREATE    epic E1, S4 (Story), T3 (Task)
      UPDATE    S1 → PROJ-457, T1 → PROJ-460      (summary + description + links)
      [deleted] T9 → PROJ-462  (removed from the breakdown)   ⚠ destructive
-     LINKS     T1 blocks S1
+     LINKS     T1 blocks S1 · E1 relates to PROJ-123 (source — never modified)
    ```
 5. **Await explicit approval.** If the user declines, make **no** Jira call and stop.
 6. **Execute in dependency order** via the MCP: **epic(s) → stories → tasks/bugs → links**.
-   - **First, save `<KEY>-groomed.json` to disk with the step-2 ledger fields** (`jira.epicMode`,
-     `jira.project`, and any `source-as-epic` seed) **before the first Jira write** — so the locked
-     mode is durable even if a later create fails and the run is retried.
+   - **First, save `<ID>-groomed.json` to disk with the step-2 `jira.project`** **before the first
+     Jira write** — so the locked project is durable even if a later create fails and the run is
+     retried.
    - Per node, create or update **only** summary + description per the guide's field mapping, and set
      the epic-child link on create; create any missing `blocks`(→"Blocks") links (bugs get no
-     bug→story link); prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
+     bug→story link) and the per-epic "relates to" link to the source issue when there is one;
+     prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
      local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
      status/assignee/sprint/other fields.
    - **The epic's description ends with a `### Dependency map`** — the epic's blocker graph as a
@@ -579,12 +634,12 @@ guide's *Jira write-back* section for the ledger + mapping contract. Run this:
      same renderer as the `.md`'s `## Diagram`). Because the whole epic description is rewritten on
      every push, the map is regenerated each time and always reflects the current breakdown.
    - **After *every* Jira write that changes the ledger** — a created key added to `jira.pushed`, or
-     an orphan's id added to `jira.tombstoned` — **save `<KEY>-groomed.json` to disk immediately**,
+     an orphan's id added to `jira.tombstoned` — **save `<ID>-groomed.json` to disk immediately**,
      before the next Jira call. Never batch these in memory to flush at the end: a mid-run failure
-     must resume with the locked mode, already-created issues as UPDATE, and tombstones not repeated.
-7. **Persist + report.** Do the final save of `<KEY>-groomed.json` (the ledger has been written
+     must resume with the locked project, already-created issues as UPDATE, and tombstones not repeated.
+7. **Persist + report.** Do the final save of `<ID>-groomed.json` (the ledger has been written
    incrementally in step 6; this reconciles the last state), **regenerate
-   `<KEY>-groomed.html`** with the same shell concat (the `jira` key is data the visualizer ignores),
+   `<ID>-groomed.html`** with the same shell concat (the `jira` key is data the visualizer ignores),
    and print a short summary (created / updated / `[deleted]` keys). Call out any assumption you had
    to make that needs confirming on the real instance (issue types, epic-child field, link types,
    description format) — these are **verify-on-demo-Jira** items, not silent guesses.
@@ -597,7 +652,9 @@ than inventing one — surface it as a blocker the user resolves on their Jira, 
 - Read-only against Jira **except** the explicit, opt-in `/groomie:push`, which writes the
   epic/stories/tasks/bugs (and links) of a breakdown you produced — and only **after the user
   approves a plan preview**. It never hard-deletes or transitions an issue (a removed node gets a
-  soft `[deleted] ` title), and never touches non-Groomie fields (status/assignee/sprint/…). Grooming,
+  soft `[deleted] ` title), never touches non-Groomie fields (status/assignee/sprint/…), and **never
+  writes to the source issue** — it holds the user's raw idea and discussion; the only trace push
+  leaves on it is the "relates to" link from each created epic. Grooming,
   revising, and configuring stay fully read-only against Jira.
 - One feature per run.
 - No invented requirements — unknowns become open questions.

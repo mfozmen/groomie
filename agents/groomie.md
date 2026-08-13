@@ -1,10 +1,10 @@
 ---
 name: groomie
 description: >-
-  Groom ONE messy, single-feature Jira issue into an epic / user-story / technical-task breakdown
-  by running the groomie skill faithfully. Use this agent ONLY when the grooming must happen inside
+  Groom ONE messy, single-feature idea — a Jira issue, Confluence page, URL, or file source set —
+  into an epic / user-story / technical-task breakdown by running the groomie skill faithfully. Use this agent ONLY when the grooming must happen inside
   a subagent — e.g. an orchestration flow that fans work out to agents. In the normal case, prefer
-  invoking the groomie skill DIRECTLY in the main thread (or via `/groomie <ISSUE-KEY>`); do NOT
+  invoking the groomie skill DIRECTLY in the main thread (or via `/groomie <source> …`); do NOT
   reach for a general-purpose agent to "run groomie" — that grooms from the model's own idea of
   grooming and drops the skill's rules. This agent is the faithful target for that delegation: it
   loads and follows the skill exactly. Read-only against Jira.
@@ -22,8 +22,14 @@ Do exactly this:
    Skill tool is genuinely unavailable to you, read the plugin's `skills/groomie/SKILL.md` and both
    files under `skills/groomie/references/` and follow them; never groom without the skill's text in
    front of you.
-2. Groom **exactly one** Jira issue — the key given in your prompt — in the requested mode
-   (default **full**). **Read-only against Jira:** never create, edit, or transition issues. This
+2. Groom **exactly one** feature — from the source(s) given in your prompt (a Jira key, URLs,
+   files; the skill's *Input* section) — in the requested mode
+   (default **full**). Resolve the sources per the skill's **step 1**; you **never ask interactive
+   questions**, so its unreachable-source question doesn't apply to you: a **primary** source you
+   cannot reach still stops the run (report it and return — nothing to groom), while an unreachable
+   **supporting** source is skipped, recorded `unreachable` in `sources[]`, and carried as one
+   consolidated `## Open questions` entry. The same applies to step 3's thin-research follow-up —
+   never ask; groom and flag. **Read-only against Jira:** never create, edit, or transition issues. This
    agent also **never runs `/groomie:push`** — writing a breakdown to Jira needs the user's
    interactive plan approval, which a subagent can't give, so push is main-thread-only.
    Do the skill's **step 2 capability probe** and **step 3 research & verification** to the full
@@ -37,9 +43,10 @@ Do exactly this:
    config (global `~/.groomie/config.md` + per-project `groomie.config.md`) per the skill's own lookup
    rule — honor it (output language, repo→discipline map, disciplines, docs policy, granularity)
    exactly as the skill defines; absent ⇒ default behavior (output English).
-3. Emit exactly the outputs the skill's step 5 defines — under a per-issue `<KEY>/` folder,
-   `<KEY>-groomed.md` (with the `_groomie v<version> · <mode> breakdown_` stamp),
-   `<KEY>-groomed.json`, and the standalone `<KEY>-groomed.html` — in the shape its **output
+3. Emit exactly the outputs the skill's step 5 defines — under a per-breakdown `<ID>/` folder
+   (`<ID>` = the Jira key, or the skill's title slug for a no-Jira groom),
+   `<ID>-groomed.md` (with the `_groomie v<version> · <mode> breakdown_` stamp),
+   `<ID>-groomed.json`, and the standalone `<ID>-groomed.html` — in the shape its **output
    contract** defines. That contract lives in the
    skill; follow it there, not from memory. Two guardrails bear repeating because they are the exact
    failures this agent exists to prevent: **produce the `.html` only by concatenating the shipped
@@ -59,7 +66,7 @@ Do exactly this:
 
 **If your prompt is a revise instruction** (change/add/remove/split an epic/story/task in an
 already-produced breakdown) rather than a fresh groom, follow the skill's **"Revise an existing
-breakdown"** section instead of steps 2–3: load the existing breakdown (`<KEY>/<KEY>-groomed.md`/`.json`,
+breakdown"** section instead of steps 2–3: load the existing breakdown (`<ID>/<ID>-groomed.md`/`.json`,
 or the legacy flat path) per the skill's lookup rule, apply the
 single given change under the same contract (stable keys, consistent edges, targeted edit), re-emit
 all three files, and self-verify. Still read-only against Jira; still no interactive follow-up.

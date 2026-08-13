@@ -265,7 +265,7 @@ the project's already-filed stories use (researched opportunistically) — else 
 The user sets all of this **by conversation**, never by hand. Running `/groomie:config outputs in
 Turkish` while chatting in English makes Groomie add an `## Output language` section with a `- Turkish`
 bullet (the documented schema, not an inline `Heading: value`) to the global `~/.groomie/config.md`
-and reply `Set Output language = Turkish (global).` — it does **not** groom. The next `/groomie <KEY>`
+and reply `Set Output language = Turkish (global).` — it does **not** groom. The next `/groomie <ID>`
 then produces the breakdown **content in Turkish** (epic/story/task prose, node labels) while the
 conversation stays in English and the skeleton stays fixed: the keys (`S1`/`T1`), the `[Discipline]`
 prefixes, the `Blocks:` / `Is blocked by:` link markers, the `Acceptance Criteria` /
@@ -281,20 +281,21 @@ the JSON `jira` ledger (see the breakdown guide's *Jira write-back* section). Wo
 slice** of the auth breakdown — epic `E1`, story `S1`, task `T1`, bug `B1` — for brevity; all keys
 synthetic.
 
-**First push** — the ledger is empty, so everything is a CREATE. Groomie asks the epic mode (say
-"new epic") and prints the plan, then waits:
+**First push** — the ledger is empty, so everything is a CREATE. Groomie confirms the target
+project (defaulting to the source issue's — say the user keeps `PROJ`) and prints the plan, then
+waits:
 
 ```
-Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
+Push plan for PROJ-123 → project PROJ
   CREATE    epic E1, S1 (Story), T1 (Task), B1 (Bug)
-  LINKS     T1 blocks S1
+  LINKS     T1 blocks S1 · E1 relates to PROJ-123 (source — never modified)
 Approve? (nothing is written until you confirm)
 ```
 
 On approval it creates the issues in order and records each key, leaving this ledger in the `.json`:
 
 ```json
-"jira": { "project": "PROJ", "epicMode": "new-epic",
+"jira": { "project": "PROJ",
           "pushed": { "E1": "PROJ-450", "S1": "PROJ-457", "T1": "PROJ-460", "B1": "PROJ-461" },
           "tombstoned": [] }
 ```
@@ -303,7 +304,7 @@ On approval it creates the issues in order and records each key, leaving this le
 gone from the breakdown but still in the ledger ⇒ tombstone. No duplicates are created:
 
 ```
-Push plan for PROJ-123 → project PROJ  (epic mode: new epic)
+Push plan for PROJ-123 → project PROJ
   UPDATE    E1 → PROJ-450, S1 → PROJ-457, T1 → PROJ-460   (summary + description + links)
   [deleted] B1 → PROJ-461  (removed from the breakdown)   ⚠ destructive
 ```

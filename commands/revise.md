@@ -1,5 +1,5 @@
 ---
-description: "Revise an already-produced Groomie breakdown in place — add / remove / split / edit an epic, story, or task. Usage: /groomie:revise <ISSUE-KEY> <change>"
+description: "Revise an already-produced Groomie breakdown in place — add / remove / split / edit an epic, story, or task. Usage: /groomie:revise <ID> <change>"
 ---
 
 Revise an existing groomed breakdown. Arguments: `$ARGUMENTS`
@@ -9,14 +9,15 @@ follow its **"Revise an existing breakdown"** section — do the targeted-edit f
 Do **not** hand this to a general-purpose subagent (it would drop the skill's rules); if it must run
 in a subagent, dispatch the dedicated `groomie` agent instead.
 
-From `$ARGUMENTS`, take the issue key and the natural-language change (e.g.
+From `$ARGUMENTS`, take the breakdown id — the Jira key, or the slug of a no-Jira groom (the
+closing block of the groom named it) — and the natural-language change (e.g.
 `/groomie:revise PROJ-123 split T3 into two tasks`, `remove S2`, `add a [Frontend] task for the
 empty-state`, `the epic's business value is wrong — it's X`).
 
-- The breakdown must already exist as a pair — `<ISSUE-KEY>/<ISSUE-KEY>-groomed.md` **and**
-  `<ISSUE-KEY>/<ISSUE-KEY>-groomed.json` together under the per-issue folder (or the legacy flat
-  `<ISSUE-KEY>-groomed.{md,json}` in the working directory, for pre-folder outputs). If that pair
-  isn't found in either location, tell the user to run `/groomie <ISSUE-KEY>` first — do **not**
+- The breakdown must already exist as a pair — `<ID>/<ID>-groomed.md` **and**
+  `<ID>/<ID>-groomed.json` together under the per-breakdown folder (or the legacy flat
+  `<ID>-groomed.{md,json}` in the working directory, for pre-folder outputs). If that pair
+  isn't found in either location, tell the user to run `/groomie <ID>` first — do **not**
   silently groom a fresh one.
 - Apply the change under the same breakdown rules, keep existing keys stable (retire removed ones,
   never renumber), keep the MD `Blocks:` / `Is blocked by:` lines and the JSON edges in agreement,
@@ -29,4 +30,4 @@ empty-state`, `the epic's business value is wrong — it's X`).
 Read-only against Jira — research the code/ticket only if the change adds genuinely new technical
 content. Never write anything back to Jira.
 
-If no issue key is present in `$ARGUMENTS`, ask the user for one before doing anything else.
+If no breakdown id is present in `$ARGUMENTS`, ask the user for one before doing anything else.
