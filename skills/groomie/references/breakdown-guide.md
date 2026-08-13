@@ -461,7 +461,8 @@ hyphens, cap at ~40 chars without cutting mid-word (`Checkout Redesign — Phase
 
 **Sameness is the primary ref, not the folder name.** Reuse the existing folder whose JSON
 `sources[]` has the **same primary ref** — including when the source was retitled and today's slug
-differs (don't fork a duplicate; check existing `*-groomed.json` files for the ref before creating
+differs (don't fork a duplicate; check existing `*/*-groomed.json` files — and any legacy flat
+`*-groomed.json` — for a matching primary `sources[]` ref before creating
 a new folder). Conversely, a slug collision with a **different** primary ref is a different
 breakdown — never overwrite it: pick a distinct slug (interactive: ask for a name;
 non-interactive: extend the slug with a distinguishing word from the ref). Never create a numbered
@@ -784,7 +785,9 @@ section defines the data contract; the flow defines the behavior.
 stories/tasks/bugs as their children — and UPDATEs issues Groomie itself created on a prior push
 (plus the one legacy exception below: a pre-0.19 `source-as-epic` ledger keeps updating the epic
 it already owns, which is the source issue itself).
-When the breakdown has a Jira source, each created epic gets a **"relates to"** link to that source
+When the breakdown has a Jira source — the primary one when it is a Jira issue, else the first
+`kind:"jira"` entry in `sources[]` (the same pick everywhere: this link **and** the push project
+default) — each created epic gets a **"relates to"** link to that source
 issue (*verify on demo Jira*) — the one trace push leaves on it; with no Jira source the link is
 simply omitted. The source issue holds the user's raw idea and its discussion — overwriting it would
 destroy the very input Groomie grooms from.
@@ -800,9 +803,14 @@ breakdown:
 }
 ```
 
-- `pushed` maps a groomie node id → the Jira key groomie created/owns for it. **Entries are never
+- `pushed` maps a groomie node id → the Jira issue groomie created/owns for it. New writes use the
+  object form `{ "key": "PROJ-457", "summary": "<the title as pushed>" }`; a bare string key is the
+  legacy form and stays valid (read both). Recording the pushed summary is what lets a later push
+  **show drift**: an UPDATE whose recorded summary no longer matches the node's current title is
+  rendered old → new in the plan preview, so a re-groom that silently re-used a node id can't
+  overwrite a live issue unnoticed. **Entries are never
   removed** — a node later dropped from the breakdown keeps its entry so its now-orphan Jira issue can
-  still be found and tombstoned. Each key is written **immediately** after a successful create, so a
+  still be found and tombstoned. Each entry is written **immediately** after a successful create, so a
   mid-run failure resumes as an UPDATE, never a duplicate CREATE.
 - `tombstoned` is the list of node ids already `[deleted]`-marked; the push flow skips these so it
   never re-prepends the prefix (a local check — no live Jira read needed).

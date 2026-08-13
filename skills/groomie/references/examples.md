@@ -186,6 +186,24 @@ Only reproduces for addresses on custom domains; Gmail/Outlook are unaffected.
 (No `affects:` / no story-link block, and no diagram edge — the bug is just a red node inside its
 epic subgraph.)
 
+## Sources
+
+When the groom used more than the one primary Jira issue, the document carries a `## Sources`
+section (after `## Open questions`, before `## Diagram`) — one bullet per resolved source, the
+primary marked, unreachable/skipped ones labelled with their reason:
+
+```markdown
+## Sources
+
+- [PROJ-123 — User authentication for the platform](https://example.atlassian.net/browse/PROJ-123) — primary
+- [Authentication PRD](https://example.atlassian.net/wiki/spaces/PS/pages/1/Authentication+PRD)
+- https://example.com/security-checklist.pdf — unreachable (401), assumptions listed under Open questions
+```
+
+The same list lives in the JSON's `sources[]` (with `kind`/`status`/`primary`), which
+revise/tasks/re-grooms preserve. When the only source is the primary Jira issue, the section is
+omitted — the key says it already.
+
 ## Anti-patterns (what a groomed doc must never do)
 
 Calibration on a **backfill/migration** issue — one that copies existing data into a new store and

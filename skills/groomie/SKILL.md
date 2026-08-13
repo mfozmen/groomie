@@ -331,7 +331,10 @@ rules. Omit the `## Diagram` when there are no nodes.
 `<ID>-groomed.json`, the fresh groom overwrites the *graph* (nodes/edges/mode) but **carries the
 old JSON's `jira` ledger forward unchanged and merges its `sources[]`** (old entries kept, this
 run's added) — dropping the ledger would make the next `/groomie:push` duplicate every issue it
-had already created.
+had already created. A carried ledger entry may now point at a node whose *content* changed (a
+re-groom can re-use `S1` for a different story) — that drift is not resolved here; it is **exposed
+at push time**: the ledger records each pushed summary, and the push preview renders any mismatch
+old → new (see *Push to Jira* step 4) so the user approves the overwrite knowingly.
 
 **Save it to a file AND print it.** Write the document to `<ID>/<ID>-groomed.md` — a
 per-breakdown folder named for the step-1 identity (Jira key or slug) in the current working
@@ -610,7 +613,9 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
    and tell the user to connect it (a breakdown groomed from URLs/files never needed the MCP,
    but the push always does). Then: **if `jira.project` is
    already recorded** (a prior push), reuse it — never re-ask — and skip to step 3. Otherwise:
-   - The breakdown **has a Jira source** (`sources[]`, or a Jira-key `<ID>`) ⇒ ask, with that
+   - The breakdown **has a Jira source** — the primary one when it is a Jira issue, else the
+     **first** `kind:"jira"` entry in `sources[]` (the same pick the per-epic "relates to" link
+     uses) ⇒ ask, with that
      source's project as the default: *create the epic(s) under the source issue's project
      (`<PROJ>`), or a different project?* Confirming keeps `<PROJ>`.
    - **No Jira source** ⇒ ask for the target project key outright.
@@ -633,10 +638,17 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
    ```
    Push plan for PROJ-123 → project PROJ
      CREATE    epic E1, S4 (Story), T3 (Task)
-     UPDATE    S1 → PROJ-457, T1 → PROJ-460      (summary + description + links)
+     UPDATE    S1 → PROJ-457 — unchanged title
+     UPDATE    T1 → PROJ-460  ⚠ drift: was "Implement the login API endpoints"
+                                 → now "Implement passwordless login"
      [deleted] T9 → PROJ-462  (removed from the breakdown)   ⚠ destructive
      LINKS     T1 blocks S1 · E1 relates to PROJ-123 (source — never modified)
    ```
+   Every **UPDATE** compares the node's current title against the summary the ledger recorded at
+   the last push (the guide's ledger rule): a match renders as `unchanged title`; a mismatch is
+   marked **⚠ drift** with the old → new titles, so an overwrite coming from a re-groom (not just
+   a revise) is visible **before** approval — never discovered in Jira afterwards. A legacy bare-key
+   ledger entry (no recorded summary) renders `(no recorded title — verify before approving)`.
 5. **Await explicit approval.** If the user declines, make **no** Jira call and stop.
 6. **Execute in dependency order** via the MCP: **epic(s) → stories → tasks/bugs → links**.
    - **First, save `<ID>-groomed.json` to disk with the step-2 `jira.project`** **before the first
@@ -652,7 +664,9 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
      fenced ```mermaid `flowchart TD` (the guide's *Fields* mapping + *Diagram (mermaid)* rules,
      same renderer as the `.md`'s `## Diagram`). Because the whole epic description is rewritten on
      every push, the map is regenerated each time and always reflects the current breakdown.
-   - **After *every* Jira write that changes the ledger** — a created key added to `jira.pushed`, or
+   - **After *every* Jira write that changes the ledger** — a created issue added to `jira.pushed`
+     (the object form: `{ "key": …, "summary": <the title as pushed> }`; an UPDATE refreshes the
+     recorded summary), or
      an orphan's id added to `jira.tombstoned` — **save `<ID>-groomed.json` to disk immediately**,
      before the next Jira call. Never batch these in memory to flush at the end: a mid-run failure
      must resume with the locked project, already-created issues as UPDATE, and tombstones not repeated.
