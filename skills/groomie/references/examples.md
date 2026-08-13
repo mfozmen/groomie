@@ -314,7 +314,11 @@ On approval it creates the issues in order and records each key, leaving this le
 
 ```json
 "jira": { "project": "PROJ",
-          "pushed": { "E1": "PROJ-450", "S1": "PROJ-457", "T1": "PROJ-460", "B1": "PROJ-461" },
+          "pushed": {
+            "E1": { "key": "PROJ-450", "summary": "Enable Traditional Authentication" },
+            "S1": { "key": "PROJ-457", "summary": "As a user, I want to create an account using email and password, so that I can have my own personal access to the platform." },
+            "T1": { "key": "PROJ-460", "summary": "[Backend] Design and implement user schema and database tables" },
+            "B1": { "key": "PROJ-461", "summary": "Verification email is never delivered on signup" } },
           "tombstoned": [] }
 ```
 
@@ -323,7 +327,9 @@ gone from the breakdown but still in the ledger ⇒ tombstone. No duplicates are
 
 ```
 Push plan for PROJ-123 → project PROJ
-  UPDATE    E1 → PROJ-450, S1 → PROJ-457, T1 → PROJ-460   (summary + description + links)
+  UPDATE    E1 → PROJ-450 — unchanged title
+  UPDATE    S1 → PROJ-457 — unchanged title
+  UPDATE    T1 → PROJ-460 — unchanged title
   [deleted] B1 → PROJ-461  (removed from the breakdown)   ⚠ destructive
 ```
 

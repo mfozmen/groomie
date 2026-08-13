@@ -798,10 +798,17 @@ breakdown:
 ```json
 "jira": {
   "project": "PROJ",
-  "pushed": { "E1": "PROJ-456", "S1": "PROJ-457", "T1": "PROJ-460" },
+  "pushed": {
+    "E1": { "key": "PROJ-456", "summary": "Enable Traditional Authentication" },
+    "S1": { "key": "PROJ-457", "summary": "As a user, I want to create an account …, so that …." },
+    "T1": "PROJ-460"
+  },
   "tombstoned": []
 }
 ```
+
+(`T1` above shows the legacy bare-string form a pre-drift ledger may still carry — read both;
+new writes always use the object form.)
 
 - `pushed` maps a groomie node id → the Jira issue groomie created/owns for it. New writes use the
   object form `{ "key": "PROJ-457", "summary": "<the title as pushed>" }`; a bare string key is the
