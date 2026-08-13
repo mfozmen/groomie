@@ -514,7 +514,7 @@ node you removed from the breakdown gets a soft **`[deleted]`** prefix on its Ji
 Groomie creates its own fresh epic(s) and links each back to the source issue with a "relates to"
 link. (Breakdowns first pushed with the old `source-as-epic` mode keep updating the epic they
 already own.) On the first push it confirms the target project once (your source issue's project is the
-default) and remembers it.
+default; with no Jira source it simply asks which project to use) and remembers it.
 
 The pushed **epic carries the dependency map**: its description ends with a `### Dependency map`
 section — the same blocker graph as the breakdown, as a mermaid diagram — so the map lives on the

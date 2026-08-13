@@ -452,8 +452,9 @@ A Jira issue is one kind of source, not a prerequisite.
 
 **Kinds and identity.** `kind ∈ jira | confluence | web | file`. The breakdown's identity `<ID>` —
 folder name, file names, and what `revise`/`tasks`/`push`/`review` resolve by — is decided by the
-**primary** source alone: a Jira-issue primary ⇒ its **key** (a supporting Jira key never names the
-breakdown); anything else ⇒ a **slug of the primary source's title** — its document title or first
+**primary** source alone: a Jira-issue primary ⇒ its **key** — whether it was given as a bare key
+or as a Jira issue URL, the resolved key names the breakdown (a supporting Jira key never does);
+anything else ⇒ a **slug of the primary source's title** — its document title or first
 heading, falling back to the file-name stem or the URL's last path segment when it has neither:
 strip markup, lowercase, non-alphanumerics → single hyphens, trim leading/trailing
 hyphens, cap at ~40 chars without cutting mid-word (`Checkout Redesign — Phase 2` →
