@@ -783,10 +783,10 @@ section defines the data contract; the flow defines the behavior.
 
 **The source issue is never written to.** Push only CREATEs Groomie's own epic(s) — with the
 stories/tasks/bugs as their children — and UPDATEs issues Groomie itself created on a prior push
-(plus the one legacy exception below: a pre-0.19 `source-as-epic` ledger keeps updating the epic
+(plus the one legacy exception below: a ledger from the removed `source-as-epic` mode keeps updating the epic
 it already owns, which is the source issue itself).
 When the breakdown has a Jira source — the primary one when it is a Jira issue, else the first
-`kind:"jira"` entry in `sources[]` (the same pick everywhere: this link **and** the push project
+`kind:"jira"` entry with `status: "used"` in `sources[]` (the same pick everywhere: this link **and** the push project
 default) — each created epic gets a **"relates to"** link to that source
 issue (*verify on demo Jira*) — the one trace push leaves on it; with no Jira source the link is
 simply omitted. The source issue holds the user's raw idea and its discussion — overwriting it would
@@ -822,7 +822,8 @@ new writes always use the object form.)
 - `tombstoned` is the list of node ids already `[deleted]`-marked; the push flow skips these so it
   never re-prepends the prefix (a local check — no live Jira read needed).
 - The epic gets a fresh created key like the stories/tasks — never the source issue's key.
-  **Legacy back-compat:** a pre-0.19 ledger may carry `epicMode: "source-as-epic"` and map the epic
+  **Legacy back-compat:** a ledger written while the removed mode existed may carry
+  `epicMode: "source-as-epic"` and map the epic
   node to the source issue key itself (the removed mode that updated the source in place). The
   ledger governs: that epic keeps classifying as UPDATE of its recorded key, so a re-push never
   duplicates or strands it — but it is **never tombstoned**: if its node is gone from the

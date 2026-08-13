@@ -23,7 +23,7 @@ From `$ARGUMENTS`, take the breakdown id — the Jira key, or the slug of a no-J
   status / assignee / sprint / other non-Groomie fields.
 - It **never modifies the source issue**: push only creates Groomie's own epic(s) with their
   children, linking each epic to the source issue (when the breakdown has one) with a "relates to"
-  link. (One legacy exception: a breakdown pushed with the old pre-0.19 `source-as-epic` mode keeps
+  link. (One legacy exception: a breakdown pushed with the removed `source-as-epic` mode keeps
   updating the epic its ledger already owns — which is the source issue itself.) The target project is confirmed once on the first push (a Jira source's project offered as
   the default) and recorded.
 

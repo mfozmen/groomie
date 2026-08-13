@@ -598,7 +598,8 @@ local config files, never Jira. Run this:
 preview**. **It never modifies the source issue**: push only CREATEs Groomie's own epic(s) — split
 at the boundary the guide's multi-epic rule sets — with the stories/tasks/bugs as their children,
 and UPDATEs what Groomie itself created on a prior push. (The one exception is a **legacy
-pre-0.19 ledger** whose epic maps to the source issue key from the removed `source-as-epic`
+legacy ledger — one written while the removed `source-as-epic`
+mode existed —** whose epic maps to the source issue key from that
 mode — the ledger governs, so that epic keeps updating in place; see step 3.) The source issue (when the breakdown has a
 Jira source) is only **linked** from each created epic with a "relates to" link — the one trace push
 leaves on it. Run it **in the main thread** (it needs interactive approval); never delegate it. See
@@ -614,7 +615,8 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
    but the push always does). Then: **if `jira.project` is
    already recorded** (a prior push), reuse it — never re-ask — and skip to step 3. Otherwise:
    - The breakdown **has a Jira source** — the primary one when it is a Jira issue, else the
-     **first** `kind:"jira"` entry in `sources[]` (the same pick the per-epic "relates to" link
+     **first** `kind:"jira"` entry with `status: "used"` in `sources[]` — never an
+     unreachable/skipped one (the same pick the per-epic "relates to" link
      uses) ⇒ ask, with that
      source's project as the default: *create the epic(s) under the source issue's project
      (`<PROJ>`), or a different project?* Confirming keeps `<PROJ>`.
@@ -623,9 +625,8 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
    non-interactive branch here; a session that can't ask can't approve step 5 either.)
 3. **Classify every node against the ledger** (`jira.pushed`, empty/absent on a first push): a node
    **in** the ledger ⇒ **UPDATE** its Jira key; a node **absent** ⇒ **CREATE** — so a first push
-   CREATEs the epic(s), never repurposes an existing issue. (**Legacy back-compat:** a pre-0.19
-   ledger may map an epic node to the source issue key itself, from the removed `source-as-epic`
-   mode — the ledger governs, so that epic keeps classifying as UPDATE of that key; never seed a
+   CREATEs the epic(s), never repurposes an existing issue. (**Legacy back-compat:** a ledger written while the removed
+   `source-as-epic` mode existed may map an epic node to the source issue key itself — the ledger governs, so that epic keeps classifying as UPDATE of that key; never seed a
    *new* ledger this way. The one thing that overrides the ledger: such a source-mapped epic is
    **never tombstoned** — if its node is gone from the breakdown, leave the source issue's title
    untouched, skip the `[deleted]` write, and report it for the user to resolve by hand.) Any ledger entry whose node id is **no longer in the
@@ -656,7 +657,9 @@ the guide's *Jira write-back* section for the ledger + mapping contract. Run thi
      retried.
    - Per node, create or update **only** summary + description per the guide's field mapping, and set
      the epic-child link on create; create any missing `blocks`(→"Blocks") links (bugs get no
-     bug→story link) and the per-epic "relates to" link to the source issue when there is one;
+     bug→story link) and — **only when missing** (skip it if the link already exists between the
+     two keys, like every other link) — the per-epic "relates to" link to the source issue when
+     there is one;
      prepend `[deleted] ` to each orphan's summary and add its id to `jira.tombstoned` (the
      local record step 3 reads, so a later re-push never re-tombstones it). **Never** touch
      status/assignee/sprint/other fields.
