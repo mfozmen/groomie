@@ -428,11 +428,11 @@ allow), or plain "user" — Groomie never guesses a job title.
 /plugin install groomie
 ```
 
-Or from my marketplace, alongside my other Claude Code plugins:
+Or from my devkit marketplace, alongside my other Claude Code plugins:
 
 ```
-/plugin marketplace add mfozmen/claude-plugins
-/plugin install groomie@mfozmen
+/plugin marketplace add mfozmen/devkit
+/plugin install groomie@devkit
 ```
 
 ## Usage
