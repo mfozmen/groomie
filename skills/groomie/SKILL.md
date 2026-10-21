@@ -77,10 +77,11 @@ Work through these steps in order. Announce each briefly so the user can follow.
 Fetch **every** source the user gave, each with the reader that fits its kind: a **Jira
 issue or Confluence page** via the **Atlassian MCP** (tool names vary by install — look for
 the "get Jira issue" / "get Confluence page" tools, commonly `getJiraIssue` /
-`getConfluencePage` or similar), a **URL** via `webfetch`, a **file path** via `read`.
+`getConfluencePage` or similar), a **URL** via the session's URL-fetch tool, a **file path** via
+its file-read tool.
 A URL that *looks* like Jira/Confluence but isn't on `*.atlassian.net` (a self-hosted
 instance — a `/browse/KEY-123` or `/wiki/` path shape) goes to the **MCP first**, falling
-back to `webfetch` if the MCP can't read it; a source's `kind` (step 5) records what
+back to the URL-fetch tool if the MCP can't read it; a source's `kind` (step 5) records what
 actually read it — **by design**: a Jira instance the MCP can't reach can't be harvested,
 linked, or pushed to either, so it is `kind:"web"` and deliberately does not count as the
 breakdown's Jira source for push's project default or the "relates to" link.
@@ -122,10 +123,10 @@ research depth. Do not assume any company-specific tool exists — Groomie is op
 
 Look for, in rough order of usefulness:
 - A code/knowledge search tool (e.g. an internal engineering knowledge base MCP, a repo
-  the session is opened in, `grep`/`glob` over local code) — for how the feature fits
-  the actual system.
-- Web research (`websearch` / `webfetch`) — for domain, standards, prior art.
-- Subagents (the `task` tool) — to fan out research without bloating context.
+  the session is opened in, content search / file-name search over local code) — for how the
+  feature fits the actual system.
+- Web research (web search / URL fetch) — for domain, standards, prior art.
+- Subagents (the session's agent/task tool) — to fan out research without bloating context.
 
 Say one line about what you found and the depth you'll use. If nothing beyond the given
 sources is available, say so and groom from the source text alone — that is a valid mode.
@@ -165,7 +166,8 @@ down honestly. When these inputs exist, using them is **not optional**:
 - **Follow the links** — the parent epic, the tech-design / PRD, and every linked or
   sibling issue; together they define the feature's true scope and boundaries.
 - **Read the actual code** — whenever a codebase is reachable (a knowledge-base MCP, the
-  repo the session is in, `grep`/`glob`), inspect it before writing technical tasks: the
+  repo the session is in, content search / file-name search), inspect it before writing technical
+  tasks: the
   real endpoints, tables, services, and how components call each other. **When a codebase
   is reachable, never write technical tasks from the ticket's prose alone** — verify them
   against the code, since the ticket is frequently wrong or stale (it may name the wrong

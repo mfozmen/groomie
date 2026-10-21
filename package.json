@@ -27,7 +27,9 @@
   },
   "scripts": {
     "release": "release-it",
-    "test:opencode": "node --test opencode/plugin.test.mjs"
+    "test": "node --test opencode/plugin.test.mjs skills/groomie/scripts/emit-html.test.mjs",
+    "test:opencode": "node --test opencode/plugin.test.mjs",
+    "test:emit-html": "node --test skills/groomie/scripts/emit-html.test.mjs"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^10.0.0",

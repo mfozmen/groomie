@@ -1,6 +1,6 @@
 # Groomie
 
-<!-- SonarCloud metrics below cover the companion `visualizer/` app — the plugin itself is prompt-only markdown. -->
+<!-- SonarCloud metrics below cover the companion `visualizer/` app; the OpenCode plugin and its scripts are tested separately with Node's test runner. -->
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
 [![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
 [![Security](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
@@ -345,7 +345,7 @@ revise still knows them), and a standalone **`<ID>-groomed.html`** — the inter
 your breakdown baked in: epics as containers, stories/tasks/bugs nested, blockers as arrows.
 **Offline, double-click to open, no server or install.**
 
-![The Groomie visualizer: a purple epic container holding blue tasks, green stories and a red bug, with blocker arrows, and a details panel on the right.](docs/visualizer.png)
+![The Groomie visualizer: a purple epic container holding blue tasks, green stories and a red bug, with blocker arrows, and a details panel on the right.](https://raw.githubusercontent.com/mfozmen/groomie/main/docs/visualizer.png)
 
 <sub>The `<ID>-groomed.html` output on synthetic demo data (Jira-default colours — epic purple, story green, task blue, bug red). Click a node for its acceptance criteria, tasks, or repro.</sub>
 
@@ -438,10 +438,11 @@ Or from my devkit marketplace, alongside my other Claude Code plugins:
 /plugin install groomie@devkit
 ```
 
-### OpenCode
+### OpenCode (1.x)
 
-Groomie is an OpenCode plugin package. Its entry point (`opencode/plugin.js`) registers the
+Groomie is an OpenCode 1.x plugin package. Its entry point (`opencode/plugin.js`) registers the
 bundled `groomie` and `review` skills, the `/groomie` command family, and the `groomie` subagent.
+OpenCode 2.x uses a different plugin API; this package does not load there yet.
 
 Install it from npm (once published):
 
@@ -633,5 +634,5 @@ chose to split the work.
 
 ---
 
-What's next? See the [roadmap](docs/ROADMAP.md). Contributing? See [CONTRIBUTING.md](CONTRIBUTING.md).
+What's next? See the [roadmap](https://github.com/mfozmen/groomie/blob/main/docs/ROADMAP.md). Contributing? See [CONTRIBUTING.md](https://github.com/mfozmen/groomie/blob/main/CONTRIBUTING.md).
 Licensed under [MIT](LICENSE).

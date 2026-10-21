@@ -31,8 +31,8 @@ those rules and adding real before/after examples to `examples.md` — no model 
   (`.github/workflows/claude-review.yml`). The review needs a `CLAUDE_CODE_OAUTH_TOKEN`
   repo secret — generate it with `claude setup-token`.
 - **TDD** for any deterministic code. The grooming logic itself is the LLM's, but the
-  `visualizer/` companion app and the OpenCode plugin have real code — unit-test them with
-  vitest (`npm --prefix visualizer test`) and Node's test runner (`npm run test:opencode`).
+  `visualizer/` companion app and the OpenCode plugin/helper scripts have real code — unit-test
+  them with vitest (`npm --prefix visualizer test`) and Node's test runner (`npm test`).
 - **SonarCloud** (`.github/workflows/sonarcloud.yml`) runs static analysis + coverage on
   `visualizer/`; its quality gate (`SonarCloud Code Analysis`) is a **required** check
   alongside the Claude review. Coverage comes from vitest — run `npm --prefix visualizer run
