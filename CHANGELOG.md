@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0](https://github.com/mfozmen/groomie/compare/v1.0.0...v1.1.0) (2026-10-21)
+
+### Features
+
+* **opencode:** ship Groomie as an OpenCode 1.x plugin, plus npm releases with trusted publishing ([#62](https://github.com/mfozmen/groomie/issues/62)) ([4e3ae8d](https://github.com/mfozmen/groomie/commit/4e3ae8d7ec34bdd33584203f79ccbb178ea3090b))
+
 ## [1.0.0](https://github.com/mfozmen/groomie/compare/v0.18.1...v1.0.0) (2026-08-13)
 
 ### Features
