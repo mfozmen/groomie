@@ -58,13 +58,26 @@ It bumps the version (in both `package.json` and `.claude-plugin/plugin.json`), 
 Conventional Commits.
 
 Publishing that GitHub release triggers `.github/workflows/publish.yml`, which runs the tests and
-publishes the tagged version to npm with provenance. Add a repository secret named `NPM_TOKEN`
-once: create a granular npm access token with publish access to `groomie` and save it under
-**Settings → Secrets and variables → Actions**. The package is unscoped and public.
+publishes the tagged version to npm through [trusted publishing](https://docs.npmjs.com/trusted-publishers)
+(OIDC, no long-lived token). Provenance is generated automatically.
 
-The workflow only runs for releases created after it is merged. To publish an already-tagged
-version (for example `v1.0.0`), publish it manually once from `main`:
+Trusted publishing can only be configured after the package exists, so the first publish is manual:
+
+1. From `main`, publish the current version:
 
 ```
 npm publish --access public
 ```
+
+2. On npmjs.com, open the `groomie` package → **Settings → Trusted Publisher → GitHub Actions**
+   and set:
+
+   - **Organization or user**: `mfozmen`
+   - **Repository**: `groomie`
+   - **Workflow filename**: `publish.yml`
+   - **Allowed actions**: `npm publish`
+
+3. Optional hardening: **Settings → Publishing access** → require 2FA and disallow tokens.
+
+After that, every GitHub release publishes automatically. The workflow filename must match
+exactly, and the workflow only runs for releases created after it is merged.
