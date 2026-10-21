@@ -12,6 +12,10 @@ skills/groomie/
     breakdown-guide.md   # epic / story / task rules + the output shape
     examples.md          # gold-standard worked examples (the calibration set)
 commands/                # slash commands: /groomie (+ /groomie:full, /groomie:stories)
+agents/                  # the faithful `groomie` subagent prompt
+opencode/
+  plugin.js              # OpenCode plugin: registers skills, commands, and the subagent
+  commands/              # OpenCode command templates (same commands as commands/)
 .claude-plugin/          # plugin + marketplace manifests
 .github/workflows/       # required Claude AI review + SonarCloud
 visualizer/              # companion graph viewer (isolated app, not part of the plugin)
@@ -27,8 +31,8 @@ those rules and adding real before/after examples to `examples.md` — no model 
   (`.github/workflows/claude-review.yml`). The review needs a `CLAUDE_CODE_OAUTH_TOKEN`
   repo secret — generate it with `claude setup-token`.
 - **TDD** for any deterministic code. The grooming logic itself is the LLM's, but the
-  `visualizer/` companion app has real code — unit-test it with vitest (`npm --prefix
-  visualizer test`).
+  `visualizer/` companion app and the OpenCode plugin have real code — unit-test them with
+  vitest (`npm --prefix visualizer test`) and Node's test runner (`npm run test:opencode`).
 - **SonarCloud** (`.github/workflows/sonarcloud.yml`) runs static analysis + coverage on
   `visualizer/`; its quality gate (`SonarCloud Code Analysis`) is a **required** check
   alongside the Claude review. Coverage comes from vitest — run `npm --prefix visualizer run

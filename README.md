@@ -8,7 +8,8 @@
 
 Turn a messy feature idea into a clean, sprint-ready backlog breakdown — as markdown.
 
-Groomie is a [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin. Point it at
+Groomie is a [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin and an
+[OpenCode](https://opencode.ai) plugin. Point it at
 one badly-written, single-feature idea — a Jira issue, a Confluence page, a PRD link, a file,
 or several of these at once (vague, over-stuffed, no acceptance criteria)
 — and it recovers the real feature underneath, researches it as deeply as your environment
@@ -350,7 +351,7 @@ your breakdown baked in: epics as containers, stories/tasks/bugs nested, blocker
 
 ## Requirements
 
-- **Claude Code.**
+- **Claude Code or OpenCode.** The same skills, commands, and `groomie` subagent ship for both.
 - **Atlassian MCP** connected — needed whenever a source is a Jira issue or Confluence page,
   and for the opt-in `/groomie:push` writes. A groom whose sources are plain URLs or files
   doesn't need it at all.
@@ -423,6 +424,8 @@ allow), or plain "user" — Groomie never guesses a job title.
 
 ## Install
 
+### Claude Code
+
 ```
 /plugin marketplace add mfozmen/groomie
 /plugin install groomie
@@ -434,6 +437,31 @@ Or from my devkit marketplace, alongside my other Claude Code plugins:
 /plugin marketplace add mfozmen/devkit
 /plugin install groomie@devkit
 ```
+
+### OpenCode
+
+Groomie is an OpenCode plugin package. Its entry point (`opencode/plugin.js`) registers the
+bundled `groomie` and `review` skills, the `/groomie` command family, and the `groomie` subagent.
+
+Install it from npm (once published):
+
+```
+opencode plugin groomie
+```
+
+Or point OpenCode at a local clone — add the plugin file to `opencode.json` (or
+`opencode.jsonc`):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["./vendor/groomie/opencode/plugin.js"]
+}
+```
+
+Use the absolute path if the clone lives outside the project. Restart OpenCode after changing the
+config. The commands are the same `/groomie` family described below (for example `/groomie`,
+`/groomie:full`, `/groomie:stories`).
 
 ## Usage
 

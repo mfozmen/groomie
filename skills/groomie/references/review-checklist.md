@@ -21,7 +21,8 @@ answering every item below. Collect violations first; then fix them in **one bou
 - [ ] Body is exactly `**Description:**` + `**Business Value:**` (+ optional `**Design:**`
       when research surfaced mockups) — nothing else, no AC on the epic.
 - [ ] Version stamp `_groomie v<version> · <mode> breakdown_` sits under the first epic
-      heading, version matching `.claude-plugin/plugin.json`.
+      heading, version matching `.claude-plugin/plugin.json` (or `package.json` for OpenCode /
+      npm installs).
 
 ## Stories — the leak scan (run per story, title + description + AC)
 

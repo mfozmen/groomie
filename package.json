@@ -2,6 +2,22 @@
   "name": "groomie",
   "version": "1.0.0",
   "description": "Groom a messy single-feature idea — a Jira issue, Confluence page, URL, or file — into a clean epic / user-story / technical-task breakdown, with tasks blocking stories. Outputs markdown.",
+  "type": "module",
+  "main": "./opencode/plugin.js",
+  "exports": {
+    ".": "./opencode/plugin.js"
+  },
+  "files": [
+    "opencode/",
+    "skills/",
+    "commands/",
+    "agents/",
+    ".claude-plugin/",
+    "docs/groomie.config.example.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
   "license": "MIT",
   "author": "Mehmet Fahri Özmen",
   "homepage": "https://github.com/mfozmen/groomie",
@@ -10,7 +26,8 @@
     "url": "https://github.com/mfozmen/groomie.git"
   },
   "scripts": {
-    "release": "release-it"
+    "release": "release-it",
+    "test:opencode": "node --test opencode/plugin.test.mjs"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^10.0.0",

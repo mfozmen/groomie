@@ -77,10 +77,10 @@ Work through these steps in order. Announce each briefly so the user can follow.
 Fetch **every** source the user gave, each with the reader that fits its kind: a **Jira
 issue or Confluence page** via the **Atlassian MCP** (tool names vary by install — look for
 the "get Jira issue" / "get Confluence page" tools, commonly `getJiraIssue` /
-`getConfluencePage` or similar), a **URL** via `WebFetch`, a **file path** via `Read`.
+`getConfluencePage` or similar), a **URL** via `webfetch`, a **file path** via `read`.
 A URL that *looks* like Jira/Confluence but isn't on `*.atlassian.net` (a self-hosted
 instance — a `/browse/KEY-123` or `/wiki/` path shape) goes to the **MCP first**, falling
-back to `WebFetch` if the MCP can't read it; a source's `kind` (step 5) records what
+back to `webfetch` if the MCP can't read it; a source's `kind` (step 5) records what
 actually read it — **by design**: a Jira instance the MCP can't reach can't be harvested,
 linked, or pushed to either, so it is `kind:"web"` and deliberately does not count as the
 breakdown's Jira source for push's project default or the "relates to" link.
@@ -122,10 +122,10 @@ research depth. Do not assume any company-specific tool exists — Groomie is op
 
 Look for, in rough order of usefulness:
 - A code/knowledge search tool (e.g. an internal engineering knowledge base MCP, a repo
-  the session is opened in, `Grep`/`Glob` over local code) — for how the feature fits
+  the session is opened in, `grep`/`glob` over local code) — for how the feature fits
   the actual system.
-- Web research (`WebSearch` / `WebFetch`) — for domain, standards, prior art.
-- Subagents (the `Agent` / Task tool) — to fan out research without bloating context.
+- Web research (`websearch` / `webfetch`) — for domain, standards, prior art.
+- Subagents (the `task` tool) — to fan out research without bloating context.
 
 Say one line about what you found and the depth you'll use. If nothing beyond the given
 sources is available, say so and groom from the source text alone — that is a valid mode.
@@ -165,7 +165,7 @@ down honestly. When these inputs exist, using them is **not optional**:
 - **Follow the links** — the parent epic, the tech-design / PRD, and every linked or
   sibling issue; together they define the feature's true scope and boundaries.
 - **Read the actual code** — whenever a codebase is reachable (a knowledge-base MCP, the
-  repo the session is in, `Grep`/`Glob`), inspect it before writing technical tasks: the
+  repo the session is in, `grep`/`glob`), inspect it before writing technical tasks: the
   real endpoints, tables, services, and how components call each other. **When a codebase
   is reachable, never write technical tasks from the ticket's prose alone** — verify them
   against the code, since the ticket is frequently wrong or stale (it may name the wrong
@@ -322,8 +322,8 @@ _groomie v<version> · <mode> breakdown_
 
 `<mode>` is the active mode word: `full`, `stories`, or `estimate` (e.g.
 `_groomie v0.3.3 · stories breakdown_`). Read `<version>` from the `version` field of the plugin
-manifest at `$SKILL/../../.claude-plugin/plugin.json` (the same `$SKILL` base path used for the
-HTML step, e.g. `grep '"version"' "$SKILL/../../.claude-plugin/plugin.json"`). If it can't be
+manifest at `$SKILL/../../.claude-plugin/plugin.json` (Claude Code) or `$SKILL/../../package.json`
+(OpenCode / npm installs) — the same `$SKILL` base path used for the HTML step. If neither can be
 read, stamp `_groomie (version unknown) · <mode> breakdown_` rather than omitting the line.
 
 End with a **`## Diagram`** section — one fenced ```mermaid `flowchart TD` that renders the
@@ -382,11 +382,21 @@ if [ -s "$SKILL/assets/visualizer-head.html" ] && [ -s "$SKILL/assets/visualizer
 fi
 ```
 
+On Windows (OpenCode's shell is PowerShell there), or whenever `sed`/`cat` aren't available, use
+the bundled cross-platform helper instead — it performs the same concatenation and `<` escaping:
+
+```bash
+node "$SKILL/scripts/emit-html.mjs" <ID>/<ID>-groomed.json <ID>/<ID>-groomed.html
+```
+
+The helper exits non-zero if the template assets are missing; treat that exactly like the guard
+above (skip the HTML and say so).
+
 The guard means that if the two template assets can't be found (e.g. `$SKILL` wasn't resolved to
 this skill's real base path), you skip the HTML rather than write a truncated, broken file. Its
-path (when produced) goes in the closing block. If the assets are missing or `sed`/`cat` are unavailable,
-skip the HTML — the `.md` (with its mermaid diagram, which renders in any markdown viewer) and the
-`.json` are the primary outputs and always ship.
+path (when produced) goes in the closing block. If the assets are missing or neither the shell
+concat nor the Node helper can run, skip the HTML — the `.md` (with its mermaid diagram, which
+renders in any markdown viewer) and the `.json` are the primary outputs and always ship.
 
 **Close the final message with the file paths.** The message ends — after the printed breakdown
 and the self-review line (step 6) — with a short closing block: the per-breakdown folder and the files
