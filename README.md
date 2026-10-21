@@ -1,5 +1,9 @@
 # Groomie
 
+[![npm version](https://img.shields.io/npm/v/groomie?logo=npm&label=npm)](https://www.npmjs.com/package/groomie)
+[![npm downloads](https://img.shields.io/npm/dm/groomie?logo=npm&label=downloads)](https://www.npmjs.com/package/groomie)
+[![license](https://img.shields.io/npm/l/groomie)](https://github.com/mfozmen/groomie/blob/main/LICENSE)
+
 <!-- SonarCloud metrics below cover the companion `visualizer/` app; the OpenCode plugin and its scripts are tested separately with Node's test runner. -->
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
 [![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
@@ -424,34 +428,50 @@ allow), or plain "user" — Groomie never guesses a job title.
 
 ## Install
 
+Groomie ships the same skills, commands and `groomie` subagent for both harnesses. Pick yours:
+
 ### Claude Code
+
+Claude Code installs Groomie through its plugin marketplace (it does not use the npm package).
+
+1. Add the marketplace:
 
 ```
 /plugin marketplace add mfozmen/groomie
+```
+
+2. Install the plugin:
+
+```
 /plugin install groomie
 ```
 
-Or from my devkit marketplace, alongside my other Claude Code plugins:
+Or install from my devkit marketplace, alongside my other Claude Code plugins:
 
 ```
 /plugin marketplace add mfozmen/devkit
 /plugin install groomie@devkit
 ```
 
-### OpenCode (1.x)
+The `/groomie` commands are available after the plugin is installed. If they don't appear,
+restart Claude Code.
 
-Groomie is an OpenCode 1.x plugin package. Its entry point (`opencode/plugin.js`) registers the
-bundled `groomie` and `review` skills, the `/groomie` command family, and the `groomie` subagent.
-OpenCode 2.x uses a different plugin API; this package does not load there yet.
+### OpenCode 1.x
 
-Install it from npm (once published):
+Groomie is published to npm as [`groomie`](https://www.npmjs.com/package/groomie), and OpenCode
+installs it with its plugin manager:
 
 ```
 opencode plugin groomie
 ```
 
-Or point OpenCode at a local clone — add the plugin file to `opencode.json` (or
-`opencode.jsonc`):
+Then restart OpenCode. The plugin registers the bundled `groomie` and `review` skills, the
+`/groomie` command family, and the `groomie` subagent. The npm package is for OpenCode; Claude
+Code uses the marketplace above.
+
+OpenCode 2.x uses a different plugin API; this package does not load there yet.
+
+To use a local clone instead, add the plugin file to `opencode.json` (or `opencode.jsonc`):
 
 ```json
 {
@@ -460,9 +480,8 @@ Or point OpenCode at a local clone — add the plugin file to `opencode.json` (o
 }
 ```
 
-Use the absolute path if the clone lives outside the project. Restart OpenCode after changing the
-config. The commands are the same `/groomie` family described below (for example `/groomie`,
-`/groomie:full`, `/groomie:stories`).
+Use the absolute path if the clone lives outside the project. The commands are the same `/groomie`
+family described below (for example `/groomie`, `/groomie:full`, `/groomie:stories`).
 
 ## Usage
 

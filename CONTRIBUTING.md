@@ -56,3 +56,15 @@ npm run release
 It bumps the version (in both `package.json` and `.claude-plugin/plugin.json`), updates
 `CHANGELOG.md`, tags the release, and creates a GitHub release — all derived from your
 Conventional Commits.
+
+Publishing that GitHub release triggers `.github/workflows/publish.yml`, which runs the tests and
+publishes the tagged version to npm with provenance. Add a repository secret named `NPM_TOKEN`
+once: create a granular npm access token with publish access to `groomie` and save it under
+**Settings → Secrets and variables → Actions**. The package is unscoped and public.
+
+The workflow only runs for releases created after it is merged. To publish an already-tagged
+version (for example `v1.0.0`), publish it manually once from `main`:
+
+```
+npm publish --access public
+```
