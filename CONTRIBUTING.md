@@ -12,6 +12,10 @@ skills/groomie/
     breakdown-guide.md   # epic / story / task rules + the output shape
     examples.md          # gold-standard worked examples (the calibration set)
 commands/                # slash commands: /groomie (+ /groomie:full, /groomie:stories)
+agents/                  # the faithful `groomie` subagent prompt
+opencode/
+  plugin.js              # OpenCode plugin: registers skills, commands, and the subagent
+  commands/              # OpenCode command templates (same commands as commands/)
 .claude-plugin/          # plugin + marketplace manifests
 .github/workflows/       # required Claude AI review + SonarCloud
 visualizer/              # companion graph viewer (isolated app, not part of the plugin)
@@ -27,8 +31,8 @@ those rules and adding real before/after examples to `examples.md` — no model 
   (`.github/workflows/claude-review.yml`). The review needs a `CLAUDE_CODE_OAUTH_TOKEN`
   repo secret — generate it with `claude setup-token`.
 - **TDD** for any deterministic code. The grooming logic itself is the LLM's, but the
-  `visualizer/` companion app has real code — unit-test it with vitest (`npm --prefix
-  visualizer test`).
+  `visualizer/` companion app and the OpenCode plugin/helper scripts have real code — unit-test
+  them with vitest (`npm --prefix visualizer test`) and Node's test runner (`npm test`).
 - **SonarCloud** (`.github/workflows/sonarcloud.yml`) runs static analysis + coverage on
   `visualizer/`; its quality gate (`SonarCloud Code Analysis`) is a **required** check
   alongside the Claude review. Coverage comes from vitest — run `npm --prefix visualizer run
@@ -52,3 +56,30 @@ npm run release
 It bumps the version (in both `package.json` and `.claude-plugin/plugin.json`), updates
 `CHANGELOG.md`, tags the release, and creates a GitHub release — all derived from your
 Conventional Commits.
+
+Publishing that GitHub release triggers `.github/workflows/publish.yml`, which runs the tests and
+publishes the tagged version to npm through [trusted publishing](https://docs.npmjs.com/trusted-publishers)
+(OIDC, no long-lived token). Provenance is generated automatically.
+
+Trusted publishing can only be configured after the package exists, so the first publish is manual:
+
+1. From `main`, publish the current version:
+
+```
+npm publish --access public
+```
+
+2. On npmjs.com, open the `groomie` package → **Settings → Trusted Publisher → GitHub Actions**
+   and set:
+
+   - **Organization or user**: `mfozmen`
+   - **Repository**: `groomie`
+   - **Workflow filename**: `publish.yml`
+   - **Allowed actions**: `npm publish`
+
+3. Optional hardening: **Settings → Publishing access** → require 2FA and disallow tokens.
+
+After that, every GitHub release publishes automatically. Stable releases use the `latest`
+dist-tag; pre-releases use `next`, so a beta never becomes the default `npm install groomie`
+version. The workflow filename must match exactly, and the workflow only runs for releases
+created after it is merged.

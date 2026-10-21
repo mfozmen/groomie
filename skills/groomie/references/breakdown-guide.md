@@ -509,7 +509,7 @@ once keeps informing every later run.
 ```markdown
 # Epic: <verb-led bounded scope — e.g. "Add …" / "Enable …" / "Migrate …">
 
-_groomie v<version> · <mode> breakdown_   <!-- version from .claude-plugin/plugin.json; mode = full|stories|estimate; see SKILL.md step 5 -->
+_groomie v<version> · <mode> breakdown_   <!-- version from .claude-plugin/plugin.json or package.json; mode = full|stories|estimate; see SKILL.md step 5 -->
 
 **Description:** <what the feature implements — one sentence>
 

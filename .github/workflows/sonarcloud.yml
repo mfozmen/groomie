@@ -1,7 +1,7 @@
 name: SonarCloud
 
-# Static analysis + coverage for the visualizer companion app (the only code in the repo;
-# the plugin itself is prompt-only markdown). Config lives in visualizer/sonar-project.properties.
+# Static analysis + coverage for the visualizer companion app. The OpenCode plugin and helper
+# scripts are tested separately with Node's test runner. Config lives in visualizer/sonar-project.properties.
 #
 # Setup (one-time, by the repo owner): create the project on https://sonarcloud.io (org `mfozmen`,
 # key `mfozmen_groomie`), turn OFF "Automatic Analysis" (it conflicts with this CI-based scan),
@@ -39,6 +39,9 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+
+      - name: Test OpenCode plugin and helper scripts
+        run: npm test
 
       - name: Test with coverage
         working-directory: visualizer

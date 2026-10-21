@@ -1,6 +1,10 @@
 # Groomie
 
-<!-- SonarCloud metrics below cover the companion `visualizer/` app — the plugin itself is prompt-only markdown. -->
+[![npm version](https://img.shields.io/npm/v/groomie?logo=npm&label=npm)](https://www.npmjs.com/package/groomie)
+[![npm downloads](https://img.shields.io/npm/dm/groomie?logo=npm&label=downloads)](https://www.npmjs.com/package/groomie)
+[![license](https://img.shields.io/npm/l/groomie)](https://github.com/mfozmen/groomie/blob/main/LICENSE)
+
+<!-- SonarCloud metrics below cover the companion `visualizer/` app; the OpenCode plugin and its scripts are tested separately with Node's test runner. -->
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
 [![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
 [![Security](https://sonarcloud.io/api/project_badges/measure?project=mfozmen_groomie&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mfozmen_groomie)
@@ -8,7 +12,8 @@
 
 Turn a messy feature idea into a clean, sprint-ready backlog breakdown — as markdown.
 
-Groomie is a [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin. Point it at
+Groomie is a [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin and an
+[OpenCode](https://opencode.ai) plugin. Point it at
 one badly-written, single-feature idea — a Jira issue, a Confluence page, a PRD link, a file,
 or several of these at once (vague, over-stuffed, no acceptance criteria)
 — and it recovers the real feature underneath, researches it as deeply as your environment
@@ -344,13 +349,13 @@ revise still knows them), and a standalone **`<ID>-groomed.html`** — the inter
 your breakdown baked in: epics as containers, stories/tasks/bugs nested, blockers as arrows.
 **Offline, double-click to open, no server or install.**
 
-![The Groomie visualizer: a purple epic container holding blue tasks, green stories and a red bug, with blocker arrows, and a details panel on the right.](docs/visualizer.png)
+![The Groomie visualizer: a purple epic container holding blue tasks, green stories and a red bug, with blocker arrows, and a details panel on the right.](https://raw.githubusercontent.com/mfozmen/groomie/main/docs/visualizer.png)
 
 <sub>The `<ID>-groomed.html` output on synthetic demo data (Jira-default colours — epic purple, story green, task blue, bug red). Click a node for its acceptance criteria, tasks, or repro.</sub>
 
 ## Requirements
 
-- **Claude Code.**
+- **Claude Code or OpenCode.** The same skills, commands, and `groomie` subagent ship for both.
 - **Atlassian MCP** connected — needed whenever a source is a Jira issue or Confluence page,
   and for the opt-in `/groomie:push` writes. A groom whose sources are plain URLs or files
   doesn't need it at all.
@@ -423,17 +428,60 @@ allow), or plain "user" — Groomie never guesses a job title.
 
 ## Install
 
+Groomie ships the same skills, commands and `groomie` subagent for both harnesses. Pick yours:
+
+### Claude Code
+
+Claude Code installs Groomie through its plugin marketplace (it does not use the npm package).
+
+1. Add the marketplace:
+
 ```
 /plugin marketplace add mfozmen/groomie
+```
+
+2. Install the plugin:
+
+```
 /plugin install groomie
 ```
 
-Or from my devkit marketplace, alongside my other Claude Code plugins:
+Or install from my devkit marketplace, alongside my other Claude Code plugins:
 
 ```
 /plugin marketplace add mfozmen/devkit
 /plugin install groomie@devkit
 ```
+
+The `/groomie` commands are available after the plugin is installed. If they don't appear,
+restart Claude Code.
+
+### OpenCode 1.x
+
+Groomie is published to npm as [`groomie`](https://www.npmjs.com/package/groomie), and OpenCode
+installs it with its plugin manager:
+
+```
+opencode plugin groomie
+```
+
+Then restart OpenCode. The plugin registers the bundled `groomie` and `review` skills, the
+`/groomie` command family, and the `groomie` subagent. The npm package is for OpenCode; Claude
+Code uses the marketplace above.
+
+OpenCode 2.x uses a different plugin API; this package does not load there yet.
+
+To use a local clone instead, add the plugin file to `opencode.json` (or `opencode.jsonc`):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["./vendor/groomie/opencode/plugin.js"]
+}
+```
+
+Use the absolute path if the clone lives outside the project. The commands are the same `/groomie`
+family described below (for example `/groomie`, `/groomie:full`, `/groomie:stories`).
 
 ## Usage
 
@@ -605,5 +653,5 @@ chose to split the work.
 
 ---
 
-What's next? See the [roadmap](docs/ROADMAP.md). Contributing? See [CONTRIBUTING.md](CONTRIBUTING.md).
+What's next? See the [roadmap](https://github.com/mfozmen/groomie/blob/main/docs/ROADMAP.md). Contributing? See [CONTRIBUTING.md](https://github.com/mfozmen/groomie/blob/main/CONTRIBUTING.md).
 Licensed under [MIT](LICENSE).
