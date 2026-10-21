@@ -1,6 +1,6 @@
 {
   "name": "groomie",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Groom a messy single-feature idea — a Jira issue, Confluence page, URL, or file — into a clean epic / user-story / technical-task breakdown, with tasks blocking stories. Outputs markdown.",
   "author": {
     "name": "Mehmet Fahri Özmen"

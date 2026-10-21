@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.1](https://github.com/mfozmen/groomie/compare/v1.1.0...v1.1.1) (2026-10-21)
+
+### Bug Fixes
+
+* **release:** republish the 1.1.0 content after npm's staged-publish placeholder reserved that version
+
 ## [1.1.0](https://github.com/mfozmen/groomie/compare/v1.0.0...v1.1.0) (2026-10-21)
 
 ### Features
