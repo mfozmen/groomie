@@ -8,14 +8,13 @@ const skillsDir = path.join(root, "skills")
 const commandsDir = path.join(here, "commands")
 const agentFile = path.join(root, "agents", "groomie.md")
 
-const OPENCODE_NOTE = [
+const AGENT_NOTE = [
   "You are running inside OpenCode.",
   "",
   "- Load the groomie skill with the `skill` tool: `skill({ name: \"groomie\" })`.",
-  "- OpenCode's tool names are `read`, `grep`, `glob`, `webfetch`, `websearch`, `task` and `bash`;",
-  "  treat any Claude Code tool name in the skill as that equivalent.",
-  "- Run the skill in this thread. If it genuinely must run in a subagent, invoke the `groomie`",
-  "  subagent; never hand it to a general-purpose agent.",
+  "- Use the tools this session actually exposes; OpenCode's equivalents for the skill's actions are",
+  "  `read`, `grep`, `glob`, `webfetch`, `websearch`, `task` and `bash` when available.",
+  "- Run the skill in this thread; you are the dedicated `groomie` subagent.",
 ].join("\n")
 
 const COMMANDS = [
@@ -117,7 +116,7 @@ export const GroomiePlugin = async () => {
           config.agent.groomie = {
             description: AGENT_DESCRIPTION,
             mode: "subagent",
-            prompt: `${OPENCODE_NOTE}\n\n${stripFrontmatter(markdown).trim()}`,
+            prompt: `${AGENT_NOTE}\n\n${stripFrontmatter(markdown).trim()}`,
           }
         }
       }

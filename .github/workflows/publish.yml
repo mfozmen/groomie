@@ -30,4 +30,4 @@ jobs:
         run: npm test
 
       - name: Publish
-        run: npm publish --access public
+        run: npm publish --access public --tag ${{ github.event.release.prerelease && 'next' || 'latest' }}

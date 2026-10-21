@@ -79,5 +79,7 @@ npm publish --access public
 
 3. Optional hardening: **Settings → Publishing access** → require 2FA and disallow tokens.
 
-After that, every GitHub release publishes automatically. The workflow filename must match
-exactly, and the workflow only runs for releases created after it is merged.
+After that, every GitHub release publishes automatically. Stable releases use the `latest`
+dist-tag; pre-releases use `next`, so a beta never becomes the default `npm install groomie`
+version. The workflow filename must match exactly, and the workflow only runs for releases
+created after it is merged.

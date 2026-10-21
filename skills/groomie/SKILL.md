@@ -384,21 +384,29 @@ if [ -s "$SKILL/assets/visualizer-head.html" ] && [ -s "$SKILL/assets/visualizer
 fi
 ```
 
-On Windows (OpenCode's shell is PowerShell there), or whenever `sed`/`cat` aren't available, use
-the bundled cross-platform helper instead — it performs the same concatenation and `<` escaping:
+On Windows, where OpenCode's shell is PowerShell, use this equivalent block (`$SKILL` is the same
+base path, substituted as above):
 
-```bash
-node "$SKILL/scripts/emit-html.mjs" <ID>/<ID>-groomed.json <ID>/<ID>-groomed.html
+```powershell
+$head = "$SKILL/assets/visualizer-head.html"
+$tail = "$SKILL/assets/visualizer-tail.html"
+$json = "<ID>/<ID>-groomed.json"
+if ((Test-Path -LiteralPath $head) -and (Test-Path -LiteralPath $tail) -and (Test-Path -LiteralPath $json)) {
+  $headText = [IO.File]::ReadAllText($head)
+  $tailText = [IO.File]::ReadAllText($tail)
+  if ($headText.Length -gt 0 -and $tailText.Length -gt 0) {
+    $graph = [IO.File]::ReadAllText($json).Replace('<', '\u003c')
+    $html = $headText + '<script>globalThis.__GROOMIE_GRAPH__=' + $graph + '</script>' + $tailText
+    [IO.File]::WriteAllText("<ID>/<ID>-groomed.html", $html, [System.Text.UTF8Encoding]::new($false))
+  }
+}
 ```
-
-The helper exits non-zero if the template assets are missing; treat that exactly like the guard
-above (skip the HTML and say so).
 
 The guard means that if the two template assets can't be found (e.g. `$SKILL` wasn't resolved to
 this skill's real base path), you skip the HTML rather than write a truncated, broken file. Its
-path (when produced) goes in the closing block. If the assets are missing or neither the shell
-concat nor the Node helper can run, skip the HTML — the `.md` (with its mermaid diagram, which
-renders in any markdown viewer) and the `.json` are the primary outputs and always ship.
+path (when produced) goes in the closing block. If the assets are missing or the shell concat
+can't run, skip the HTML — the `.md` (with its mermaid diagram, which renders in any markdown
+viewer) and the `.json` are the primary outputs and always ship.
 
 **Close the final message with the file paths.** The message ends — after the printed breakdown
 and the self-review line (step 6) — with a short closing block: the per-breakdown folder and the files

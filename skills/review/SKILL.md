@@ -28,9 +28,8 @@ review from memory.
    item. Collect all violations before fixing anything.
 4. **Fix — one bounded pass** (the checklist's "Fixing" section governs): minimal edits in
    the `.md` and `.json` together, keys stable, `jira` ledger untouched; regenerate the
-   `.html` by the template concat from the main skill's *Output markdown* step (on Windows
-   or when `sed` is unavailable, use the cross-platform helper:
-   `node "$SKILL/../groomie/scripts/emit-html.mjs" <json> <html>`), and re-run
+   `.html` by the template concat from the main skill's *Output markdown* step (use its
+   PowerShell variant on Windows), and re-run
    check-graph — resolving both against **this skill's base path** (the harness gives it to
    you; substitute it for `$SKILL` below, and note the sibling hop: assets at
    `$SKILL/../groomie/assets/`, checker at

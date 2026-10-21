@@ -48,7 +48,9 @@ test("registers the bundled skills directory, commands and subagent", async () =
   assert.equal(config.agent.groomie.description.startsWith("Groom ONE"), true)
   assert.match(config.agent.groomie.prompt, /running inside OpenCode/)
   assert.match(config.agent.groomie.prompt, /skill\(\{ name: "groomie" \}\)/)
-  assert.doesNotMatch(config.agent.groomie.prompt, /^---/)
+  assert.match(config.agent.groomie.prompt, /You are \*\*Groomie\*\* running as a subagent/)
+  assert.doesNotMatch(config.agent.groomie.prompt, /(?:^|\n)name: groomie(?:\r?\n|$)/)
+  assert.doesNotMatch(config.agent.groomie.prompt, /(?:^|\n)description: >-/)
 })
 
 test("does not overwrite user-provided skills, commands or agent", async () => {
